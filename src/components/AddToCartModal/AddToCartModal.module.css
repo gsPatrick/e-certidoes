@@ -1,0 +1,32 @@
+/* AddToCartModal.module.css */
+.overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; justify-content: center; align-items: center; z-index: 3000;
+}
+.modal {
+  background: #fff; border-radius: 8px; padding: 2rem; width: 90%; max-width: 500px;
+  position: relative; animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.closeButton {
+  position: absolute; top: 10px; right: 15px; background: none; border: none;
+  font-size: 1.8rem; color: #6c757d; cursor: pointer;
+}
+.title {
+  color: #294B29; text-align: center; margin-top: 0; margin-bottom: 1.5rem;
+}
+.itemDetails { display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid #e9ecef; padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+.itemImage { border: 1px solid #e9ecef; border-radius: 4px; object-fit: cover; }
+.itemInfo { flex-grow: 1; }
+.itemName { font-weight: 500; margin: 0 0 0.5rem 0; color: #343a40; }
+.itemPrice { font-weight: bold; margin: 0; color: #294B29; }
+.actions { display: flex; justify-content: space-between; gap: 1rem; }
+.continueButton, .cartButton {
+  flex: 1; padding: 0.75rem; border-radius: 6px; font-weight: bold;
+  font-size: 0.9rem; cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.continueButton { background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; }
+.continueButton:hover { background-color: #e9ecef; }
+.cartButton { background-color: #294B29; border: 1px solid #294B29; color: #fff; text-decoration: none; }
+.cartButton:hover { background-color: #3a6b3a; }

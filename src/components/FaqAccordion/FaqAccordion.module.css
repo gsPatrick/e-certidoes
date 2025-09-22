@@ -1,0 +1,99 @@
+/* Salve em: src/components/FaqAccordion/FaqAccordion.module.css */
+
+.accordion {
+  width: 100%;
+}
+
+.topicSection:not(:first-child) {
+  margin-top: 3rem;
+}
+
+.topicTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #294B29;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.faqItem {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.topicSection .faqItem:last-child {
+  margin-bottom: 0;
+}
+
+.question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.question:hover {
+  background-color: #f8f9fa;
+}
+
+.questionText {
+  flex: 1;
+  padding-right: 1rem;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #294B29;
+}
+
+.icon {
+  transition: transform 0.3s ease-in-out;
+}
+
+.icon line:last-child {
+  transform-origin: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.iconOpen line:last-child {
+  transform: rotate(90deg);
+}
+
+.answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.answerOpen {
+  max-height: 500px;
+}
+
+.answerContent {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #495057;
+}
+
+.answerContent p {
+  margin: 0 0 1rem 0;
+}
+
+.answerContent p:last-child {
+  margin-bottom: 0;
+}

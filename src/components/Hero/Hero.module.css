@@ -1,0 +1,131 @@
+/* Fundo principal da seção Hero */
+.hero {
+  background-color: #f4f8f5; /* Cor de fundo principal, um verde bem claro */
+  position: relative;
+  overflow: hidden; /* Garante que nada vaze para fora */
+}
+
+/* Container principal para o conteúdo */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Coluna da esquerda (conteúdo de texto) */
+.content {
+  flex: 1;
+  max-width: 48%; /* Um pouco menos que 50% para dar um respiro */
+  z-index: 2;
+}
+
+/* Wrapper especial para o título com borda */
+.titleWrapper {
+  display: inline-block;
+  background-color: #eaf0ec;
+  border-left: 5px solid #294B29;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  color: #294B29;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #333;
+  line-height: 1.6;
+  margin: 1.5rem 0 2.5rem 0;
+  max-width: 500px;
+}
+
+.ctaButton {
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  text-transform: uppercase;
+}
+
+.ctaButton:hover {
+  background-color: #3a6b3a;
+  transform: translateY(-2px);
+}
+
+/* Coluna da direita (imagem) */
+.imageContainer {
+  flex: 1;
+  max-width: 52%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Alinha a imagem à direita */
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Container para a onda SVG */
+.waveContainer {
+  position: absolute;
+  bottom: -1px; /* -1px para evitar linhas finas de anti-aliasing */
+  left: 0;
+  width: 100%;
+  line-height: 0; /* Remove espaço extra do SVG */
+  z-index: 1;
+}
+
+.waveContainer svg {
+  display: block;
+  width: 100%;
+  height: 60px; /* Altura da onda */
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 992px) {
+  .hero {
+    padding: 4rem 0 6rem 0;
+  }
+
+  .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .content,
+  .imageContainer {
+    max-width: 100%;
+    justify-content: center;
+  }
+  
+  .imageContainer {
+    margin-top: 2rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+}

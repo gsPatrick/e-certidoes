@@ -1,0 +1,182 @@
+/* Salve em: src/components/ProductPage/ProductForm.module.css */
+
+.formWrapper {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.formSection:not(:last-child) {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #3c4f41;
+  margin-bottom: 0.5rem;
+}
+
+.sectionDescription {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #3c4f41;
+}
+
+.formGroup label span {
+  color: #dc3545;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+    outline: none;
+    border-color: #294B29;
+    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+/* Estilo para campos inválidos (feedback visual para o usuário) */
+.formGroup input:invalid:not(:placeholder-shown) {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.formGroup select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: normal;
+}
+
+/* Estilos para a lógica de fallback de cartório */
+.fallbackContainer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ced4da;
+  text-align: center;
+}
+
+.fallbackContainer p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.fallbackButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #294B29;
+  background-color: transparent;
+  color: #294B29;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.fallbackButton:hover {
+  background-color: #eaf0ec;
+}
+
+.manualInputWrapper {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.manualInputWarning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffeeba;
+    color: #856404;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* Estilo para o display de preço */
+.priceDisplay {
+    text-align: right;
+    font-size: 1.5rem;
+    margin: 1.5rem 0;
+    color: #3c4f41;
+}
+  
+.priceDisplay strong {
+    color: #294B29;
+}
+  
+/* Estilo para o botão de submissão */
+.submitButton {
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.9rem 2rem;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.submitButton:hover {
+  background-color: #3a6b3a;
+}
+
+.submitButton:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+@media (max-width: 768px) {
+  .formWrapper {
+    padding: 1.5rem; /* Reduz o padding interno do formulário */
+  }
+
+  .priceDisplay {
+    font-size: 1.3rem; /* Diminui um pouco o texto do preço */
+    text-align: center;
+  }
+}

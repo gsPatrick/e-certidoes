@@ -1,0 +1,156 @@
+/* Salve em: src/app/admin/dashboard/Dashboard.module.css */
+.title {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+.filters button {
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    color: #34495e;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.filters button:hover {
+    background-color: #dce4e6;
+    border-color: #95a5a6;
+}
+.filters button.active {
+    background-color: #3498db;
+    color: #fff;
+    border-color: #2980b9;
+}
+
+.tableContainer {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow-x: auto; /* Garante que a tabela seja rolável em telas pequenas */
+}
+
+.pedidosTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+.pedidosTable th, .pedidosTable td {
+    padding: 1rem;
+    text-align: left;
+    vertical-align: middle;
+}
+.pedidosTable thead {
+    background-color: #f8f9fa;
+}
+.pedidosTable th {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #34495e;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e9ecef;
+}
+.pedidosTable tbody tr {
+    border-bottom: 1px solid #ecf0f1;
+}
+.pedidosTable tbody tr:last-child {
+    border-bottom: none;
+}
+.pedidosTable tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.pedidosTable td {
+    color: #555;
+}
+
+.actionButton {
+    background-color: #2980b9;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+.actionButton:hover {
+    background-color: #3498db;
+}
+
+/* Badges de Status */
+.statusBadge {
+    padding: 0.3rem 0.8rem; border-radius: 1rem; font-size: 0.8rem;
+    font-weight: bold; color: #fff; text-transform: uppercase;
+}
+.statusPendente { background-color: #f1c40f; color: #212529; }
+.statusProcessando { background-color: #3498db; }
+.statusConcluido { background-color: #2ecc71; }
+.statusCancelado { background-color: #e74c3c; }
+.statusDefault { background-color: #95a5a6; }
+
+.emptyState {
+    text-align: center;
+    padding: 3rem;
+    color: #7f8c8d;
+}
+
+/* Adicione estas classes ao final do seu arquivo Dashboard.module.css */
+
+.statusBusca {
+    background-color: #17a2b8; /* Um tom de azul/ciano para diferenciar */
+}
+
+.loadingState, .errorState {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+}
+
+.errorState {
+    color: #e74c3c;
+    background-color: #fff1f0;
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+}
+
+/* Responsividade para a Tabela */
+@media (max-width: 768px) {
+    .pedidosTable thead {
+        display: none;
+    }
+    .pedidosTable, .pedidosTable tbody, .pedidosTable tr, .pedidosTable td {
+        display: block;
+        width: 100%;
+    }
+    .pedidosTable tr {
+        margin-bottom: 1rem;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+    }
+    .pedidosTable td {
+        text-align: right;
+        position: relative;
+        padding-left: 50%; /* Espaço para o label */
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .pedidosTable td:last-child {
+        border-bottom: none;
+    }
+    .pedidosTable td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: calc(50% - 2rem);
+        text-align: left;
+        font-weight: bold;
+        color: #34495e;
+    }
+}

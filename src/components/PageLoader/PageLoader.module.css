@@ -1,0 +1,47 @@
+.loaderOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff; /* Fundo branco sólido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Garante que fique por cima de tudo */
+}
+
+.pulsingCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 5px solid #e9e9e9; /* Cor do círculo principal (cinza claro) */
+  position: relative;
+}
+
+/* O ::after será o círculo que se expande e some */
+.pulsingCircle::after {
+  content: '';
+  position: absolute;
+  /* Alinha o pseudo-elemento com a borda do pai */
+  top: -5px;
+  left: -5px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 5px solid #e9e9e9;
+  /* Aplica a animação */
+  animation: pulse 1.5s linear infinite;
+}
+
+/* Definição da animação */
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}

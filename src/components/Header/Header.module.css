@@ -1,0 +1,183 @@
+/*
+  Arquivo: src/components/Header/Header.module.css
+  Versão Corrigida com Overlay separado
+*/
+
+/* --- BASE STYLES (Mobile-First) --- */
+.header {
+  width: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 999; /* Z-index base para o header */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  max-width: 160px;
+  height: auto;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cart {
+  position: relative;
+  color: #3c4f41;
+  display: flex;
+}
+
+.cartCount {
+  position: absolute; top: -5px; right: -8px;
+  background-color: #294B29; color: white; border-radius: 50%;
+  width: 18px; height: 18px; display: flex;
+  justify-content: center; align-items: center;
+  font-size: 0.75rem; font-weight: bold;
+}
+
+/* --- LÓGICA DO MENU E OVERLAY --- */
+
+/* Overlay escuro */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* Fica acima do header, mas abaixo do menu */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Painel do Menu Lateral */
+.nav {
+  position: fixed;
+  top: 0;
+  left: -100%; /* Começa fora da tela */
+  width: 300px;
+  max-width: 80vw;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+  transition: left 0.3s ease-in-out;
+  z-index: 1001; /* Fica acima de tudo */
+  display: flex;
+  flex-direction: column;
+}
+.navOpen {
+  left: 0; /* Entra na tela */
+}
+
+/* Header do Menu Mobile */
+.mobileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #294B29;
+}
+
+.closeButton {
+  display: block; background: none; border: none; cursor: pointer; color: #3c4f41;
+}
+
+/* Lista de Links do Menu */
+.navList {
+  list-style: none;
+  padding: 1.5rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex-grow: 1; /* Faz a lista ocupar o espaço disponível */
+}
+.navList a {
+  text-decoration: none; color: #3c4f41; font-weight: 500;
+  font-size: 1.1rem; transition: color 0.2s;
+}
+.navList a:hover { color: #294B29; }
+
+/* Botões de Login/Painel no final do menu mobile */
+.mobileOnlyAccountSection {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Botão Hambúrguer (só aparece em mobile) */
+.hamburgerButton {
+  display: block; background: none; border: none; cursor: pointer; color: #3c4f41;
+  padding: 0; z-index: 1;
+}
+
+/* Seção da conta no Header (só aparece em desktop) */
+.accountSection { display: none; }
+
+
+/* --- BREAKPOINT PARA DESKTOP (992px) --- */
+@media (min-width: 992px) {
+  .logo img { max-width: 200px; }
+  .hamburgerButton, .mobileHeader, .mobileOnlyAccountSection, .overlay {
+    display: none;
+  }
+  
+  .nav {
+    display: flex; position: static; width: auto; height: auto;
+    background-color: transparent; box-shadow: none;
+    flex-direction: row; align-items: center; flex-grow: 1;
+    justify-content: center; left: 0;
+  }
+
+  .navList {
+    flex-direction: row; gap: 2.5rem; padding: 0; border-top: none;
+    margin-top: 0; flex-grow: 0;
+  }
+  .navList a { font-size: 1rem; }
+  
+  .accountSection {
+    display: flex; align-items: center; gap: 1rem;
+  }
+  
+  .welcomeMessage { display: block; color: #495057; font-size: 0.9rem; }
+  .authButtons { display: flex; gap: 0.5rem; }
+
+  .accountButton, .logoutButton {
+    border: none; border-radius: 6px; padding: 0.6rem 1.2rem;
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    transition: background-color 0.2s; text-decoration: none;
+    display: inline-block; text-align: center;
+  }
+  
+  .accountButton { background-color: #294B29; color: #fff; }
+  .accountButton:hover { background-color: #3a6b3a; }
+
+  .logoutButton { background-color: #f1f3f5; color: #495057; }
+  .logoutButton:hover { background-color: #e9ecef; }
+}

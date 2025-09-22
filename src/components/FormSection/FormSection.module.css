@@ -1,0 +1,188 @@
+/* Salve em: src/components/FormSection/FormSection.module.css */
+
+.contactWrapper {
+  display: flex;
+  min-height: calc(100vh - 80px); /* Subtrai a altura aproximada do header */
+  width: 100%;
+  background-color: #f4f8f5;
+}
+
+.imageColumn {
+  flex: 1;
+  position: relative;
+  min-width: 40%;
+}
+
+.imageColumn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #294B29;
+  opacity: 0.25;
+  z-index: 1;
+}
+
+.formColumn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  overflow-y: auto;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 600px;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #294B29;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1rem;
+  color: #343a40;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.formGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #3c4f41;
+}
+
+.required {
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.hiddenLabel {
+  visibility: hidden;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #294B29;
+  box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.checkboxGroup input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.checkboxGroup label {
+  font-size: 0.9rem;
+  color: #343a40;
+}
+
+.checkboxGroup a {
+  color: #294B29;
+  text-decoration: underline;
+}
+
+.submitButton {
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.9rem 2rem;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #3a6b3a;
+}
+
+/* ======================================= */
+/* =========== RESPONSIVIDADE ============ */
+/* ======================================= */
+
+/* Para tablets e telas menores (até 992px) */
+@media (max-width: 992px) {
+  .contactWrapper {
+    flex-direction: column; /* Empilha as colunas */
+    min-height: auto; /* Remove a altura mínima para o conteúdo fluir */
+  }
+
+  .imageColumn {
+    min-width: 100%;
+    min-height: 300px; /* Garante uma altura visível para a imagem */
+  }
+
+  .formColumn {
+    padding: 2rem; /* Reduz o espaçamento em telas menores */
+  }
+}
+
+/* Para celulares (até 576px) */
+@media (max-width: 576px) {
+  .formColumn {
+    padding: 1.5rem; /* Reduz ainda mais o espaçamento */
+  }
+
+  .formRow {
+    flex-direction: column; /* Empilha os campos que ficavam lado a lado */
+    gap: 0; /* Remove o gap para usar o margin-bottom do formGroup */
+  }
+
+  .hiddenLabel {
+    display: none; /* Oculta labels desnecessários no mobile */
+  }
+
+  .title {
+    font-size: 1.8rem; /* Reduz o tamanho do título */
+  }
+}

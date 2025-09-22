@@ -1,0 +1,169 @@
+.wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner, .personalizeView {
+  width: 100%;
+  max-width: 1200px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+}
+
+.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.textWrapper {
+  flex: 1;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #212529;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #495057;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.description a {
+  color: #294B29;
+  text-decoration: underline;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.button {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.personalizeBtn {
+  background-color: #343a40;
+  color: #fff;
+}
+.personalizeBtn:hover {
+  background-color: #495057;
+}
+
+.rejectBtn {
+  background-color: #495057;
+  color: #fff;
+}
+.rejectBtn:hover {
+  background-color: #5a6268;
+}
+
+.acceptBtn {
+  background-color: #294B29;
+  color: #fff;
+}
+.acceptBtn:hover {
+  background-color: #3a6b3a;
+}
+
+/* --- Estilos da Visão de Personalização --- */
+.personalizeView {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #294B29;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+}
+
+.category {
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 0;
+}
+.personalizeView > div:last-of-type {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.categoryTitleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.arrow {
+  font-size: 1.5rem;
+  color: #6c757d;
+  transition: transform 0.2s ease-in-out;
+}
+.arrowOpen {
+  transform: rotate(90deg);
+}
+
+.categoryTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.alwaysActive {
+  font-size: 0.8rem;
+  color: #294B29;
+  font-weight: bold;
+}
+
+.categoryDescription {
+  padding: 1rem 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: #495057;
+}
+.categoryDescription p {
+  margin: 0;
+}
+
+.saveButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

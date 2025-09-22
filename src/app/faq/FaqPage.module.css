@@ -1,0 +1,53 @@
+/* Salve em: src/app/faq/FaqPage.module.css */
+
+.pageWrapper {
+  background-color: #f4f8f5;
+  padding: 4rem 1rem;
+  min-height: 70vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #294B29;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #495057;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+}
+
+.accordionContainer {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .pageWrapper {
+    padding: 2rem 1rem;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+  .accordionContainer {
+    padding: 1.5rem;
+  }
+}

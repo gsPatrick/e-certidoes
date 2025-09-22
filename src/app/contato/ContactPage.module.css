@@ -1,0 +1,5 @@
+.fullPageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Garante que o container tenha no mínimo a altura da tela */
+}

@@ -1,0 +1,165 @@
+.section {
+  padding: 4rem 0;
+  background-color: #fff; /* O fundo é branco, a partir da onda da Hero section */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #3c4f41;
+  margin-bottom: 2rem;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.filterButton {
+  background-color: #f4f8f5;
+  border: 1px solid #eaf0ec;
+  color: #3c4f41;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.filterButton:hover {
+  background-color: #e0e8e2;
+  border-color: #d1dcd4;
+}
+
+.activeFilter {
+  background-color: #eaf0ec;
+  color: #294B29;
+  font-weight: bold;
+  border: 1px solid #d1dcd4;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.listContainer {
+  max-width: 900px;
+  margin: 0 auto; /* Centraliza a lista */
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: #343a40;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.listItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #ced4da;
+}
+
+.iconWrapper {
+  color: #6c757d;
+  margin-right: 1.5rem;
+}
+
+.itemName {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.chevron {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #adb5bd;
+  margin-left: 1rem;
+}
+
+/* ... (estilos existentes) ... */
+
+/* Estilos para a Barra de Pesquisa */
+.searchContainer {
+  max-width: 900px;
+  margin: 0 auto 2.5rem auto; /* Espaçamento abaixo da barra */
+}
+
+.searchInputWrapper {
+  position: relative;
+}
+
+.searchInputWrapper svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3.5rem; /* Espaço à esquerda para o ícone */
+  font-size: 1.1rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #294B29;
+  box-shadow: 0 0 0 4px rgba(41, 75, 41, 0.1);
+}
+
+/* Estilos para a mensagem de Nenhum Resultado */
+.noResults {
+  text-align: center;
+  padding: 3rem 1rem;
+  font-size: 1.1rem;
+  color: #6c757d;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.loadMoreContainer {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+.loadMoreButton {
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 2.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.loadMoreButton:hover {
+  background-color: #3a6b3a;
+  transform: translateY(-2px);
+}

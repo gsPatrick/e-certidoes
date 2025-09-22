@@ -1,0 +1,122 @@
+/* Salve em: src/app/minha-conta/painel/MeusPedidos.module.css */
+.pageWrapper {
+    padding: 3rem 1rem;
+    background-color: #f8f9fa;
+    min-height: 80vh;
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+.title {
+    font-size: 2.2rem;
+    color: #294B29;
+    margin-bottom: 2rem;
+}
+
+/* Lista de Pedidos */
+.pedidosList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.pedidoCard {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s;
+}
+.pedidoCard:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.protocolo {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #343a40;
+    display: block;
+}
+.data {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Badges de Status */
+.statusBadge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+}
+.statusPendente { background-color: #ffc107; color: #212529; }
+.statusProcessando { background-color: #17a2b8; }
+.statusConcluido { background-color: #28a745; }
+.statusCancelado { background-color: #dc3545; }
+.statusDefault { background-color: #6c757d; }
+
+.cardBody {
+    padding: 1.5rem;
+}
+.infoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.infoItem strong { color: #3c4f41; }
+.infoItem span { font-weight: 500; font-size: 1.1rem; }
+
+.cardFooter {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    text-align: right;
+    border-radius: 0 0 8px 8px;
+}
+
+.detailsButton {
+    background-color: #294B29;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+.detailsButton:hover {
+    background-color: #3a6b3a;
+}
+
+/* Estado Vazio e Erros */
+.emptyState {
+    text-align: center;
+    padding: 3rem;
+    background-color: #fff;
+    border-radius: 8px;
+}
+.emptyState p { font-size: 1.1rem; color: #495057; margin-bottom: 1.5rem; }
+.ctaButton {
+    background-color: #294B29; color: #fff; text-decoration: none;
+    padding: 0.8rem 2rem; border-radius: 6px; font-weight: bold;
+}
+.errorMessage {
+    color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb;
+    padding: 1rem; border-radius: 6px; text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+    .title { font-size: 1.8rem; }
+    .cardHeader { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .statusBadge { align-self: flex-start; }
+}

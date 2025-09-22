@@ -1,0 +1,5 @@
+.pageWrapper {
+  padding: 4rem 1rem;
+  background-color: #f8f9fa;
+  flex-grow: 1; /* Para garantir que o footer fique no final em telas grandes */
+}

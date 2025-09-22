@@ -1,0 +1,23 @@
+/* Salve em: src/app/admin/login/AdminLogin.module.css */
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f7f6;
+    padding: 1rem;
+}
+.loginContainer {
+    width: 100%;
+    max-width: 500px;
+}
+.title {
+    font-size: 2rem;
+    color: #2c3e50;
+    text-align: center;
+}
+.subtitle {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}

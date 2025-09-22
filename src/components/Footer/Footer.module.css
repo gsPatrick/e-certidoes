@@ -1,0 +1,87 @@
+.footer {
+  background-color: #eaf0ec; /* Tom de verde-cinza claro do original */
+  padding: 3rem 0;
+  color: #3c4f41; /* Cor principal do texto */
+  font-size: 0.9rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Para quebrar linha em telas menores */
+  gap: 0.5rem 1.5rem; /* Espaçamento entre os links */
+  margin-bottom: 2rem;
+}
+
+.footerLinks a {
+  color: #3c4f41;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s ease-in-out;
+}
+
+.footerLinks a:hover {
+  color: #294B29;
+}
+
+/* Adiciona o separador vertical via pseudo-elemento */
+.footerLinks a:not(:last-child)::after {
+  content: '|';
+  position: absolute;
+  right: -1.0rem; /* Metade do gap */
+  color: #c0c8c2; /* Cor suave para o separador */
+  pointer-events: none; /* Impede que o separador seja clicável */
+}
+
+.separator {
+  border: none;
+  height: 1px;
+  background-color: #d1dcd4; /* Linha sutil */
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+.copyrightArea {
+  font-size: 0.85rem;
+  color: #6c757d; /* Cinza para o texto de copyright */
+}
+
+.copyrightText {
+  margin: 0;
+}
+
+.developerCredit {
+  margin-top: 0.5rem;
+}
+
+.developerLink {
+  color: #3c4f41;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.developerLink:hover {
+  color: #294B29;
+  text-decoration: underline;
+}
+
+/* Media query para remover separadores em telas pequenas quando os links quebram */
+@media (max-width: 768px) {
+  .footerLinks a:not(:last-child)::after {
+    display: none;
+  }
+  .footerLinks {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

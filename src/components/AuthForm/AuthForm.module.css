@@ -1,0 +1,139 @@
+.authContainer {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  overflow: hidden; /* Garante que os cantos arredondados funcionem com as abas */
+}
+
+.tabNav {
+  display: flex;
+}
+
+.activeTab, .inactiveTab {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.activeTab {
+  background-color: #3c4f41;
+  color: #fff;
+}
+
+.inactiveTab {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+.formContent {
+  padding: 2.5rem 2rem;
+}
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.inputGroup svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.5rem; /* Espaço para o ícone */
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #294B29;
+  box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+}
+.formRow .inputGroup {
+  flex: 1;
+}
+/* No form de cadastro, o primeiro nome não precisa de ícone */
+.formRow .inputGroup:last-child input {
+  padding-left: 1rem;
+}
+
+.optionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #495057;
+  cursor: pointer;
+}
+
+.forgotPassword, .checkboxLabel a {
+  color: #294B29;
+  text-decoration: none;
+}
+.forgotPassword:hover, .checkboxLabel a:hover {
+  text-decoration: underline;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #3a6b3a;
+}
+
+/* ADICIONE ESTA CLASSE NO FINAL DO ARQUIVO */
+.errorMessage {
+  color: #dc3545; /* Um tom de vermelho para erros */
+  background-color: #f8d7da; /* Fundo rosa claro */
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+}
