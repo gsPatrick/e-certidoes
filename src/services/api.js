@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Cria uma instância do Axios com a URL base da nossa API
 const api = axios.create({
-  baseURL: 'http://localhost:3050/api',
+  baseURL: 'https://n8n-certidoesapi.r954jc.easypanel.host/api',
 });
 
 // Interceptor para adicionar o token JWT em todas as requisições protegidas
