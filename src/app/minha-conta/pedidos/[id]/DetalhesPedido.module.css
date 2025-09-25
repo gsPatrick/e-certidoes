@@ -156,6 +156,25 @@
 .statusCancelado { background-color: #dc3545; }
 .statusDefault { background-color: #6c757d; }
 
+/* ... (estilos existentes) ... */
+
+/* --- NOVOS ESTILOS PARA A LISTA DE ANEXOS --- */
+.anexosList {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.anexosList li {
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    border-left: 3px solid #ced4da;
+}
+
 /* --- Responsividade --- */
 @media (max-width: 576px) {
     .pageWrapper { padding: 1rem; }

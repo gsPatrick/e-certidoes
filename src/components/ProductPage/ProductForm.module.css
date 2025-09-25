@@ -65,10 +65,8 @@
     box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
 }
 
-/* Estilo para campos inválidos (feedback visual para o usuário) */
 .formGroup input:invalid:not(:placeholder-shown) {
   border-color: #dc3545;
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 .formGroup select:disabled {
@@ -89,31 +87,45 @@
   font-weight: normal;
 }
 
-/* Estilos para a lógica de fallback de cartório */
+/* --- ESTILOS ATUALIZADOS PARA O FALLBACK --- */
+
 .fallbackContainer {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px dashed #ced4da;
-  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
 }
 
-.fallbackContainer p {
+.fallbackTitle {
   margin-top: 0;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
-  color: #495057;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  color: #343a40;
+}
+
+.fallbackActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .fallbackButton {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border: 1px solid #294B29;
   background-color: transparent;
   color: #294B29;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
   font-size: 0.9rem;
   font-family: inherit;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  text-align: center;
 }
 
 .fallbackButton:hover {
@@ -122,6 +134,8 @@
 
 .manualInputWrapper {
   margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ced4da;
   text-align: left;
 }
 
@@ -135,7 +149,13 @@
     margin-bottom: 1rem;
 }
 
-/* Estilo para o display de preço */
+/* --- ESTILOS PARA O PLACEHOLDER --- */
+.placeholder {
+    text-align: center;
+    padding: 2rem;
+    color: #495057;
+}
+
 .priceDisplay {
     text-align: right;
     font-size: 1.5rem;
@@ -147,7 +167,6 @@
     color: #294B29;
 }
   
-/* Estilo para o botão de submissão */
 .submitButton {
   background-color: #294B29;
   color: #fff;
@@ -164,19 +183,4 @@
 
 .submitButton:hover {
   background-color: #3a6b3a;
-}
-
-.submitButton:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-}
-@media (max-width: 768px) {
-  .formWrapper {
-    padding: 1.5rem; /* Reduz o padding interno do formulário */
-  }
-
-  .priceDisplay {
-    font-size: 1.3rem; /* Diminui um pouco o texto do preço */
-    text-align: center;
-  }
 }

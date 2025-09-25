@@ -1,30 +1,24 @@
-// Salve como: src/app/carrinho/page.js
+// Salve em: src/app/carrinho/page.js
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
-import styles from './Carrinho.module.css';
+import Image from 'next/image';
 import Link from 'next/link';
+import styles from './Carrinho.module.css';
 
-// **NOVO: Componente para renderizar os detalhes do formulário**
 const FormDetails = ({ formData }) => {
     if (!formData) return null;
-
-    // Remove campos que não queremos exibir (como o preço, que já está na tabela)
     const { preco_final, ...details } = formData;
-
     return (
         <div className={styles.formDetails}>
             {Object.entries(details).map(([key, value]) => {
-                if (!value) return null; // Não mostra campos vazios
-                // Formata a chave para ser mais legível (ex: 'nome_completo' -> 'Nome Completo')
+                if (!value || value === 'on') return null;
                 const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 return (
                     <div key={key} className={styles.detailItem}>
-                        <strong>{label}:</strong> {value}
+                        <strong>{label}:</strong> {String(value)}
                     </div>
                 );
             })}
@@ -32,28 +26,26 @@ const FormDetails = ({ formData }) => {
     );
 };
 
-
 export default function CarrinhoPage() {
   const { cartItems, removeFromCart, itemCount } = useCart();
-  const [cep, setCep] = useState('');
-  const [shippingCost, setShippingCost] = useState(0);
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
-  const total = subtotal + shippingCost;
+  // LÓGICA CHAVE: Verifica se algum item requer envio físico
+  const isShippingRequired = cartItems.some(item => item.formData?.formato === 'Certidão Impressa');
+
+  const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
+  const total = subtotal; // O custo de entrega será adicionado no futuro, se necessário
 
   return (
     <>
       <Header />
       <main className={styles.pageWrapper}>
         <div className={styles.container}>
-          <h1 className={styles.title}>Carrinho</h1>
+          <h1 className={styles.title}>Carrinho de Compras</h1>
           
           {itemCount === 0 ? (
             <div className={styles.emptyCart}>
               <p>Seu carrinho está vazio.</p>
-              <Link href="/certidoes" className={styles.returnButton}>
-                Ver todas as certidões
-              </Link>
+              <Link href="/certidoes" className={styles.returnButton}>Ver todas as certidões</Link>
             </div>
           ) : (
             <div className={styles.cartGrid}>
@@ -69,13 +61,12 @@ export default function CarrinhoPage() {
                     {cartItems.map(item => (
                       <tr key={item.cartId}>
                         <td className={styles.removeCell}>
-                          <button onClick={() => removeFromCart(item.cartId)}>×</button>
+                          <button onClick={() => removeFromCart(item.cartId)} title="Remover item">×</button>
                         </td>
                         <td className={styles.productCell}>
                           <Image src={item.imageSrc} alt={item.name} width={60} height={75} />
                           <div>
                             <span className={styles.productName}>{item.name}</span>
-                             {/* **MUDANÇA: Renderiza os detalhes do formulário aqui** */}
                             <FormDetails formData={item.formData} />
                           </div>
                         </td>
@@ -92,11 +83,16 @@ export default function CarrinhoPage() {
                   <span>Subtotal</span>
                   <span>R$ {subtotal.toFixed(2).replace('.', ',')}</span>
                 </div>
-                <div className={styles.totalsRow}>
-                  <span>Entrega</span>
-                   <span>A calcular</span>
-                </div>
-                <div className={styles.finalTotal}>
+                
+                {/* RENDERIZAÇÃO CONDICIONAL DA ENTREGA */}
+                {isShippingRequired && (
+                    <div className={styles.totalsRow}>
+                        <span>Entrega</span>
+                        <span>A calcular no checkout</span>
+                    </div>
+                )}
+
+                <div className={`${styles.totalsRow} ${styles.finalTotal}`}>
                   <span>Total</span>
                   <span>R$ {total.toFixed(2).replace('.', ',')}</span>
                 </div>

@@ -1,8 +1,11 @@
 /* Salve em: src/app/admin/dashboard/Dashboard.module.css */
+
 .title {
     font-size: 2rem;
     color: #2c3e50;
     margin-bottom: 2rem;
+    border-bottom: 1px solid #dfe6e9;
+    padding-bottom: 1rem;
 }
 
 .filters {
@@ -11,6 +14,7 @@
     gap: 0.75rem;
     margin-bottom: 2rem;
 }
+
 .filters button {
     background-color: #ecf0f1;
     border: 1px solid #bdc3c7;
@@ -21,14 +25,17 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
+
 .filters button:hover {
     background-color: #dce4e6;
     border-color: #95a5a6;
 }
+
 .filters button.active {
     background-color: #3498db;
     color: #fff;
     border-color: #2980b9;
+    font-weight: bold;
 }
 
 .tableContainer {
@@ -42,32 +49,41 @@
     width: 100%;
     border-collapse: collapse;
 }
+
 .pedidosTable th, .pedidosTable td {
     padding: 1rem;
     text-align: left;
     vertical-align: middle;
 }
+
 .pedidosTable thead {
     background-color: #f8f9fa;
 }
+
 .pedidosTable th {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: #34495e;
     text-transform: uppercase;
     border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
 }
+
 .pedidosTable tbody tr {
     border-bottom: 1px solid #ecf0f1;
 }
+
 .pedidosTable tbody tr:last-child {
     border-bottom: none;
 }
+
 .pedidosTable tbody tr:hover {
     background-color: #f8f9fa;
 }
+
 .pedidosTable td {
     color: #555;
+    font-size: 0.95rem;
 }
 
 .actionButton {
@@ -79,71 +95,123 @@
     font-weight: 500;
     font-size: 0.9rem;
     transition: background-color 0.2s;
+    white-space: nowrap;
 }
+
 .actionButton:hover {
     background-color: #3498db;
 }
 
-/* Badges de Status */
+/* --- Badges de Status --- */
 .statusBadge {
-    padding: 0.3rem 0.8rem; border-radius: 1rem; font-size: 0.8rem;
-    font-weight: bold; color: #fff; text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
 }
 .statusPendente { background-color: #f1c40f; color: #212529; }
 .statusProcessando { background-color: #3498db; }
+.statusBusca { background-color: #1abc9c; }
 .statusConcluido { background-color: #2ecc71; }
 .statusCancelado { background-color: #e74c3c; }
 .statusDefault { background-color: #95a5a6; }
 
-.emptyState {
-    text-align: center;
-    padding: 3rem;
-    color: #7f8c8d;
-}
-
-/* Adicione estas classes ao final do seu arquivo Dashboard.module.css */
-
-.statusBusca {
-    background-color: #17a2b8; /* Um tom de azul/ciano para diferenciar */
-}
-
-.loadingState, .errorState {
+/* --- Estados de Carregamento, Erro e Vazio --- */
+.loadingState, .errorState, .emptyState {
     text-align: center;
     padding: 4rem;
     font-size: 1.2rem;
     color: #7f8c8d;
+    background-color: #fff;
+    border-radius: 8px;
 }
-
 .errorState {
     color: #e74c3c;
     background-color: #fff1f0;
     border: 1px solid #e74c3c;
-    border-radius: 8px;
+}
+.emptyState {
+    padding: 3rem;
 }
 
-/* Responsividade para a Tabela */
-@media (max-width: 768px) {
+/* --- Estilos para Paginação --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+.pagination button {
+    background-color: #fff;
+    border: 1px solid #bdc3c7;
+    color: #34495e;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #ecf0f1;
+    border-color: #95a5a6;
+}
+
+.pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination .activePage {
+    background-color: #3498db;
+    color: #fff;
+    border-color: #2980b9;
+    font-weight: bold;
+}
+
+
+/* ======================================= */
+/* =========== RESPONSIVIDADE ============ */
+/* ======================================= */
+
+/* Para tablets e telas menores (até 992px) */
+@media (max-width: 992px) {
     .pedidosTable thead {
-        display: none;
+        display: none; /* Oculta o cabeçalho da tabela */
     }
+
     .pedidosTable, .pedidosTable tbody, .pedidosTable tr, .pedidosTable td {
         display: block;
         width: 100%;
     }
+
     .pedidosTable tr {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         border: 1px solid #e9ecef;
         border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        overflow: hidden;
     }
+
     .pedidosTable td {
-        text-align: right;
+        text-align: right; /* Alinha o conteúdo à direita */
         position: relative;
-        padding-left: 50%; /* Espaço para o label */
+        padding-left: 50%; /* Deixa espaço para o label do dado */
         border-bottom: 1px solid #f1f1f1;
     }
+
     .pedidosTable td:last-child {
         border-bottom: none;
     }
+    
+    /* Cria um label falso usando o atributo data-label */
     .pedidosTable td::before {
         content: attr(data-label);
         position: absolute;
@@ -152,5 +220,7 @@
         text-align: left;
         font-weight: bold;
         color: #34495e;
+        text-transform: uppercase;
+        font-size: 0.8rem;
     }
 }

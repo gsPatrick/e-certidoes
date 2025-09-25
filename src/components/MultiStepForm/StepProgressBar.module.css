@@ -1,0 +1,88 @@
+/* Salve em: src/components/MultiStepForm/StepProgressBar.module.css */
+
+.progressBarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+  position: relative;
+  width: 90%; /* Evita que os círculos toquem as bordas do card */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Linha de conexão de fundo (cinza) */
+.progressBarContainer::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #e9ecef;
+  z-index: 1;
+  width: 100%;
+}
+
+.stepItem {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px; /* Aumenta o espaço para o texto não quebrar */
+}
+
+.stepCircle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid #adb5bd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #adb5bd;
+  transition: all 0.4s ease;
+}
+
+.stepCircle.active {
+  background-color: #294B29;
+  color: #fff;
+  border-color: #294B29;
+  transform: scale(1.1);
+}
+
+.stepCircle.completed {
+  background-color: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+
+.stepLabel {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+  font-weight: 500;
+  transition: color 0.4s ease;
+}
+
+.stepLabel.labelActive {
+  color: #294B29;
+  font-weight: 600;
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+  .stepLabel {
+    font-size: 0.75rem;
+  }
+  .progressBarContainer {
+    width: 100%;
+  }
+  .stepItem {
+    width: 80px;
+  }
+}

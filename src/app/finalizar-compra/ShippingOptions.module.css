@@ -1,0 +1,94 @@
+/* Salve em: src/app/finalizar-compra/ShippingOptions.module.css */
+
+.shippingOptionsContainer {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.shippingLabel {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #fff;
+}
+
+.shippingLabel:hover {
+  border-color: #adb5bd;
+}
+
+.shippingLabel.selected {
+  border-color: #294B29;
+  box-shadow: 0 0 0 2px rgba(41, 75, 41, 0.2);
+  border-width: 2px;
+  padding: calc(1rem - 1px);
+}
+
+.shippingInput {
+  display: none; /* Oculta o radio button original */
+}
+
+.serviceInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.radioCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ced4da;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+
+.radioCircle::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #294B29;
+  transform: scale(0);
+  transition: transform 0.2s;
+}
+
+.shippingInput:checked + .shippingLabel .radioCircle {
+  border-color: #294B29;
+}
+
+.shippingInput:checked + .shippingLabel .radioCircle::after {
+  transform: scale(1);
+}
+
+.serviceName {
+  font-weight: 500;
+  color: #343a40;
+}
+
+.deliveryTime {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.servicePrice {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #294B29;
+}
+
+.loading, .error {
+    font-size: 0.9rem;
+    color: #495057;
+    padding: 1rem 0;
+}
+
+.error {
+    color: #dc3545;
+}

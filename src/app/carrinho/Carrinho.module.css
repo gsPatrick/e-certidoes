@@ -1,9 +1,9 @@
-/* Salve como: src/app/carrinho/Carrinho.module.css */
+/* Salve em: src/app/carrinho/Carrinho.module.css */
 
 .pageWrapper {
   padding: 4rem 1rem;
   background-color: #f8f9fa;
-  min-height: 70vh; /* Garante uma altura mínima para a página */
+  min-height: 70vh;
 }
 
 .container {
@@ -23,7 +23,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
-  align-items: start; /* Alinha os itens no topo */
+  align-items: start;
 }
 
 .cartItems,
@@ -52,7 +52,7 @@
 .itemsTable td {
   padding: 1.5rem 0;
   border-bottom: 1px solid #e9ecef;
-  vertical-align: top; /* Alinha o conteúdo no topo da célula */
+  vertical-align: top;
 }
 
 .removeCell button {
@@ -63,26 +63,24 @@
   border-radius: 50%;
   width: 28px;
   height: 28px;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
   transition: all 0.2s;
 }
 
 .removeCell button:hover {
-  background-color: #f8f9fa;
+  background-color: #f8d7da;
   color: #dc3545;
-  border-color: #dc3545;
+  border-color: #f5c6cb;
 }
 
 .productCell {
   display: flex;
-  align-items: flex-start; /* Alinha imagem e texto no topo */
+  align-items: flex-start;
   gap: 1rem;
 }
 
-.productCell img { /* Estilo para a imagem */
+.productCell img {
   border: 1px solid #e9ecef;
   border-radius: 4px;
   object-fit: cover;
@@ -99,15 +97,15 @@
   color: #294B29;
   font-size: 1.1rem;
   text-align: right;
-  white-space: nowrap; /* Impede que o preço quebre a linha */
+  white-space: nowrap;
 }
 
-/* Estilos para os detalhes do formulário no carrinho */
+/* Detalhes do Formulário no Carrinho */
 .formDetails {
   font-size: 0.85rem;
   color: #6c757d;
   margin-top: 0.75rem;
-  padding-left: 0.5rem;
+  padding-left: 0.75rem;
   border-left: 2px solid #e9ecef;
 }
 
@@ -135,7 +133,6 @@
   justify-content: space-between;
   padding: 1rem 0;
   border-bottom: 1px solid #e9ecef;
-  font-size: 1rem;
 }
 
 .finalTotal {
@@ -145,13 +142,12 @@
 }
 
 .checkoutButton {
-  display: block; /* Para o Link se comportar como um botão */
+  display: block;
   width: 100%;
   padding: 1rem;
   margin-top: 1.5rem;
   background-color: #294B29;
   color: #fff;
-  border: none;
   border-radius: 6px;
   font-size: 1.2rem;
   font-weight: bold;
@@ -165,37 +161,28 @@
   background-color: #3a6b3a;
 }
 
-/* Estilos para Carrinho Vazio */
+/* Carrinho Vazio */
 .emptyCart {
   text-align: center;
   padding: 4rem 2rem;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .emptyCart p {
   font-size: 1.2rem;
-  color: #495057;
-  margin: 0;
+  margin-bottom: 1.5rem;
 }
 
 .returnButton {
   display: inline-block;
-  margin-top: 1.5rem;
   padding: 0.8rem 2rem;
   background-color: #294B29;
   color: #fff;
   text-decoration: none;
   border-radius: 6px;
   font-weight: bold;
-  transition: background-color 0.2s;
 }
-
-.returnButton:hover {
-  background-color: #3a6b3a;
-}
-
 
 /* Responsividade */
 @media (max-width: 992px) {
@@ -205,14 +192,8 @@
 }
 
 @media (max-width: 576px) {
-  .itemsTable th, .itemsTable td {
-    font-size: 0.9rem;
-  }
   .productCell {
     flex-direction: column;
     align-items: flex-start;
-  }
-  .priceCell {
-    font-size: 1rem;
   }
 }
