@@ -1,0 +1,57 @@
+/* Salve em: src/components/MultiStepForm/steps/StepServicosAdicionais.module.css */
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+.checkboxGroupContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkboxOption {
+    display: flex;
+    align-items: flex-start; /* Alinha no topo */
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+/* Estilo quando o checkbox dentro do label está marcado */
+.checkboxOption:has(input:checked) {
+    border-color: #294B29;
+    background-color: #f4f8f5;
+}
+
+.checkboxInput {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+    accent-color: #294B29;
+}
+
+.checkboxDetails {
+    flex: 1;
+}
+
+.checkboxLabel {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.checkboxDescription {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.5;
+}

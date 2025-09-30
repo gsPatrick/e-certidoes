@@ -3,7 +3,6 @@
 .pageWrapper {
   padding: 4rem 1rem;
   background-color: #f8f9fa;
-  min-height: 80vh;
 }
 
 .container {
@@ -12,228 +11,85 @@
 }
 
 .title {
-  text-align: center;
   font-size: 2.5rem;
   color: #294B29;
   margin-bottom: 2.5rem;
   font-weight: 700;
+  text-align: left;
 }
 
 .checkoutGrid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1fr 380px;
   gap: 2.5rem;
   align-items: flex-start;
 }
 
-/* --- Coluna de Detalhes da Cobrança --- */
-.billingDetails h2 {
-  font-size: 1.5rem;
-  color: #3c4f41;
-  margin-bottom: 1.5rem;
-  margin-top: 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.shippingTitle {
-  margin-top: 2.5rem !important; /* !important para garantir sobreposição */
-}
-
-.formRow {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.25rem;
-  flex: 1;
-}
-
-.formGroup label {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: #3c4f41;
-}
-
-.formGroup input,
-.formGroup textarea {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.formGroup input:focus,
-.formGroup textarea:focus {
-    outline: none;
-    border-color: #294B29;
-    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
-}
-
-.cepError {
-  color: #dc3545;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-/* --- Coluna do Resumo do Pedido --- */
-.orderSummary {
-  position: sticky;
-  top: 120px; /* Ajuste para header sticky */
-}
-
-.orderSummary h2 {
-  font-size: 1.5rem;
-  color: #3c4f41;
-  margin: 0 0 1.5rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.summaryBox,
-.paymentBox {
-  background: #fff;
-  padding: 2rem;
+/* Coluna Principal (Formulário) */
+.billingDetails {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
+  padding: 2.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
 }
 
+.billingDetails h2 {
+  font-size: 1.75rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.formRow { display: flex; gap: 1.5rem; }
+.formGroup { display: flex; flex-direction: column; margin-bottom: 1.25rem; flex: 1; }
+.formGroup label { margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: #555; }
+.formGroup input, .formGroup textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: #f9f9f9; }
+.formGroup input:focus, .formGroup textarea:focus { outline: none; border-color: #294B29; box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1); }
+.cepError { color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem; }
+
+/* Bloco de Pagamento (dentro da coluna principal) */
 .paymentBox {
-  margin-top: 2rem;
-}
-
-.summaryRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 0;
-  font-size: 0.95rem;
-  color: #495057;
-}
-
-.summaryRow:not(:last-child) {
-  border-bottom: 1px solid #e9ecef;
-}
-
-.summaryRow span:last-child {
-    font-weight: 600;
-}
-
-.summarySubtotal {
+  margin-top: 2.5rem; /* Espaçamento em relação ao último campo do formulário */
   padding-top: 1.5rem;
-  margin-top: 1.5rem;
-  border-top: 2px solid #dee2e6;
+  border-top: 1px solid #eee;
 }
 
-.summaryTotal {
-  font-size: 1.25rem;
-  font-weight: bold;
+.securityInfo {
+  display: flex; align-items: flex-start; gap: 1rem;
+  background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px;
+  padding: 1rem; margin-bottom: 1.5rem;
 }
-
-.summaryTotal span {
-    color: #294B29;
-}
+.securityInfo svg { color: #28a745; flex-shrink: 0; margin-top: 4px; }
+.securityInfo h4 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #343a40; }
+.securityInfo p { font-size: 0.85rem; line-height: 1.5; margin: 0; color: #495057; }
 
 .checkoutButton {
-  width: 100%;
-  padding: 1rem;
-  background-color: #294B29;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  width: 100%; padding: 1rem; background-color: #294B29; color: #fff;
+  border: none; border-radius: 6px; font-size: 1.2rem; font-weight: 700;
+  cursor: pointer; transition: background-color 0.2s;
 }
-
-.checkoutButton:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
+.checkoutButton:disabled { background-color: #6c757d; cursor: not-allowed; }
 
 .errorMessage {
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  padding: 0.75rem 1.25rem;
-  border-radius: 6px;
-  margin-top: 1.5rem;
-  text-align: center;
-  font-size: 0.9rem;
+  color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb;
+  padding: 0.75rem; border-radius: 6px; margin-top: 1rem;
+  text-align: center; font-size: 0.9rem;
 }
 
-/* --- NOVOS ESTILOS PARA A SEÇÃO DE SEGURANÇA --- */
-.securityInfo {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
+/* Sidebar (apenas o resumo) */
+.sidebar {
+  position: sticky;
+  top: 100px;
 }
 
-.securityInfo svg {
-  color: #28a745; /* Cor verde para transmitir segurança */
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.securityInfo h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1rem;
-  color: #343a40;
-}
-
-.securityInfo p {
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin: 0;
-  color: #495057;
-}
-
-/* Ajuste no botão de checkout */
-.checkoutButton {
-  margin-top: 0; /* Remove a margem para ficar mais próximo da caixa de segurança */
-}
-
-
-/* --- RESPONSIVIDADE --- */
+/* Responsividade */
 @media (max-width: 992px) {
-  .checkoutGrid {
-    grid-template-columns: 1fr;
-  }
-  .orderSummary {
-    position: static;
-    margin-top: 2.5rem;
-  }
+  .checkoutGrid { grid-template-columns: 1fr; }
+  .sidebar { position: static; margin-top: 2.5rem; }
 }
-
 @media (max-width: 768px) {
-  .formRow {
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .formRow .formGroup:not(:last-child) {
-    margin-bottom: 1.25rem;
-  }
-
-  .pageWrapper {
-    padding: 2rem 1rem;
-  }
-
-  .title {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
+  .formRow { flex-direction: column; gap: 0; }
+  .billingDetails { padding: 1.5rem; }
+  .title { font-size: 2rem; }
 }

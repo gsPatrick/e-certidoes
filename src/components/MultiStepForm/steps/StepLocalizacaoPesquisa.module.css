@@ -1,0 +1,82 @@
+/* Salve em: src/components/MultiStepForm/steps/StepLocalizacaoPesquisa.module.css */
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+}
+
+.formGroup {
+    margin-bottom: 1.75rem;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.formGroup select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fdfdfd;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.formGroup select:focus {
+    outline: none;
+    border-color: #294B29;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.formGroup select:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    color: #6c757d;
+}
+
+.subSectionTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #495057;
+    margin-top: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.subSectionDescription {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+/* Checkbox "Todos os Cartórios" */
+.checkboxAllLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #343a40;
+}
+
+.checkboxAllInput {
+    width: 18px;
+    height: 18px;
+    accent-color: #294B29;
+}

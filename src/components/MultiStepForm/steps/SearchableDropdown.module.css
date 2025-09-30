@@ -1,0 +1,59 @@
+/* Salve em: src/components/MultiStepForm/steps/SearchableDropdown.module.css */
+
+.dropdownContainer {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #294B29;
+  box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.input:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.optionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.optionItem {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.optionItem:hover {
+  background-color: #f4f8f5;
+}
+
+.noOptions {
+  padding: 0.75rem 1rem;
+  color: #6c757d;
+  font-style: italic;
+}

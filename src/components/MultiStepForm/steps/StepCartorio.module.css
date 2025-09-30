@@ -1,0 +1,141 @@
+/* Salve em: src/components/MultiStepForm/steps/StepCartorio.module.css */
+
+/* --- Título e Descrição da Etapa --- */
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.stepDescription {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 2.5rem;
+}
+
+/* --- Grupos de Formulário e Campos --- */
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilo para inputs de texto (usado no campo manual e na Visualização de Matrícula) */
+.formGroup input[type="text"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #fdfdfd;
+}
+
+/* Estilo para dropdowns (select) */
+.formGroup select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #fdfdfd;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+.formGroup select:focus,
+.formGroup input[type="text"]:focus {
+    outline: none;
+    border-color: #294B29;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.formGroup select:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    color: #6c757d;
+}
+
+
+/* --- Seção de Fallback (Não localizou o cartório) --- */
+.fallbackContainer {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.fallbackTitle {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #343a40;
+}
+
+.fallbackActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fallbackButton {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #294B29;
+  background-color: transparent;
+  color: #294B29;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.fallbackButton:hover {
+  background-color: #eaf0ec;
+  color: #1c331c;
+}
+
+/* --- Seção do Input Manual (condicional) --- */
+.manualInputWrapper {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #ced4da;
+  text-align: left;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.manualInputWarning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffeeba;
+    color: #856404;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}

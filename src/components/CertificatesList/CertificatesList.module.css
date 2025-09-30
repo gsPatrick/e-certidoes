@@ -1,105 +1,30 @@
+/* Salve em: src/components/CertificatesList/CertificatesList.module.css */
+
 .section {
-  padding: 4rem 0;
-  background-color: #fff; /* O fundo é branco, a partir da onda da Hero section */
+  padding: 4rem 1rem;
+  background-color: #f8f9fa;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
 }
 
 .title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #3c4f41;
-  margin-bottom: 2rem;
-}
-
-.filterHeader {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.filterButton {
-  background-color: #f4f8f5;
-  border: 1px solid #eaf0ec;
-  color: #3c4f41;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.filterButton:hover {
-  background-color: #e0e8e2;
-  border-color: #d1dcd4;
-}
-
-.activeFilter {
-  background-color: #eaf0ec;
-  color: #294B29;
-  font-weight: bold;
-  border: 1px solid #d1dcd4;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.listContainer {
-  max-width: 900px;
-  margin: 0 auto; /* Centraliza a lista */
-}
-
-.listItem {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1rem;
-  text-decoration: none;
-  color: #343a40;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease-in-out;
-}
-
-.listItem:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: #ced4da;
-}
-
-.iconWrapper {
   color: #6c757d;
-  margin-right: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.itemName {
-  flex-grow: 1;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.chevron {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #adb5bd;
-  margin-left: 1rem;
-}
-
-/* ... (estilos existentes) ... */
-
-/* Estilos para a Barra de Pesquisa */
 .searchContainer {
-  max-width: 900px;
-  margin: 0 auto 2.5rem auto; /* Espaçamento abaixo da barra */
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .searchInputWrapper {
@@ -116,12 +41,11 @@
 
 .searchInput {
   width: 100%;
-  padding: 1rem 1rem 1rem 3.5rem; /* Espaço à esquerda para o ícone */
-  font-size: 1.1rem;
-  border: 1px solid #ced4da;
+  padding: 1rem 1rem 1rem 3.5rem;
+  font-size: 1rem;
+  border: 1px solid #dee2e6;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .searchInput:focus {
@@ -130,20 +54,97 @@
   box-shadow: 0 0 0 4px rgba(41, 75, 41, 0.1);
 }
 
-/* Estilos para a mensagem de Nenhum Resultado */
-.noResults {
-  text-align: center;
-  padding: 3rem 1rem;
-  font-size: 1.1rem;
-  color: #6c757d;
+/* === NOVO ESTILO PARA O CONTÊINER BRANCO === */
+.contentWrapper {
   background-color: #fff;
   border: 1px solid #e9ecef;
   border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  overflow: hidden; /* Garante que os cantos arredondados funcionem */
 }
 
-.loadMoreContainer {
+/* === NOVO ESTILO PARA A BARRA DE FILTROS === */
+.filterHeader {
+  display: flex; /* A chave para a linha única */
+  border-bottom: 1px solid #e9ecef;
+}
+
+.filterButton {
+  flex: 1; /* Faz cada botão ocupar o mesmo espaço */
+  background: none;
+  border: none;
+  border-right: 1px solid #e9ecef; /* Linha divisória */
+  padding: 1rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #495057;
   text-align: center;
+  transition: all 0.2s ease;
+}
+
+.filterButton:last-child {
+  border-right: none; /* Remove a borda do último item */
+}
+
+.filterButton:hover {
+  background-color: #f8f9fa;
+}
+
+.activeFilter {
+  background-color: #f8f9fa;
+  color: #294B29;
+  font-weight: bold;
+}
+
+/* === AJUSTES NA LISTA PARA SE ENCAIXAR NO NOVO LAYOUT === */
+.listContainer {
+  /* Não precisa mais de fundo ou borda própria */
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid #f1f3f5;
+  text-decoration: none;
+  color: #343a40;
+  transition: background-color 0.2s ease;
+}
+
+.listItem:last-child {
+  border-bottom: none;
+}
+
+.listItem:hover {
+  background-color: #f8f9fa;
+}
+
+.iconWrapper {
+  color: #6c757d;
+  margin-right: 1.5rem;
+}
+
+.itemName {
+  flex-grow: 1;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.chevron {
+  font-size: 1.5rem;
+  color: #adb5bd;
+}
+
+.noResults, .loadMoreContainer {
   margin-top: 2.5rem;
+  text-align: center;
+}
+
+.noResults {
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #6c757d;
 }
 
 .loadMoreButton {
@@ -155,11 +156,23 @@
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
 }
 
 .loadMoreButton:hover {
   background-color: #3a6b3a;
-  transform: translateY(-2px);
+}
+
+/* === RESPONSIVIDADE PARA OS FILTROS === */
+@media (max-width: 768px) {
+  .filterHeader {
+    overflow-x: auto; /* Permite rolar horizontalmente */
+    justify-content: flex-start; /* Alinha os itens à esquerda */
+  }
+
+  .filterButton {
+    flex: 0 0 auto; /* Impede que os botões encolham */
+    white-space: nowrap; /* Impede que o texto quebre a linha */
+    padding: 1rem 1.25rem; /* Padding fixo para cada botão */
+  }
 }

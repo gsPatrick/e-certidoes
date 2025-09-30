@@ -1,0 +1,108 @@
+/* Salve em: src/components/MultiStepForm/SummarySidebar.module.css */
+
+.summarySidebar {
+    position: sticky;
+    top: 100px; /* Ajuste conforme a altura do seu header */
+    width: 100%;
+}
+
+.summaryBox {
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    overflow: hidden; /* Garante que o header arredondado funcione */
+}
+
+/* Cabeçalho escuro */
+.summaryHeader {
+    padding: 1.5rem;
+    background-color: #3c4f41; /* Cor escura do sistema */
+    color: #fff;
+}
+
+.stepIndicator {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    opacity: 0.9;
+}
+
+.productTitle {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.priceDisplay {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.75rem 0;
+}
+
+.priceDetails {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Corpo com os resumos */
+.summaryBody {
+    padding: 1rem 1.5rem;
+}
+
+.summaryStep {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed #ced4da;
+}
+.summaryStep:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.summaryStepHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.stepTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.completedIcon {
+    color: #28a745; /* Verde de sucesso */
+}
+
+.editLink {
+    background: none;
+    border: none;
+    color: #294B29;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.summaryContent {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.summaryContent p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.summaryContent small {
+    display: block;
+    color: #6c757d;
+}

@@ -4,11 +4,9 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   position: relative;
-  width: 90%; /* Evita que os círculos toquem as bordas do card */
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 /* Linha de conexão de fundo (cinza) */
@@ -16,21 +14,31 @@
   content: '';
   position: absolute;
   top: 15px;
-  left: 0;
-  right: 0;
-  height: 2px;
+  left: 15px;
+  right: 15px;
+  height: 4px;
   background-color: #e9ecef;
   z-index: 1;
-  width: 100%;
+}
+
+/* Linha de progresso (verde) */
+.progressLine {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  height: 4px;
+  background-color: #28a745;
+  z-index: 2;
+  transition: width 0.4s ease-in-out;
 }
 
 .stepItem {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 120px; /* Aumenta o espaço para o texto não quebrar */
+  width: 120px;
 }
 
 .stepCircle {
@@ -72,17 +80,4 @@
 .stepLabel.labelActive {
   color: #294B29;
   font-weight: 600;
-}
-
-/* Responsividade */
-@media (max-width: 576px) {
-  .stepLabel {
-    font-size: 0.75rem;
-  }
-  .progressBarContainer {
-    width: 100%;
-  }
-  .stepItem {
-    width: 80px;
-  }
 }

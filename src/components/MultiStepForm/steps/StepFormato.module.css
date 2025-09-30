@@ -1,0 +1,66 @@
+/* Salve em: src/components/MultiStepForm/steps/StepFormato.module.css */
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+.radioGroupContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Aumenta o espaço entre as opções */
+}
+
+.radioOption {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+    padding: 1.25rem; /* Aumenta o padding interno */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radioOption:has(input:checked) {
+    border-color: #294B29;
+    background-color: #f4f8f5;
+    border-width: 2px;
+    padding: calc(1.25rem - 1px);
+}
+
+.radioOption input[type="radio"] {
+    margin-right: 1rem;
+    width: 22px; /* Ligeiramente maior */
+    height: 22px;
+    flex-shrink: 0;
+    accent-color: #294B29;
+}
+
+.radioDetails {
+    flex-grow: 1;
+}
+
+.radioDetails strong {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 1.05rem;
+}
+
+.radioDetails small {
+    color: #777;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+.priceAdd {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #495057;
+    margin-left: 1rem;
+    white-space: nowrap; /* Impede que o preço quebre a linha */
+}

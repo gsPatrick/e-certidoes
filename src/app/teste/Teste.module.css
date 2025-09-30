@@ -1,0 +1,28 @@
+/* Adicione estas classes ao final do arquivo src/app/teste/Teste.module.css */
+
+.testLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 2 partes para o conteúdo, 1 para a sidebar */
+  gap: 2.5rem;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mainContent {
+  /* O container dos formulários já tem padding, então esta div é só para o grid */
+}
+
+.sidebarContent {
+  /* A sidebar já tem seu próprio posicionamento sticky */
+}
+
+/* Responsividade para o layout de teste */
+@media (max-width: 992px) {
+  .testLayout {
+    grid-template-columns: 1fr; /* Coluna única em telas menores */
+  }
+  .sidebarContent {
+    margin-top: 2rem;
+  }
+}

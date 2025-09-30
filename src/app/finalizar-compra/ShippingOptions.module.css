@@ -1,94 +1,199 @@
-/* Salve em: src/app/finalizar-compra/ShippingOptions.module.css */
+/* Salve em: src/app/finalizar-compra/Checkout.module.css */
 
-.shippingOptionsContainer {
-  margin-top: 1rem;
+.pageWrapper {
+  padding: 4rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.checkoutGrid {
+  display: grid;
+  grid-template-columns: 1fr 400px; /* Coluna da sidebar com largura fixa */
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.mainContent {
+  /* Div para agrupar os formulários da esquerda */
+}
+
+.detailsBox, .paymentBox {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.detailsBox h2 {
+  font-size: 1.5rem;
+  color: #3c4f41;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.formRow {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #3c4f41;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* --- Seção de Pagamento --- */
+.paymentBox {
+  margin-top: 2.5rem;
+}
+
+.paymentTabs {
+  display: flex;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.paymentTab {
+  flex: 1;
+  padding: 0.75rem;
+  text-align: center;
+  background-color: #f8f9fa;
+  border: none;
+  border-right: 1px solid #ced4da;
+  cursor: pointer;
+}
+.paymentTab:last-child { border-right: none; }
+
+.activeTab {
+  background-color: #294B29;
+  color: #fff;
+  font-weight: bold;
+}
+
+.creditCardForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.creditCardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* --- Sidebar de Resumo --- */
+.orderSummary {
+  position: sticky;
+  top: 100px;
+}
+
+.summaryCard {
+  background-color: #f0f2f5; /* Fundo cinza claro como na referência */
+  border-radius: 8px;
+  padding: 1.5rem;
   margin-bottom: 1rem;
 }
 
-.shippingLabel {
+.summaryCardHeader {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  margin-bottom: 0.75rem;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #d9dde2;
+}
+
+.summaryCardTitle {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  background-color: #fff;
-}
-
-.shippingLabel:hover {
-  border-color: #adb5bd;
-}
-
-.shippingLabel.selected {
-  border-color: #294B29;
-  box-shadow: 0 0 0 2px rgba(41, 75, 41, 0.2);
-  border-width: 2px;
-  padding: calc(1rem - 1px);
-}
-
-.shippingInput {
-  display: none; /* Oculta o radio button original */
-}
-
-.serviceInfo {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.radioCircle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #ced4da;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: border-color 0.2s;
-}
-
-.radioCircle::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #294B29;
-  transform: scale(0);
-  transition: transform 0.2s;
-}
-
-.shippingInput:checked + .shippingLabel .radioCircle {
-  border-color: #294B29;
-}
-
-.shippingInput:checked + .shippingLabel .radioCircle::after {
-  transform: scale(1);
-}
-
-.serviceName {
-  font-weight: 500;
-  color: #343a40;
-}
-
-.deliveryTime {
-  font-size: 0.85rem;
   color: #6c757d;
 }
 
-.servicePrice {
+.summaryCardBody {
+  padding-top: 1rem;
+}
+.summaryDetail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #495057;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+.summaryDetail svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.summaryActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #d9dde2;
+}
+.summaryActions button {
+  background: none; border: none; text-decoration: underline; cursor: pointer; color: #007bff;
+}
+.summaryPrice { font-weight: bold; font-size: 1.1rem; }
+
+.summaryTotalBox {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+.summaryTotal {
+  font-size: 1.25rem;
   font-weight: bold;
-  font-size: 1.1rem;
-  color: #294B29;
+  color: #212529;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
 }
 
-.loading, .error {
-    font-size: 0.9rem;
-    color: #495057;
-    padding: 1rem 0;
+/* Responsividade */
+@media (max-width: 992px) {
+  .checkoutGrid { grid-template-columns: 1fr; }
+  .orderSummary { position: static; margin-top: 2.5rem; }
 }
-
-.error {
-    color: #dc3545;
-}
+@media (max-width: 768px) { .formRow { flex-direction: column; gap: 0; } }
