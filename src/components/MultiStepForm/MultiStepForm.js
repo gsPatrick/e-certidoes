@@ -1,38 +1,49 @@
-// Salve em: src/components/Multi-StepForm/MultiStepForm.js
+// Salve em: src/components/MultiStepForm/MultiStepForm.js
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useCart } from '@/context/CartContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './MultiStepForm.module.css';
 
-// Importe todos os componentes de etapa que criamos
+// Importe todos os componentes de etapa
 import StepCartorio from './steps/StepCartorio';
 import StepTipoCertidao from './steps/StepTipoCertidao';
 import StepFormato from './steps/StepFormato';
 import StepServicosAdicionais from './steps/StepServicosAdicionais';
 import StepRequerente from './steps/StepRequerente';
-import StepLocalizacaoPesquisa from './steps/StepLocalizacaoPesquisa';
-import StepDadosPesquisa from './steps/StepDadosPesquisa';
 import StepLocalizacaoMatricula from './steps/StepLocalizacaoMatricula';
 import StepEndereco from './steps/StepEndereco';
 import StepDadosPenhorSafra from './steps/StepDadosPenhorSafra';
+import StepPesquisaAvancada from './steps/StepPesquisaAvancada';
 
 // Importe a Barra de Progresso e a Sidebar
 import StepProgressBar from './StepProgressBar';
 import SummarySidebar from './SummarySidebar';
 
+// Chave para salvar os dados no sessionStorage
+const FORM_DATA_KEY = 'multiStepFormData';
 
 export default function MultiStepForm({ productData }) {
     const { addToCart } = useCart();
     const router = useRouter();
-    
-    const [currentStep, setCurrentStep] = useState(0);
-    const [formData, setFormData] = useState({
-        tipo_certidao: 'Matrícula',
-        tipo_pesquisa: 'pessoa',
-        tipo_pessoa: 'fisica',
+    const searchParams = useSearchParams();
+
+    const [formData, setFormData] = useState(() => {
+        if (typeof window === 'undefined') return {};
+        const savedData = window.sessionStorage.getItem(FORM_DATA_KEY);
+        return savedData ? JSON.parse(savedData) : {
+            tipo_certidao: 'Matrícula',
+            tipo_pesquisa: 'pessoa',
+            tipo_pessoa: 'fisica',
+        };
     });
+
+    const [currentStep, setCurrentStep] = useState(() => {
+        const stepFromUrl = parseInt(searchParams.get('step'));
+        return !isNaN(stepFromUrl) ? stepFromUrl - 1 : 0;
+    });
+    
     const [finalPrice, setFinalPrice] = useState(productData.price);
     const [formFlow, setFormFlow] = useState([]);
 
@@ -44,18 +55,19 @@ export default function MultiStepForm({ productData }) {
         const enderecoStep = { id: 'endereco', title: 'Endereço', Component: StepEndereco };
         const servicosAdicionaisStep = { id: 'servicosAdicionais', title: 'Serviços Adicionais', Component: StepServicosAdicionais };
 
-        if (productData.slug === 'pesquisa-de-imoveis') {
+        const slug = productData.slug;
+
+        if (slug === 'pesquisa-de-imoveis' || slug === 'pesquisa-previa-de-imoveis') {
             newFlow = [
-                { id: 'localizacao', title: 'Localização', Component: StepLocalizacaoPesquisa },
-                { id: 'dadosPesquisa', title: 'Dados da Pesquisa', Component: StepDadosPesquisa },
+                { id: 'dadosPesquisaAvancada', title: 'Dados da Pesquisa', Component: StepPesquisaAvancada },
                 requerenteStep
             ];
-        } else if (productData.slug === 'visualizacao-de-matricula') {
+        } else if (slug === 'visualizacao-de-matricula') {
             newFlow = [
                 { id: 'localizacaoMatricula', title: 'Localização', Component: StepLocalizacaoMatricula },
                 requerenteStep
             ];
-        } else if (productData.slug === 'certido-de-penhor-e-safra') {
+        } else if (slug === 'certidao-de-penhor-e-safra') {
             newFlow = [
                 { id: 'cartorio', title: 'Localização', Component: StepCartorio },
                 { id: 'dadosPenhorSafra', title: 'Dados da Certidão', Component: StepDadosPenhorSafra },
@@ -99,6 +111,22 @@ export default function MultiStepForm({ productData }) {
 
     }, [productData.slug, formData.tipo_certidao, formData.formato, currentStep]);
 
+    // Efeito para sincronizar a etapa da URL com o estado interno
+    useEffect(() => {
+        const stepFromUrl = parseInt(searchParams.get('step'));
+        const stepIndex = !isNaN(stepFromUrl) ? stepFromUrl - 1 : 0;
+        if (stepIndex !== currentStep && stepIndex < formFlow.length) {
+            setCurrentStep(stepIndex);
+        }
+    }, [searchParams, currentStep, formFlow.length]);
+
+    // Persiste os dados do formulário no sessionStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.sessionStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData));
+        }
+    }, [formData]);
+
     // Lógica para recalcular o preço final
     useEffect(() => {
         let newPrice = productData.price;
@@ -109,28 +137,38 @@ export default function MultiStepForm({ productData }) {
         setFinalPrice(newPrice);
     }, [formData, productData.price]);
 
-
     const handleChange = useCallback((e) => {
         const { name, value, type, checked } = e.target;
         const finalValue = type === 'checkbox' ? checked : value;
         setFormData(prev => ({ ...prev, [name]: finalValue }));
     }, []);
 
+    const navigateToStep = (stepIndex) => {
+        const newStep = stepIndex + 1;
+        const currentPath = window.location.pathname;
+        router.push(`${currentPath}?step=${newStep}`, { scroll: false });
+        setCurrentStep(stepIndex);
+    };
+
     const handleNextStep = () => {
       const form = document.querySelector('form');
       if (form.checkValidity()) {
-        setCurrentStep(prev => Math.min(prev + 1, formFlow.length - 1));
+        const nextStepIndex = Math.min(currentStep + 1, formFlow.length - 1);
+        navigateToStep(nextStepIndex);
         window.scrollTo(0, 0);
       } else {
         form.reportValidity();
       }
     };
     
-    const handlePrevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
+    const handlePrevStep = () => {
+        const prevStepIndex = Math.max(currentStep - 1, 0);
+        navigateToStep(prevStepIndex);
+    };
     
     const goToStep = (stepIndex) => {
         if (stepIndex < currentStep) {
-            setCurrentStep(stepIndex);
+            navigateToStep(stepIndex);
         }
     };
     
@@ -139,6 +177,7 @@ export default function MultiStepForm({ productData }) {
         const form = document.querySelector('form');
         if (form.checkValidity()) {
             addToCart({ ...productData, price: finalPrice, formData });
+            window.sessionStorage.removeItem(FORM_DATA_KEY);
             router.push('/finalizar-compra');
         } else {
             form.reportValidity();
@@ -173,7 +212,6 @@ export default function MultiStepForm({ productData }) {
                     </form>
                 </div>
             </div>
-
             <div className={styles.sidebarContent}>
                 <SummarySidebar 
                     productData={productData}

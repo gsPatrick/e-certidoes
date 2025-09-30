@@ -1,0 +1,11 @@
+/* Salve em: src/components/MultiStepForm/steps/StepPesquisaAvancada.module.css */
+.stepTitle { font-size: 1.75rem; font-weight: 700; color: #333; margin-top: 0; margin-bottom: 2rem; }
+.formGroup { margin-bottom: 1.5rem; }
+.formGroup label { display: block; font-weight: 500; color: #555; margin-bottom: 0.5rem; }
+.formGroup input, .formGroup select { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+.cpfGroup { display: flex; gap: 1rem; align-items: flex-end; }
+.cpfGroup .formGroup { flex-grow: 1; }
+.loadButton { padding: 0.8rem 1.5rem; border-radius: 4px; border: 1px solid #294B29; background-color: transparent; color: #294B29; font-weight: 500; cursor: pointer; height: fit-content; }
+.advertencia { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; font-size: 0.8rem; color: #6c757d; line-height: 1.5; margin-top: 1rem; }
+.finalConfirm { display: flex; align-items: center; gap: 0.75rem; margin-top: 2rem; }
+.finalConfirm input { width: 18px; height: 18px; }

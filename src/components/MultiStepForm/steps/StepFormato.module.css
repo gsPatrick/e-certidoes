@@ -64,3 +64,35 @@
     margin-left: 1rem;
     white-space: nowrap; /* Impede que o preço quebre a linha */
 }
+
+.radioOption {
+    position: relative; /* Necessário para posicionar a tag */
+    display: flex;
+    align-items: center;
+    padding: 1.25rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radioOption:has(input:checked) {
+    border-color: #294B29;
+    background-color: #f4f8f5;
+    border-width: 2px;
+    padding: calc(1.25rem - 1px);
+}
+
+/* === NOVA CLASSE PARA A TAG "MAIS PEDIDA" === */
+.mostPopularTag {
+    position: absolute;
+    top: -10px; /* Posiciona a tag um pouco acima da borda */
+    right: 15px;
+    background-color: #ffc107; /* Cor de destaque (amarelo) */
+    color: #343a40;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

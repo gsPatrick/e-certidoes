@@ -1,22 +1,8 @@
 /* Salve em: src/app/finalizar-compra/Checkout.module.css */
 
-.pageWrapper {
-  padding: 4rem 1rem;
-  background-color: #f8f9fa;
-}
-
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.title {
-  font-size: 2.5rem;
-  color: #294B29;
-  margin-bottom: 2.5rem;
-  font-weight: 700;
-  text-align: left;
-}
+.pageWrapper { padding: 4rem 1rem; background-color: #f8f9fa; }
+.container { max-width: 1100px; margin: 0 auto; }
+.title { font-size: 2.5rem; color: #294B29; margin-bottom: 2.5rem; font-weight: 700; text-align: left; }
 
 .checkoutGrid {
   display: grid;
@@ -25,71 +11,49 @@
   align-items: flex-start;
 }
 
-/* Coluna Principal (Formulário) */
 .billingDetails {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 2.5rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+  padding: 2.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
 }
 
-.billingDetails h2 {
-  font-size: 1.75rem;
-  color: #333;
-  margin-top: 0;
-  margin-bottom: 2rem;
-}
-
+.billingDetails h2 { font-size: 1.75rem; color: #333; margin-top: 0; margin-bottom: 2rem; }
 .formRow { display: flex; gap: 1.5rem; }
 .formGroup { display: flex; flex-direction: column; margin-bottom: 1.25rem; flex: 1; }
 .formGroup label { margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: #555; }
-.formGroup input, .formGroup textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: #f9f9f9; }
-.formGroup input:focus, .formGroup textarea:focus { outline: none; border-color: #294B29; box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1); }
-.cepError { color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem; }
+.formGroup input, .formGroup textarea, .formGroup select { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: #f9f9f9; }
+.formGroup input:focus, .formGroup textarea:focus, .formGroup select:focus { outline: none; border-color: #294B29; box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1); }
 
-/* Bloco de Pagamento (dentro da coluna principal) */
-.paymentBox {
-  margin-top: 2.5rem; /* Espaçamento em relação ao último campo do formulário */
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
+/* --- SEÇÃO DE PAGAMENTO --- */
+.paymentSection { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #eee; }
+.paymentSection h2 { font-size: 1.75rem; color: #333; margin-bottom: 2rem; }
+
+.paymentTabs { display: flex; border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; border: 1px solid #ced4da; }
+.paymentTab {
+  flex: 1; padding: 0.8rem; display: flex; align-items: center; justify-content: center;
+  gap: 0.5rem; background-color: #f8f9fa; border: none;
+  border-right: 1px solid #ced4da; cursor: pointer; transition: background-color 0.2s;
+}
+.paymentTab:last-child { border-right: none; }
+.activeTab {
+  background-color: #294B29; color: #fff; font-weight: bold;
+  /* Herda os outros estilos do .paymentTab */
 }
 
-.securityInfo {
-  display: flex; align-items: flex-start; gap: 1rem;
-  background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px;
-  padding: 1rem; margin-bottom: 1.5rem;
-}
-.securityInfo svg { color: #28a745; flex-shrink: 0; margin-top: 4px; }
-.securityInfo h4 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #343a40; }
-.securityInfo p { font-size: 0.85rem; line-height: 1.5; margin: 0; color: #495057; }
+.paymentContent p { font-size: 0.9rem; line-height: 1.6; }
+.creditCardForm { display: flex; flex-direction: column; gap: 1rem; }
+.cardRow { display: flex; gap: 1.5rem; }
 
+/* Botão Final */
 .checkoutButton {
   width: 100%; padding: 1rem; background-color: #294B29; color: #fff;
   border: none; border-radius: 6px; font-size: 1.2rem; font-weight: 700;
-  cursor: pointer; transition: background-color 0.2s;
+  cursor: pointer; transition: background-color 0.2s; margin-top: 2rem;
 }
 .checkoutButton:disabled { background-color: #6c757d; cursor: not-allowed; }
 
-.errorMessage {
-  color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb;
-  padding: 0.75rem; border-radius: 6px; margin-top: 1rem;
-  text-align: center; font-size: 0.9rem;
-}
-
-/* Sidebar (apenas o resumo) */
-.sidebar {
-  position: sticky;
-  top: 100px;
-}
+/* Sidebar */
+.sidebar { position: sticky; top: 100px; }
 
 /* Responsividade */
-@media (max-width: 992px) {
-  .checkoutGrid { grid-template-columns: 1fr; }
-  .sidebar { position: static; margin-top: 2.5rem; }
-}
-@media (max-width: 768px) {
-  .formRow { flex-direction: column; gap: 0; }
-  .billingDetails { padding: 1.5rem; }
-  .title { font-size: 2rem; }
-}
+@media (max-width: 992px) { .checkoutGrid { grid-template-columns: 1fr; } .sidebar { position: static; margin-top: 2.5rem; } }
+@media (max-width: 768px) { .formRow, .cardRow { flex-direction: column; gap: 0; } .billingDetails { padding: 1.5rem; } .title { font-size: 2rem; } }

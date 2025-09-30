@@ -130,6 +130,12 @@
     border-radius: 4px;
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
+    cursor: pointer; /* <-- ADICIONAR ESTA LINHA */
+    transition: background-color 0.2s; /* <-- ADICIONAR ESTA LINHA */
+}
+
+.infoBox:hover {
+    background-color: #ffecb3; /* <-- ADICIONAR ESTA CLASSE */
 }
 
 .infoBox svg {

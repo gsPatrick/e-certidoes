@@ -3,76 +3,27 @@
 
 import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
-import api from '@/services/api';
 import styles from './Checkout.module.css';
-import shippingStyles from './ShippingOptions.module.css';
-import { LockIcon } from './SecurityIcons';
+import { CreditCardIcon, PixIcon, BoletoIcon } from './SecurityIcons';
 import SummarySidebar from '@/components/MultiStepForm/SummarySidebar';
 
 export default function CheckoutPage() {
   const { cartItems, itemCount } = useCart();
-  const { user, isAuthenticated } = useAuth();
-  const router = useRouter();
-
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  
-  const [billingDetails, setBillingDetails] = useState({
-    nome: '', sobrenome: '', cpf: '', telefone: '', email: '', 
-    cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', 
-    observacoes: ''
-  });
-  
-  const [shippingOptions, setShippingOptions] = useState([]);
-  const [selectedShipping, setSelectedShipping] = useState(null);
-  
-  const isShippingRequired = cartItems.some(item => 
-    item.formData?.formato === 'Certidão em papel' || 
-    item.formData?.formato === 'Certidão em papel + eletrônica'
-  );
-  
+  const [activePayment, setActivePayment] = useState('card');
+
+  // Lógica de cálculo (simulada)
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-  const total = subtotal + (selectedShipping ? selectedShipping.preco : 0);
-
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      const nomeCompleto = user.nome ? user.nome.split(' ') : [''];
-      const nome = nomeCompleto.shift() || '';
-      const sobrenome = nomeCompleto.join(' ') || '';
-      setBillingDetails(prev => ({ 
-        ...prev, 
-        nome, 
-        sobrenome, 
-        email: user.email || '' 
-      }));
-    }
-  }, [isAuthenticated, user]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setBillingDetails(prev => ({ ...prev, [name]: value }));
-  };
+  const total = subtotal; // Adicionar frete e outras taxas aqui no futuro
 
   const handleFinalizarCompra = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    try {
-      alert("Redirecionando para o Mercado Pago...");
-      // Simulação da lógica de API
-      // const { data: pedidoResult } = await api.post('/pedidos', { ... });
-      // const { data: checkoutResult } = await api.post('/pagamentos/criar-checkout', { pedidoId: pedidoResult.pedido.id });
-      // window.location.href = checkoutResult.checkoutUrl;
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Ocorreu um erro ao finalizar o pedido.';
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
+    alert(`Iniciando pagamento via ${activePayment}...`);
+    // Aqui iria a lógica de API para processar o pagamento
+    setLoading(false);
   };
 
   return (
@@ -83,57 +34,74 @@ export default function CheckoutPage() {
           <h1 className={styles.title}>Finalizar Compra</h1>
           <form onSubmit={handleFinalizarCompra} className={styles.checkoutGrid}>
             
-            {/* ============================================== */}
-            {/* === COLUNA PRINCIPAL (ESQUERDA) - CORRIGIDA === */}
-            {/* ============================================== */}
+            {/* --- COLUNA PRINCIPAL (ESQUERDA) --- */}
             <div className={styles.billingDetails}>
               <h2>Detalhes da Cobrança</h2>
+              {/* Seus formulários de cobrança e entrega aqui... */}
               <div className={styles.formRow}>
-                <div className={styles.formGroup}><label>Nome *</label><input type="text" name="nome" value={billingDetails.nome} onChange={handleInputChange} required /></div>
-                <div className={styles.formGroup}><label>Sobrenome *</label><input type="text" name="sobrenome" value={billingDetails.sobrenome} onChange={handleInputChange} required /></div>
+                  <div className={styles.formGroup}><label>Nome *</label><input type="text" required /></div>
+                  <div className={styles.formGroup}><label>Sobrenome *</label><input type="text" required /></div>
               </div>
-              <div className={styles.formGroup}><label>CPF *</label><input type="text" name="cpf" value={billingDetails.cpf} onChange={handleInputChange} required /></div>
-              <div className={styles.formGroup}><label>Telefone *</label><input type="tel" name="telefone" value={billingDetails.telefone} onChange={handleInputChange} required /></div>
-              <div className={styles.formGroup}><label>E-mail *</label><input type="email" name="email" value={billingDetails.email} onChange={handleInputChange} required /></div>
-              
-              {isShippingRequired && (
-                <>
-                  <h2 style={{ marginTop: '2.5rem' }}>Endereço de Entrega</h2>
-                  {/* ... cole aqui toda a sua lógica de CEP e campos de endereço ... */}
-                </>
-              )}
-              <div className={styles.formGroup}><label>Observações do pedido (opcional)</label><textarea name="observacoes" value={billingDetails.observacoes} onChange={handleInputChange} rows="4"></textarea></div>
+              <div className={styles.formGroup}><label>CPF *</label><input type="text" required /></div>
+              {/* ... mais campos ... */}
 
-              {/* === BLOCO DE PAGAMENTO AGORA ESTÁ AQUI DENTRO === */}
-              <div className={styles.paymentBox}>
-                <div className={styles.securityInfo}>
-                  <LockIcon />
-                  <div>
-                    <h4>Pagamento 100% Seguro</h4>
-                    <p>Você será redirecionado para o ambiente seguro do <strong>Mercado Pago</strong> para concluir sua compra com total proteção dos seus dados.</p>
-                  </div>
+              {/* === SEÇÃO DE PAGAMENTO === */}
+              <div className={styles.paymentSection}>
+                <h2>Pagamento</h2>
+                <div className={styles.paymentTabs}>
+                  <button type="button" onClick={() => setActivePayment('card')} className={`${styles.paymentTab} ${activePayment === 'card' ? styles.activeTab : ''}`}>
+                    <CreditCardIcon /> Cartão de crédito
+                  </button>
+                  <button type="button" onClick={() => setActivePayment('boleto')} className={`${styles.paymentTab} ${activePayment === 'boleto' ? styles.activeTab : ''}`}>
+                    <BoletoIcon /> Boleto
+                  </button>
+                  <button type="button" onClick={() => setActivePayment('pix')} className={`${styles.paymentTab} ${activePayment === 'pix' ? styles.activeTab : ''}`}>
+                    <PixIcon /> PIX
+                  </button>
                 </div>
-                {error && <p className={styles.errorMessage}>{error}</p>}
-                <button type="submit" disabled={loading || itemCount === 0} className={styles.checkoutButton}>
-                  {loading ? 'Processando...' : 'Ir para Pagamento'}
-                </button>
+
+                <div className={styles.paymentContent}>
+                  {activePayment === 'card' && (
+                    <div className={styles.creditCardForm}>
+                      <div className={styles.formGroup}><label>Número do cartão</label><input type="text" placeholder="0000 0000 0000 0000" required/></div>
+                      <div className={styles.formGroup}><label>Nome do Titular</label><input type="text" placeholder="Nome como no cartão" required/></div>
+                      <div className={styles.cardRow}>
+                          <div className={styles.formGroup}><label>Validade (MM/AA)</label><input type="text" placeholder="MM/AA" required/></div>
+                          <div className={styles.formGroup}><label>Código (CVV)</label><input type="text" placeholder="123" required/></div>
+                      </div>
+                      <div className={styles.formGroup}><label>Parcelas</label>
+                        <select>
+                          <option>1x de R$ {total.toFixed(2).replace('.',',')} sem juros</option>
+                          <option>2x de R$ {(total / 2).toFixed(2).replace('.',',')} sem juros</option>
+                          <option>3x de R$ {(total / 3).toFixed(2).replace('.',',')} sem juros</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                  {activePayment === 'boleto' && (
+                    <p>Ao finalizar a compra, seu boleto será gerado e ficará disponível para pagamento.</p>
+                  )}
+                  {activePayment === 'pix' && (
+                    <p>Ao finalizar a compra, um QR Code será gerado para você efetuar o pagamento via PIX.</p>
+                  )}
+                </div>
               </div>
 
+              <button type="submit" disabled={loading || itemCount === 0} className={styles.checkoutButton}>
+                {loading ? 'Processando...' : 'Confirmar Pedido'}
+              </button>
             </div>
 
-            {/* ================================================== */}
-            {/* === SIDEBAR (DIREITA) - APENAS O RESUMO === */}
-            {/* ================================================== */}
+            {/* --- SIDEBAR (DIREITA) --- */}
             <aside className={styles.sidebar}>
               {cartItems.length > 0 && (
                 <SummarySidebar
                   productData={cartItems[0]}
                   formData={cartItems[0].formData}
                   finalPrice={total}
-                  // Simula que todas as etapas foram concluídas
                   currentStep={Object.keys(cartItems[0].formData || {}).length}
                   formSteps={['Resumo do Pedido']}
-                  goToStep={() => {}} // Desabilita o clique em "editar"
+                  goToStep={() => {}}
                 />
               )}
             </aside>

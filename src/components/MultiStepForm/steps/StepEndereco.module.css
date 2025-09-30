@@ -14,6 +14,37 @@
   margin-bottom: 2.5rem;
 }
 
+.deliveryOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    color: #343a40;
+    cursor: pointer;
+}
+
+.checkboxInput {
+    width: 18px;
+    height: 18px;
+    accent-color: #294B29;
+}
+
+.brazilForm, .internationalForm {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(-10px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
 .cepContainer {
     display: flex;
     align-items: flex-start;
@@ -21,75 +52,84 @@
     margin-bottom: 1.5rem;
 }
 
-.cepInputGroup {
-    flex-grow: 1;
+.cepInputGroup { 
+    flex-grow: 1; 
 }
 
-.formGroup {
-    margin-bottom: 1.5rem;
+.cepLink { 
+    background: none; 
+    border: none; 
+    color: #007bff; 
+    text-decoration: underline; 
+    cursor: pointer; 
+    font-size: 0.9rem; 
+    padding-top: 2.2rem; 
+    white-space: nowrap; 
 }
 
-.formGroup label {
-    display: block;
-    font-weight: 500;
-    color: #555;
-    margin-bottom: 0.5rem;
+.cepStatus { 
+    font-size: 0.85rem; 
+    margin-top: 0.25rem; 
 }
 
-.formGroup input, .formGroup select {
+.cepError { 
+    color: #dc3545; 
+}
+
+.internationalForm {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.calculateButton {
     width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.formGroup input:focus, .formGroup select:focus {
-    outline: none;
-    border-color: #294B29;
-    background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
-}
-
-.formGroup input:disabled {
-    background-color: #e9ecef;
-}
-
-.cepLink {
-    background: none;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    background-color: #294B29;
+    color: #fff;
     border: none;
-    color: #007bff;
-    text-decoration: underline;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding-top: 2.2rem;
-    white-space: nowrap;
+    transition: background-color 0.2s;
 }
 
-.cepStatus {
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
+.calculateButton:hover {
+    background-color: #3a6b3a;
 }
 
-.cepError {
-    color: #dc3545;
+.formGroup { 
+    margin-bottom: 1.5rem; 
 }
 
-.addressFields {
-    animation: fadeIn 0.5s ease;
+.formGroup label { 
+    display: block; 
+    font-weight: 500; 
+    color: #555; 
+    margin-bottom: 0.5rem; 
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* Checkboxes de entrega (exemplo) */
-.deliveryOptions {
-    margin-top: 2rem;
-    border-top: 1px solid #e9ecef;
-    padding-top: 2rem;
+.formGroup input, 
+.formGroup select { 
+    width: 100%; 
+    padding: 0.8rem 1rem; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 1rem; 
 }
-.checkboxLabel {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+
+.formGroup input:disabled, 
+.formGroup select:disabled { 
+    background-color: #e9ecef; 
+    cursor: not-allowed;
+}
+
+.formGroup input:focus, 
+.formGroup select:focus { 
+    outline: none; 
+    border-color: #294B29; 
+    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1); 
 }
