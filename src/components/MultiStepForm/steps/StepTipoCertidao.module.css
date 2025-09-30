@@ -171,3 +171,46 @@
     background-color: #fff;
     box-shadow: 0 0 0 2px rgba(41, 75, 41, 0.1);
 }
+
+/* Em src/components/MultiStepForm/steps/StepTipoCertidao.module.css */
+
+/* ... (outros estilos como .stepTitle, .radioOption, etc., permanecem iguais) ... */
+
+/* === ESTILO CORRIGIDO PARA AS ABAS === */
+.tabContainer {
+  display: flex;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e9ecef;
+  flex-wrap: nowrap; /* Impede a quebra de linha */
+  width: 100%;
+}
+
+.tabButton, .activeTab {
+  flex-grow: 1; /* Permite que os botões cresçam para preencher o espaço */
+  flex-shrink: 1; /* Permite que encolham se necessário */
+  flex-basis: 0; /* Base de tamanho inicial flexível */
+  
+  padding: 0.75rem 0.5rem; /* Padding vertical e um pequeno padding horizontal */
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.95rem; /* Ligeiramente menor para caber melhor */
+  font-weight: 500;
+  color: #495057;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s ease-in-out;
+  text-align: center; /* Garante que o texto fique centralizado */
+  white-space: nowrap; /* Impede que o texto interno quebre a linha */
+}
+
+.tabButton:hover {
+    background-color: #f8f9fa;
+    color: #294B29;
+}
+
+.activeTab {
+  color: #294B29;
+  font-weight: bold;
+  border-bottom-color: #294B29;
+}

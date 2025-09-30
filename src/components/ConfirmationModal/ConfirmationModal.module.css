@@ -1,0 +1,20 @@
+/* Salve em: src/components/ConfirmationModal/ConfirmationModal.module.css */
+.overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; padding: 1rem; }
+.modal { background: #fff; border-radius: 8px; width: 100%; max-width: 700px; max-height: 90vh; display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #e9ecef; }
+.header h3 { margin: 0; font-size: 1.5rem; color: #294B29; }
+.closeButton { background: none; border: none; font-size: 2rem; cursor: pointer; color: #6c757d; }
+.content { overflow-y: auto; padding: 1.5rem; }
+.section { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #ced4da; }
+.section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.section h4 { margin-top: 0; margin-bottom: 1rem; color: #3c4f41; font-size: 1.1rem; }
+.detailItem { display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 0.5rem; }
+.detailLabel { font-weight: 500; color: #495057; }
+.detailValue { color: #212529; text-align: right; }
+.summarySection { background-color: #f8f9fa; padding: 1rem; border-radius: 6px; }
+.totalRow { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #dee2e6;}
+.totalValue { color: #294B29; }
+.footer { display: flex; gap: 1rem; padding: 1.5rem; border-top: 1px solid #e9ecef; background-color: #f8f9fa; }
+.backButton, .confirmButton { flex: 1; padding: 0.8rem; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+.backButton { background-color: #fff; border: 1px solid #ced4da; color: #495057; }
+.confirmButton { background-color: #294B29; border: 1px solid #294B29; color: #fff; }

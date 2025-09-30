@@ -17,6 +17,8 @@ export default function StepRequerente({ formData, handleChange }) {
           type="text" 
           id="requerente_nome" 
           name="requerente_nome"
+          // AQUI ESTÁ A CHAVE: O valor do input é sempre o que está em formData.
+          // Se foi preenchido antes, ele aparecerá aqui.
           value={formData.requerente_nome || ''}
           onChange={handleChange}
           placeholder="Escreva o nome do(a) solicitante"
@@ -37,12 +39,15 @@ export default function StepRequerente({ formData, handleChange }) {
         />
       </div>
 
+      {/* Exemplo com CPF, que pode ter sido pedido em outra etapa */}
       <div className={styles.formGroup}>
         <label htmlFor="requerente_cpf">CPF</label>
         <input 
           type="text" 
           id="requerente_cpf" 
           name="requerente_cpf"
+          // Se 'formData.requerente_cpf' já tiver um valor de uma etapa anterior,
+          // este campo já virá preenchido.
           value={formData.requerente_cpf || ''}
           onChange={handleChange}
           placeholder="CPF do solicitante"

@@ -10,7 +10,7 @@ const LightbulbIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l.18 1.38M5.56 5.56l.98 1.05M2.69 12l1.38.18M5.56 18.44l.98-1.05M12 21.31l.18-1.38M18.44 18.44l-1.05-.98M21.31 12l-1.38-.18M18.44 5.56l-1.05.98M12 6a6 6 0 106 6c0-3.32-2.69-6-6-6z"></path><path d="M12 2v.69"></path></svg>
 );
 
-// Componente genérico para campos
+// Componente genérico para campos de formulário
 const FormField = ({ id, label, type = 'text', placeholder, required = true, value, onChange }) => (
   <div className={styles.formGroup}>
     <label htmlFor={id}>{label}{required && ' *'}</label>
@@ -22,18 +22,16 @@ const FormField = ({ id, label, type = 'text', placeholder, required = true, val
   </div>
 );
 
-
 export default function StepTipoCertidao({ formData, handleChange }) {
   const [selectedOption, setSelectedOption] = useState(formData.tipo_certidao || 'Matrícula');
   const [activeTabs, setActiveTabs] = useState({
-    certidaoInteiroTeor: 'Matrícula',
+    certidaoInteiroTeor: 'Matrícula', // Esta opção não existe mais, mas mantemos por segurança
     documentoArquivado: 'Matrícula',
     pactoAntenupcial: 'Registro',
     livro3Garantias: 'Pessoa',
     livro3Auxiliar: 'Nome',
     quesitos: 'Matrícula'
   });
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState('');
 
@@ -42,7 +40,7 @@ export default function StepTipoCertidao({ formData, handleChange }) {
     setSelectedOption(value);
     handleChange(e);
   };
-  
+
   const handleTabClick = (optionKey, tabName) => {
     setActiveTabs(prev => ({ ...prev, [optionKey]: tabName }));
   };
@@ -51,10 +49,9 @@ export default function StepTipoCertidao({ formData, handleChange }) {
     setModalImage(imagePath);
     setIsModalOpen(true);
   };
-  
+
   const allOptions = [
     { value: 'Matrícula', label: 'Matrícula', description: 'É o número de registro do imóvel. A identificação do imóvel nos registros dos cartórios de imóveis. Inclui características, dados do imóvel e dados do proprietário.' },
-    { value: 'Certidão de Inteiro Teor e Ônus da Ação', label: 'Certidão de Inteiro Teor e Ônus da Ação', description: 'Reprodução fiel da matrícula do imóvel. Nela você pode encontrar dados como: localização, lote e quadra, nome do proprietário atual, datas dos registros e averbações e mais.' },
     { value: 'Vintenária', label: 'Vintenária', description: 'Exibe o histórico do imóvel por vinte anos.' },
     { value: 'Transcrição', label: 'Transcrição', description: 'É a reprodução de um escrito. Ela pode ser feita por cópia, resumo ou como extrato. Este modelo de registro evidencia dados pessoais dos proprietários.' },
     { value: 'Documento Arquivado', label: 'Documento Arquivado', description: 'Documentos arquivados que originaram os atos como: Documentos do processo de Intimação e Consolidação, Plantas e outros.' },
@@ -69,52 +66,38 @@ export default function StepTipoCertidao({ formData, handleChange }) {
     switch (selectedOption) {
       case 'Matrícula':
         return (
-          <>
-            <div className={styles.infoBox} onClick={() => openImageModal('/images/certid.png')}>
-              <LightbulbIcon /> Saiba como localizar os dados da matrícula.
-            </div>
-            <FormField id="matricula" label="Matrícula" placeholder="Digite o número da matrícula do imóvel" value={formData.matricula} onChange={handleChange} />
-          </>
+          <><div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-matricula.png')}><LightbulbIcon /> Saiba como localizar os dados da matrícula.</div><FormField id="matricula" label="Matrícula" placeholder="Digite o número da matrícula do imóvel" value={formData.matricula} onChange={handleChange} /></>
         );
-      
-      case 'Certidão de Inteiro Teor e Ônus da Ação':
+      case 'Vintenária': // Vintenária agora tem as mesmas opções da matrícula, como na imagem.
         return (
-            <>
-                <div className={styles.tabContainer}>
-                    <button type="button" onClick={() => handleTabClick('certidaoInteiroTeor', 'Matrícula')} className={activeTabs.certidaoInteiroTeor === 'Matrícula' ? styles.activeTab : styles.tabButton}>Matrícula</button>
-                    <button type="button" onClick={() => handleTabClick('certidaoInteiroTeor', 'Transcrição')} className={activeTabs.certidaoInteiroTeor === 'Transcrição' ? styles.activeTab : styles.tabButton}>Transcrição</button>
-                </div>
-                {activeTabs.certidaoInteiroTeor === 'Matrícula' && (
-                    <div className={styles.conditionalContent}>
-                        <div className={styles.infoBox} onClick={() => openImageModal('/images/certid.png')}><LightbulbIcon /> Saiba como localizar os dados da matrícula.</div>
-                        <FormField id="matricula" label="Matrícula" placeholder="Digite o número da matrícula do imóvel" value={formData.matricula} onChange={handleChange} />
-                    </div>
-                )}
-                {activeTabs.certidaoInteiroTeor === 'Transcrição' && (
-                     <div className={styles.conditionalContent}>
-                        <div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-transcricao.png')}><LightbulbIcon /> Saiba como localizar os dados da transcrição.</div>
-                        <FormField id="transcricao_numero" label="Transcrição" placeholder="Digite o número" value={formData.transcricao_numero} onChange={handleChange}/>
-                        <FormField id="transcricao_data_emissao" label="Data de emissão" type="date" value={formData.transcricao_data_emissao} onChange={handleChange}/>
-                        <FormField id="transcricao_livro" label="Livro" placeholder="Digite o número" value={formData.transcricao_livro} onChange={handleChange} required={false}/>
-                        <FormField id="transcricao_dados_imovel" label="Dados do imóvel" type="textarea" placeholder="Insira: Cidade, Rua, Número, etc." value={formData.transcricao_dados_imovel} onChange={handleChange}/>
-                    </div>
-                )}
-            </>
+          <><div className={styles.tabContainer}><button type="button" onClick={() => handleTabClick('vintenaria', 'Matrícula')} className={activeTabs.vintenaria === 'Matrícula' ? styles.activeTab : styles.tabButton}>Matrícula</button><button type="button" onClick={() => handleTabClick('vintenaria', 'Transcrição')} className={activeTabs.vintenaria === 'Transcrição' ? styles.activeTab : styles.tabButton}>Transcrição</button></div>{activeTabs.vintenaria === 'Matrícula' && (<div className={styles.conditionalContent}><div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-matricula.png')}><LightbulbIcon /> Saiba como localizar os dados da matrícula.</div><FormField id="matricula" label="Matrícula" placeholder="Digite o número da matrícula do imóvel" value={formData.matricula} onChange={handleChange} /></div>)}{activeTabs.vintenaria === 'Transcrição' && (<div className={styles.conditionalContent}><div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-transcricao.png')}><LightbulbIcon /> Saiba como localizar os dados da transcrição.</div><FormField id="transcricao_numero" label="Transcrição" placeholder="Digite o número" value={formData.transcricao_numero} onChange={handleChange}/><FormField id="transcricao_data_emissao" label="Data de emissão" type="date" value={formData.transcricao_data_emissao} onChange={handleChange}/><FormField id="transcricao_livro" label="Livro (Opcional)" placeholder="Digite o número" value={formData.transcricao_livro} onChange={handleChange} required={false}/><FormField id="transcricao_dados_imovel" label="Dados do imóvel" type="textarea" placeholder="Insira: Cidade, Rua, Número, Lote, Apartamento, Bloco, Andar, Edifício, Bairro, Vila." value={formData.transcricao_dados_imovel} onChange={handleChange}/></div>)}</>
         );
-
       case 'Transcrição':
         return (
-          <div className={styles.conditionalContent}>
-            <div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-transcricao.png')}><LightbulbIcon /> Saiba como localizar os dados da transcrição.</div>
-            <FormField id="transcricao_numero" label="Transcrição" placeholder="Digite o número" value={formData.transcricao_numero} onChange={handleChange}/>
-            <FormField id="transcricao_data_emissao" label="Data de emissão" type="date" value={formData.transcricao_data_emissao} onChange={handleChange}/>
-            <FormField id="transcricao_livro" label="Livro" placeholder="Digite o número" value={formData.transcricao_livro} onChange={handleChange} required={false}/>
-            <FormField id="transcricao_dados_imovel" label="Dados do imóvel" type="textarea" placeholder="Insira: Cidade, Rua, Número, etc." value={formData.transcricao_dados_imovel} onChange={handleChange}/>
-          </div>
+          <div className={styles.conditionalContent}><div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-transcricao.png')}><LightbulbIcon /> Saiba como localizar os dados da transcrição.</div><FormField id="transcricao_numero" label="Transcrição" placeholder="Digite o número" value={formData.transcricao_numero} onChange={handleChange}/><FormField id="transcricao_data_emissao" label="Data de emissão" type="date" value={formData.transcricao_data_emissao} onChange={handleChange}/><FormField id="transcricao_livro" label="Livro (Opcional)" placeholder="Digite o número" value={formData.transcricao_livro} onChange={handleChange} required={false}/><FormField id="transcricao_dados_imovel" label="Dados do imóvel" type="textarea" placeholder="Insira: Cidade, Rua, Número, Lote, Apartamento, Bloco, Andar, Edifício, Bairro, Vila." value={formData.transcricao_dados_imovel} onChange={handleChange}/></div>
         );
-      
-      // ... (outros cases permanecem sem o modal por enquanto, mas a estrutura está pronta)
-
+      case 'Documento Arquivado':
+         return (
+            <><div className={styles.tabContainer}><button type="button" onClick={() => handleTabClick('documentoArquivado', 'Matrícula')} className={activeTabs.documentoArquivado === 'Matrícula' ? styles.activeTab : styles.tabButton}>Matrícula</button><button type="button" onClick={() => handleTabClick('documentoArquivado', 'Registro do Livro 3')} className={activeTabs.documentoArquivado === 'Registro do Livro 3' ? styles.activeTab : styles.tabButton}>Registro do Livro 3</button><button type="button" onClick={() => handleTabClick('documentoArquivado', 'Protocolo')} className={activeTabs.documentoArquivado === 'Protocolo' ? styles.activeTab : styles.tabButton}>Protocolo</button></div><div className={styles.infoBox} onClick={() => openImageModal('/images/exemplo-matricula.png')}><LightbulbIcon /> Saiba como localizar os dados da matrícula.</div>{activeTabs.documentoArquivado === 'Matrícula' && <div className={styles.conditionalContent}><FormField id="doc_arquivado_matricula" label="Matrícula" placeholder="Digite o número da matrícula" value={formData.doc_arquivado_matricula} onChange={handleChange} /><FormField id="doc_arquivado_numero_ato" label="Número do Ato" placeholder="Digite o número do ato" value={formData.doc_arquivado_numero_ato} onChange={handleChange} /></div>}{activeTabs.documentoArquivado === 'Registro do Livro 3' && <div className={styles.conditionalContent}><FormField id="doc_arquivado_registro" label="Número do Registro" placeholder="Digite o número do registro" value={formData.doc_arquivado_registro} onChange={handleChange} /></div>}{activeTabs.documentoArquivado === 'Protocolo' && <div className={styles.conditionalContent}><FormField id="doc_arquivado_protocolo" label="Número do Protocolo" placeholder="Digite o número do protocolo" value={formData.doc_arquivado_protocolo} onChange={handleChange} /></div>}</>
+        );
+      case 'Pacto Antenupcial':
+        return (
+            <><div className={styles.tabContainer}><button type="button" onClick={() => handleTabClick('pactoAntenupcial', 'Registro')} className={activeTabs.pactoAntenupcial === 'Registro' ? styles.activeTab : styles.tabButton}>Registro</button><button type="button" onClick={() => handleTabClick('pactoAntenupcial', 'Nome dos Pactuantes')} className={activeTabs.pactoAntenupcial === 'Nome dos Pactuantes' ? styles.activeTab : styles.tabButton}>Nome dos Pactuantes</button></div>{activeTabs.pactoAntenupcial === 'Registro' && (<div className={styles.conditionalContent}><FormField id="pacto_num_registro" label="Número do Registro" placeholder="Digite o número do registro" value={formData.pacto_num_registro} onChange={handleChange} /><FormField id="pacto_data_casamento" label="Data do Casamento" type="date" value={formData.pacto_data_casamento} onChange={handleChange} /></div>)}{activeTabs.pactoAntenupcial === 'Nome dos Pactuantes' && (<div className={styles.conditionalContent}><FormField id="pacto_conjuge1_nome" label="Nome do Cônjuge 1" placeholder="Digite o nome do cônjuge 1" value={formData.pacto_conjuge1_nome} onChange={handleChange} /><FormField id="pacto_conjuge1_cpf" label="CPF do Cônjuge 1" placeholder="000.000.000-00" value={formData.pacto_conjuge1_cpf} onChange={handleChange} /><FormField id="pacto_conjuge2_nome" label="Nome do Cônjuge 2" placeholder="Digite o nome do cônjuge 2" value={formData.pacto_conjuge2_nome} onChange={handleChange} /><FormField id="pacto_conjuge2_cpf" label="CPF do Cônjuge 2" placeholder="000.000.000-00" value={formData.pacto_conjuge2_cpf} onChange={handleChange} /><FormField id="pacto_data_casamento2" label="Data do Casamento" type="date" value={formData.pacto_data_casamento2} onChange={handleChange} /></div>)}</>
+        );
+      case 'Condomínio':
+        return <div className={styles.conditionalContent}><FormField id="condominio_nome" label="Nome do condomínio" placeholder="Digite o nome do condomínio" value={formData.condominio_nome} onChange={handleChange} /></div>;
+      case 'Livro 3 - Garantias':
+         return (
+            <><div className={styles.tabContainer}><button type="button" onClick={() => handleTabClick('livro3Garantias', 'Pessoa')} className={activeTabs.livro3Garantias === 'Pessoa' ? styles.activeTab : styles.tabButton}>Pessoa</button><button type="button" onClick={() => handleTabClick('livro3Garantias', 'Registro do Livro 3')} className={activeTabs.livro3Garantias === 'Registro do Livro 3' ? styles.activeTab : styles.tabButton}>Registro do Livro 3</button></div>{activeTabs.livro3Garantias === 'Pessoa' && (<div className={styles.conditionalContent}><FormField id="livro3g_nome" label="Nome completo" placeholder="Digite o nome completo" value={formData.livro3g_nome} onChange={handleChange} /><FormField id="livro3g_cpf" label="CPF" placeholder="000.000.000-00" value={formData.livro3g_cpf} onChange={handleChange} /></div>)}{activeTabs.livro3Garantias === 'Registro do Livro 3' && <div className={styles.conditionalContent}><FormField id="livro3g_registro" label="Número do Registro" placeholder="Digite o número do registro" value={formData.livro3g_registro} onChange={handleChange} /></div>}</>
+        );
+      case 'Livro 3 - Auxiliar':
+        return (
+            <><div className={styles.tabContainer}><button type="button" onClick={() => handleTabClick('livro3Auxiliar', 'Nome')} className={activeTabs.livro3Auxiliar === 'Nome' ? styles.activeTab : styles.tabButton}>Nome</button><button type="button" onClick={() => handleTabClick('livro3Auxiliar', 'Registro do Livro 3')} className={activeTabs.livro3Auxiliar === 'Registro do Livro 3' ? styles.activeTab : styles.tabButton}>Registro do Livro 3</button></div>{activeTabs.livro3Auxiliar === 'Nome' && (<div className={styles.conditionalContent}><FormField id="livro3a_nome" label="Nome completo" placeholder="Digite o nome completo" value={formData.livro3a_nome} onChange={handleChange} /><FormField id="livro3a_cpf" label="CPF" placeholder="000.000.000-00" value={formData.livro3a_cpf} onChange={handleChange} /></div>)}{activeTabs.livro3Auxiliar === 'Registro do Livro 3' && <div className={styles.conditionalContent}><FormField id="livro3a_registro" label="Número do Registro" placeholder="Digite o número do registro" value={formData.livro3a_registro} onChange={handleChange} /></div>}</>
+        );
+      case 'Quesitos':
+         return (
+            <><div className={styles.tabContainer}><button type="button" onClick={() => handleTabClick('quesitos', 'Matrícula')} className={activeTabs.quesitos === 'Matrícula' ? styles.activeTab : styles.tabButton}>Matrícula</button><button type="button" onClick={() => handleTabClick('quesitos', 'Transcrição')} className={activeTabs.quesitos === 'Transcrição' ? styles.activeTab : styles.tabButton}>Transcrição</button><button type="button" onClick={() => handleTabClick('quesitos', 'Registro do Livro 3')} className={activeTabs.quesitos === 'Registro do Livro 3' ? styles.activeTab : styles.tabButton}>Registro do Livro 3</button></div>{activeTabs.quesitos === 'Matrícula' && <div className={styles.conditionalContent}><FormField id="quesitos_matricula" label="Matrícula" placeholder="Digite o número da matrícula" value={formData.quesitos_matricula} onChange={handleChange}/></div>}{activeTabs.quesitos === 'Transcrição' && <div className={styles.conditionalContent}><FormField id="quesitos_transcricao" label="Transcrição" placeholder="Digite o número da transcrição" value={formData.quesitos_transcricao} onChange={handleChange} /></div>}{activeTabs.quesitos === 'Registro do Livro 3' && <div className={styles.conditionalContent}><FormField id="quesitos_registro" label="Número do Registro" placeholder="Digite o número do registro" value={formData.quesitos_registro} onChange={handleChange} /></div>}</>
+        );
       default:
         return null;
     }

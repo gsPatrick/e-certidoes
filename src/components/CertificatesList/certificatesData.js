@@ -164,8 +164,28 @@ const formTemplateFederal = [
 export const allCertificates = [
   // --- Cartório de Registro de Imóveis ---
   { id: 46, name: 'Certidão de Imóvel', slug: toSlug('Certidão de Imóvel'), price: 59.90, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: `/product-images/${toSlug('Certidão de Imóvel')}.png`, description: 'Solicite a certidão de matrícula, vintenária ou de transcrição do seu imóvel.', longDescription: 'Descrição longa sobre a Certidão de Imóvel.', faq: 'FAQ sobre a Certidão de Imóvel.', formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true },
-  { id: 51, name: 'Pesquisa de Imóveis', slug: toSlug('Pesquisa de Imoveis'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: `/product-images/${toSlug('Pesquisa de Imoveis')}.png`, description: 'Investigação jurídica sobre imóveis e titularidade em cartórios específicos de uma cidade.', pesquisaType: 'qualificada' },
-  { id: 55, name: 'Pesquisa Prévia de Imóveis', slug: toSlug('Pesquisa Previa de Imoveis'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: `/product-images/${toSlug('Pesquisa Previa de Imoveis')}.png`, description: 'Busca por imóveis em um CPF/CNPJ em todos os cartórios de um estado selecionado.', pesquisaType: 'previa' },
+   { 
+    id: 51, 
+    name: 'Pesquisa Qualificada', // NOME CORRIGIDO
+    slug: toSlug('Pesquisa Qualificada'), 
+    price: 139.50, 
+    category: 'Cartório de Registro de Imóveis', 
+    icon: icons.BUILDING, 
+    imageSrc: `/product-images/${toSlug('Pesquisa Qualificada')}.png`, 
+    description: 'Investigação jurídica em cartórios específicos de uma cidade.',
+    pesquisaType: 'qualificada' 
+  },
+   { 
+    id: 55, 
+    name: 'Pesquisa Prévia', // NOME CORRIGIDO
+    slug: toSlug('Pesquisa Previa'), 
+    price: 139.50,
+    category: 'Cartório de Registro de Imóveis', 
+    icon: icons.BUILDING, 
+    imageSrc: `/product-images/${toSlug('Pesquisa Previa')}.png`, 
+    description: 'Busca por imóveis em todos os cartórios de um estado.',
+    pesquisaType: 'previa'
+  },
   { id: 52, name: 'Visualização de Matrícula', slug: toSlug('Visualização de Matrícula'), price: 59.90, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: `/product-images/${toSlug('Visualização de Matrícula')}.png`, description: 'Acesse uma visualização digital da matrícula de um imóvel.', longDescription: 'Descrição longa sobre a Visualização de Matrícula.', faq: 'FAQ sobre a Visualização de Matrícula.', formFields: formTemplateVisualizacaoMatricula },
   { id: 53, name: 'Pacote de Certidões - Compra e Venda de Imóveis', slug: toSlug('Pacote de Certidões - Compra e Venda de Imóveis'), price: 59.90, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: `/product-images/${toSlug('Pacote de Certidões - Compra e Venda de Imóveis')}.png`, description: 'Serviço em breve.', longDescription: '', faq: '', isPlaceholder: true },
   { id: 54, name: 'Certidão de Penhor e Safra', slug: toSlug('Certidão de Penhor e Safra'), price: 59.90, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: `/product-images/${toSlug('Certidão de Penhor e Safra')}.png`, description: 'Solicite a certidão específica para fins de agronegócio.', longDescription: 'Descrição longa sobre a Certidão de Penhor e Safra.', faq: 'FAQ sobre a Certidão de Penhor e Safra.', formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true },
