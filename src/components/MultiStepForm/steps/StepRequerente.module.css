@@ -46,3 +46,9 @@
     background-color: #fff;
     box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
 }
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

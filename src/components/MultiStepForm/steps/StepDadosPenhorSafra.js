@@ -4,13 +4,43 @@
 import { useState } from 'react';
 import styles from './StepDadosPenhorSafra.module.css';
 
-export default function StepDadosPenhorSafra({ formData, handleChange }) {
+// Funções para aplicar máscaras de formatação
+const maskCPF = (value) => {
+  return value
+    .replace(/\D/g, '') // Remove todos os caracteres não numéricos
+    .slice(0, 11) // Limita o comprimento a 11 dígitos
+    .replace(/(\d{3})(\d)/, '$1.$2') // Aplica o primeiro ponto
+    .replace(/(\d{3})(\d)/, '$1.$2') // Aplica o segundo ponto
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Aplica o hífen
+};
+
+const maskCNPJ = (value) => {
+  return value
+    .replace(/\D/g, '') // Remove todos os caracteres não numéricos
+    .slice(0, 14) // Limita o comprimento a 14 dígitos
+    .replace(/(\d{2})(\d)/, '$1.$2') // Aplica o primeiro ponto
+    .replace(/(\d{3})(\d)/, '$1.$2') // Aplica o segundo ponto
+    .replace(/(\d{3})(\d)/, '$1/$2') // Aplica a barra
+    .replace(/(\d{4})(\d)/, '$1-$2'); // Aplica o hífen
+};
+
+export default function StepDadosPenhorSafra({ formData, handleChange, error }) {
   const [activeTab, setActiveTab] = useState(formData.tipo_pessoa || 'fisica');
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     handleChange({ target: { name: 'tipo_pessoa', value: tab } });
   };
+
+  // Handlers específicos para cada campo, aplicando a máscara
+  const handleCpfChange = (e) => {
+    handleChange({ target: { name: 'cpf', value: maskCPF(e.target.value) } });
+  };
+
+  const handleCnpjChange = (e) => {
+    handleChange({ target: { name: 'cnpj', value: maskCNPJ(e.target.value) } });
+  };
+
 
   return (
     <div>
@@ -42,7 +72,9 @@ export default function StepDadosPenhorSafra({ formData, handleChange }) {
             </div>
             <div className={styles.formGroup}>
               <label htmlFor="cpf">CPF*</label>
-              <input type="text" id="cpf" name="cpf" value={formData.cpf || ''} onChange={handleChange} placeholder="Digite o CPF" required />
+              <input type="text" id="cpf" name="cpf" value={formData.cpf || ''} onChange={handleCpfChange} placeholder="000.000.000-00" required />
+               {/* Exibe a mensagem de erro se a prop 'error' for recebida */}
+               {error && <small className={styles.errorMessage}>{error}</small>}
             </div>
           </>
         ) : (
@@ -53,7 +85,9 @@ export default function StepDadosPenhorSafra({ formData, handleChange }) {
             </div>
             <div className={styles.formGroup}>
               <label htmlFor="cnpj">CNPJ*</label>
-              <input type="text" id="cnpj" name="cnpj" value={formData.cnpj || ''} onChange={handleChange} placeholder="Digite o CNPJ da empresa" required />
+              <input type="text" id="cnpj" name="cnpj" value={formData.cnpj || ''} onChange={handleCnpjChange} placeholder="00.000.000/0000-00" required />
+              {/* Exibe a mensagem de erro se a prop 'error' for recebida */}
+              {error && <small className={styles.errorMessage}>{error}</small>}
             </div>
           </>
         )}

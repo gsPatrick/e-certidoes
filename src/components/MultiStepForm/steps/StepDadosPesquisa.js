@@ -4,13 +4,42 @@
 import { useState } from 'react';
 import styles from './StepDadosPesquisa.module.css';
 
-export default function StepDadosPesquisa({ formData, handleChange }) {
+// Funções para aplicar máscaras de formatação
+const maskCPF = (value) => {
+  return value
+    .replace(/\D/g, '') // Remove todos os caracteres não numéricos
+    .slice(0, 11) // Limita o comprimento a 11 dígitos
+    .replace(/(\d{3})(\d)/, '$1.$2') // Aplica o primeiro ponto
+    .replace(/(\d{3})(\d)/, '$1.$2') // Aplica o segundo ponto
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Aplica o hífen
+};
+
+const maskCNPJ = (value) => {
+  return value
+    .replace(/\D/g, '') // Remove todos os caracteres não numéricos
+    .slice(0, 14) // Limita o comprimento a 14 dígitos
+    .replace(/(\d{2})(\d)/, '$1.$2') // Aplica o primeiro ponto
+    .replace(/(\d{3})(\d)/, '$1.$2') // Aplica o segundo ponto
+    .replace(/(\d{3})(\d)/, '$1/$2') // Aplica a barra
+    .replace(/(\d{4})(\d)/, '$1-$2'); // Aplica o hífen
+};
+
+export default function StepDadosPesquisa({ formData, handleChange, error }) {
   const [activeTab, setActiveTab] = useState(formData.tipo_pesquisa || 'pessoa');
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    // Propaga a mudança para o formulário principal
+    // Notifica o componente pai sobre a mudança de aba
     handleChange({ target: { name: 'tipo_pesquisa', value: tab } });
+  };
+  
+  // Handlers específicos para cada campo, aplicando a máscara
+  const handleCpfChange = (e) => {
+    handleChange({ target: { name: 'cpf', value: maskCPF(e.target.value) } });
+  };
+
+  const handleCnpjChange = (e) => {
+    handleChange({ target: { name: 'cnpj', value: maskCNPJ(e.target.value) } });
   };
 
   return (
@@ -45,7 +74,7 @@ export default function StepDadosPesquisa({ formData, handleChange }) {
                 name="nome_completo"
                 value={formData.nome_completo || ''}
                 onChange={handleChange}
-                placeholder="Escreva o nome completo para pesquisa de bens"
+                placeholder="Escreva o nome completo para pesquisa"
               />
             </div>
             <div className={styles.formGroup}>
@@ -55,24 +84,25 @@ export default function StepDadosPesquisa({ formData, handleChange }) {
                 id="cpf"
                 name="cpf"
                 value={formData.cpf || ''}
-                onChange={handleChange}
+                onChange={handleCpfChange}
                 placeholder="000.000.000-00"
                 required
               />
+              {/* Exibe a mensagem de erro se a prop 'error' for recebida */}
+              {error && <small className={styles.errorMessage}>{error}</small>}
             </div>
           </>
         ) : (
           <>
             <div className={styles.formGroup}>
-              <label htmlFor="razao_social">Razão social *</label>
+              <label htmlFor="razao_social">Razão social (Opcional)</label>
               <input
                 type="text"
                 id="razao_social"
                 name="razao_social"
                 value={formData.razao_social || ''}
                 onChange={handleChange}
-                placeholder="Escreva a razão social da empresa para pesquisa de bens"
-                required
+                placeholder="Escreva a razão social da empresa"
               />
             </div>
             <div className={styles.formGroup}>
@@ -82,10 +112,12 @@ export default function StepDadosPesquisa({ formData, handleChange }) {
                 id="cnpj"
                 name="cnpj"
                 value={formData.cnpj || ''}
-                onChange={handleChange}
+                onChange={handleCnpjChange}
                 placeholder="00.000.000/0000-00"
                 required
               />
+              {/* Exibe a mensagem de erro se a prop 'error' for recebida */}
+              {error && <small className={styles.errorMessage}>{error}</small>}
             </div>
           </>
         )}
