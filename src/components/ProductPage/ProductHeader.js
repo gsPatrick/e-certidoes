@@ -1,28 +1,45 @@
 // Salve em: src/components/ProductPage/ProductHeader.js
-import Image from 'next/image';
-import Link from 'next/link'; // Usaremos Link para o botão
-import styles from './ProductPage.module.css';
+'use client';
 
-const ProductHeader = ({ title, description, imageSrc }) => {
+import Image from 'next/image';
+import styles from './ProductPage.module.css';
+import { PaymentIcon, CalendarIcon } from './InfoIcons';
+
+// --- MODIFICAÇÃO: O componente agora recebe as funções para abrir os modais ---
+const ProductHeader = ({ title, description, imageSrc, onOpenPaymentModal, onOpenDeliveryModal }) => {
   return (
     <div className={styles.headerContainer}>
       <div className={styles.imageWrapper}>
         <Image 
             src={imageSrc} 
             alt={`Imagem da ${title}`} 
-            width={250} // Diminuído para melhor encaixe
-            height={312} // Mantendo proporção 4:5
+            width={250}
+            height={312}
             className={styles.productImage}
             priority 
         />
       </div>
+
       <div className={styles.detailsWrapper}>
         <h1 className={styles.productTitle}>{title}</h1>
         <p className={styles.productDescription}>{description}</p>
-        {/* O botão agora é um link que rola para o formulário */}
-        <Link href="#form-inicio" className={styles.ctaButton}>
-            Começar Pedido
-        </Link>
+        
+        {/* --- MODIFICAÇÃO: O botão "Começar Pedido" foi removido --- */}
+
+        {/* --- MODIFICAÇÃO: Os links foram movidos para cá --- */}
+        <div className={styles.quickInfoContainer}>
+          <div className={styles.quickInfoLink} onClick={onOpenPaymentModal}>
+            <PaymentIcon />
+            <span>Veja as formas de pagamento</span>
+            <span className={styles.chevron}>&gt;</span>
+          </div>
+          <div className={styles.quickInfoLink} onClick={onOpenDeliveryModal}>
+            <CalendarIcon />
+            <span>Calcule o prazo de entrega</span>
+            <span className={styles.chevron}>&gt;</span>
+          </div>
+          {/* Adicione os outros dois links do "Documento no Brasil" se desejar no futuro */}
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,84 @@
+/* Salve em: src/components/ProductPage/ProductInfoSection.module.css */
+
+.infoSection {
+  margin: 2rem 0;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.infoCard {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  color: #294B29;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.infoList li {
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+.infoList li:last-child {
+  margin-bottom: 0;
+}
+
+.infoList strong {
+  display: block;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.infoList p {
+  margin: 0.25rem 0 0 0;
+}
+
+.paymentMethods {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.paymentMethods img {
+  object-fit: contain;
+}
+
+.obsText {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f3f5;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}

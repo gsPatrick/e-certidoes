@@ -1,0 +1,58 @@
+/* Salve em: src/components/MultiStepForm/steps/StepConfirmacaoLGPD.module.css */
+
+.termsWrapper {
+    /* Sem estilos adicionais por enquanto */
+}
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+.termsContainer {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #343a40;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.termsContainer p {
+    margin-bottom: 1rem;
+}
+
+.termsList {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+}
+
+.termsList li {
+    margin-bottom: 1rem;
+}
+
+.agreementCheckbox {
+    margin-top: 2rem;
+}
+
+.agreementCheckbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #294B29;
+    cursor: pointer;
+}
+
+.agreementCheckbox input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: #294B29;
+}

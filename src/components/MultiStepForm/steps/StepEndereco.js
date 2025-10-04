@@ -80,29 +80,9 @@ export default function StepEndereco({ formData, handleChange }) {
         Preencha os dados referentes ao recebimento de seu documento.
       </p>
 
-      <div className={styles.deliveryOptions}>
-        <label className={styles.checkboxLabel}>
-            <input 
-                type="checkbox" 
-                name="entrega_internacional_correios"
-                checked={!!formData.entrega_internacional_correios}
-                onChange={handleCheckboxChange}
-                className={styles.checkboxInput}
-            /> 
-            Entrega Internacional - Correios
-        </label>
-        <label className={styles.checkboxLabel}>
-            <input 
-                type="checkbox" 
-                name="entrega_internacional_dhl"
-                checked={!!formData.entrega_internacional_dhl}
-                onChange={handleCheckboxChange}
-                className={styles.checkboxInput}
-            /> 
-            Entrega Urgente Internacional - DHL
-        </label>
-      </div>
-
+      {/* --- INÍCIO DA ALTERAÇÃO --- */}
+      {/* Agora o bloco de formulários (Brasil ou Internacional) vem ANTES das opções de checkbox */}
+      
       {isInternational ? (
         // --- FORMULÁRIO INTERNACIONAL ---
         <div className={styles.internationalForm}>
@@ -148,6 +128,32 @@ export default function StepEndereco({ formData, handleChange }) {
             )}
         </div>
       )}
+
+      {/* As opções de entrega internacional agora ficam abaixo do bloco de formulário */}
+      <div className={styles.deliveryOptions}>
+        <label className={styles.checkboxLabel}>
+            <input 
+                type="checkbox" 
+                name="entrega_internacional_correios"
+                checked={!!formData.entrega_internacional_correios}
+                onChange={handleCheckboxChange}
+                className={styles.checkboxInput}
+            /> 
+            Entrega Internacional - Correios
+        </label>
+        <label className={styles.checkboxLabel}>
+            <input 
+                type="checkbox" 
+                name="entrega_internacional_dhl"
+                checked={!!formData.entrega_internacional_dhl}
+                onChange={handleCheckboxChange}
+                className={styles.checkboxInput}
+            /> 
+            Entrega Urgente Internacional - DHL
+        </label>
+      </div>
+
+      {/* --- FIM DA ALTERAÇÃO --- */}
     </div>
   );
 }

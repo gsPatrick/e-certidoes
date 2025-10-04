@@ -1,6 +1,5 @@
 /* Salve em: src/components/MultiStepForm/steps/StepCartorio.module.css */
 
-/* --- Título e Descrição da Etapa --- */
 .stepTitle {
     font-size: 1.75rem;
     font-weight: 700;
@@ -9,13 +8,23 @@
     margin-bottom: 0.5rem;
 }
 
-.stepDescription {
-  font-size: 1rem;
-  color: #6c757d;
-  margin-bottom: 2.5rem;
+.infoBox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #fffbe6;
+    border: 1px solid #ffe58f;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    color: #594300;
 }
 
-/* --- Grupos de Formulário e Campos --- */
+.lightbulb {
+    font-size: 1.2rem;
+}
+
 .formGroup {
     margin-bottom: 1.5rem;
 }
@@ -27,51 +36,6 @@
     margin-bottom: 0.5rem;
 }
 
-/* Estilo para inputs de texto (usado no campo manual e na Visualização de Matrícula) */
-.formGroup input[type="text"] {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: #fdfdfd;
-}
-
-/* Estilo para dropdowns (select) */
-.formGroup select {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: #fdfdfd;
-    transition: all 0.2s ease;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1em;
-    cursor: pointer;
-}
-
-.formGroup select:focus,
-.formGroup input[type="text"]:focus {
-    outline: none;
-    border-color: #294B29;
-    background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
-}
-
-.formGroup select:disabled {
-    background-color: #e9ecef;
-    cursor: not-allowed;
-    color: #6c757d;
-}
-
-
-/* --- Seção de Fallback (Não localizou o cartório) --- */
 .fallbackContainer {
   margin-top: 2rem;
   padding: 1.5rem;
@@ -115,7 +79,6 @@
   color: #1c331c;
 }
 
-/* --- Seção do Input Manual (condicional) --- */
 .manualInputWrapper {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
@@ -139,3 +102,115 @@
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
+
+/* --- ALTERAÇÃO INICIADA: NOVOS ESTILOS --- */
+.naoSeiCartorioWrapper {
+  margin-top: -0.5rem;
+}
+
+.naoSeiCartorioCheck {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #343a40;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.buscaWrapper {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  animation: fadeIn 0.4s ease;
+}
+
+.buscaTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #294B29;
+  font-weight: 600;
+}
+
+.buscaDescription, .buscaExemplos {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.buscaList {
+  font-size: 0.9rem;
+  color: #495057;
+  padding-left: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.uploadLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #fff;
+  border: 1px dashed #ced4da;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #495057;
+  transition: background-color 0.2s;
+}
+
+.uploadLabel:hover {
+  background-color: #f1f3f5;
+  border-color: #adb5bd;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadHint {
+  display: block;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.uploadHint a {
+  color: #294B29;
+  text-decoration: underline;
+}
+
+.fileDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background-color: #eaf0ec;
+  border: 1px solid #d1dcd4;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.fileName {
+  color: #294B29;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 1rem;
+}
+
+.fileRemoveButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc3545;
+  padding: 0;
+  line-height: 1;
+}
+/* --- ALTERAÇÃO FINALIZADA --- */

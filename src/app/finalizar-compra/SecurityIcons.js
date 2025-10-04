@@ -1,20 +1,12 @@
 // Salve em: src/app/finalizar-compra/SecurityIcons.js
 
-// Ícone de cadeado que você já tem
-export const LockIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-);
+// --- ÍCONES PARA AS ABAS DE PAGAMENTO ---
+export const CreditCardIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>);
+export const PixIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M176.49,122.1a12,12,0,0,1-17,17L128,107.6l-31.51,31.51a12,12,0,0,1-17-17L111,89.09,79.51,57.58a12,12,0,0,1,17-17L128,72.4l31.51-31.52a12,12,0,0,1,17,17L145,89.09ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"/></svg>);
+export const BoletoIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5h2M3 9h4m-2 4h2M3 17h4m-2 4h2M8 5h2m-2 4h4m-2 4h2m-2 4h4m-2 4h2m5-16h2m-2 4h4m-2 4h2m-2 4h4m-2 4h2"></path></svg>);
 
-// --- NOVOS ÍCONES PARA AS ABAS DE PAGAMENTO ---
-
-export const CreditCardIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-);
-
-export const PixIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M176.49,122.1a12,12,0,0,1-17,17L128,107.6l-31.51,31.51a12,12,0,0,1-17-17L111,89.09,79.51,57.58a12,12,0,0,1,17-17L128,72.4l31.51-31.52a12,12,0,0,1,17,17L145,89.09ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"/></svg>
-);
-
-export const BoletoIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5h2M3 9h4m-2 4h2M3 17h4m-2 4h2M8 5h2m-2 4h4m-2 4h2m-2 4h4m-2 4h2m5-16h2m-2 4h4m-2 4h2m-2 4h4m-2 4h2"></path></svg>
-);
+// --- NOVOS ÍCONES PARA O RESUMO DO PEDIDO ---
+export const LocationIcon = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>);
+export const UserIcon = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>);
+export const FormatIcon = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>);
+export const PaperclipIcon = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>);

@@ -7,8 +7,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './MultiStepForm.module.css';
 
 // Importe os validadores
-import { isValidCPF } from '@/utils/cpfValidator';
-import { isValidCNPJ } from '@/utils/cnpjValidator';
+import { isValidCPF } from '@/utils/validators';
+import { isValidCNPJ } from '@/utils/validators';
 
 // Importe todos os componentes de etapa
 import StepCartorio from './steps/StepCartorio';
@@ -16,12 +16,23 @@ import StepTipoCertidao from './steps/StepTipoCertidao';
 import StepFormato from './steps/StepFormato';
 import StepServicosAdicionais from './steps/StepServicosAdicionais';
 import StepRequerente from './steps/StepRequerente';
-import StepLocalizacaoPesquisa from './steps/StepLocalizacaoPesquisa';
-import StepDadosPesquisa from './steps/StepDadosPesquisa';
-import StepLocalizacaoMatricula from './steps/StepLocalizacaoMatricula';
 import StepEndereco from './steps/StepEndereco';
-import StepDadosPenhorSafra from './steps/StepDadosPenhorSafra'; // Certifique-se que está importado
+import StepDadosPenhorSafra from './steps/StepDadosPenhorSafra';
+import StepLocalizacaoMatricula from './steps/StepLocalizacaoMatricula';
+import StepEscritura from './steps/StepEscritura';
+
+// Componentes de etapa para Pesquisas
+import StepPesquisaVeiculo from './steps/StepPesquisaVeiculo'; 
+import StepPesquisaRouboFurto from './steps/StepPesquisaRouboFurto';
+import StepPesquisaProcessos from './steps/StepPesquisaProcessos'; 
+import StepPesquisaSintegra from './steps/StepPesquisaSintegra';
+import StepPesquisaEscrituras from './steps/StepPesquisaEscrituras';
 import StepPesquisaAvancada from './steps/StepPesquisaAvancada';
+import StepConfirmacaoLGPD from './steps/StepConfirmacaoLGPD';
+
+// Componentes de etapa para Protesto
+import StepProtestoCartorio from './steps/StepProtestoCartorio';
+import StepProtestoDados from './steps/StepProtestoDados';
 
 // Importe o Modal de Confirmação
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal';
@@ -31,6 +42,18 @@ import StepProgressBar from './StepProgressBar';
 import SummarySidebar from './SummarySidebar';
 
 const FORM_DATA_KEY = 'multiStepFormData';
+
+// Função auxiliar toSlug para consistência
+const toSlug = (str) => {
+  const normalizedStr = str.normalize('NFD');
+  const withoutAccents = normalizedStr.replace(/[\u0300-\u036f]/g, '');
+  return withoutAccents
+    .toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-');
+};
+
 
 export default function MultiStepForm({ productData }) {
     const { addToCart } = useCart();
@@ -43,7 +66,8 @@ export default function MultiStepForm({ productData }) {
         return savedData ? JSON.parse(savedData) : {
             tipo_certidao: 'Matrícula',
             tipo_pesquisa: 'pessoa',
-            tipo_pessoa: 'fisica',
+            tipo_pessoa: 'Pessoa física',
+            tempo_pesquisa: '5 anos', // Padrão para protesto
         };
     });
 
@@ -59,72 +83,122 @@ export default function MultiStepForm({ productData }) {
 
     useEffect(() => {
         let newFlow = [];
+        const slug = productData.slug;
+        const category = productData.category;
+
         const requerenteStep = { id: 'requerente', title: 'Identificação', Component: StepRequerente };
         const enderecoStep = { id: 'endereco', title: 'Endereço', Component: StepEndereco };
         const servicosAdicionaisStep = { id: 'servicosAdicionais', title: 'Serviços Adicionais', Component: StepServicosAdicionais };
-        const dadosPesquisaStep = { id: 'dadosPesquisa', title: 'Dados da Pesquisa', Component: StepDadosPesquisa };
+        const confirmacaoLgpdStep = { id: 'confirmacaoLgpd', title: 'Termos de Uso', Component: StepConfirmacaoLGPD };
 
-        const slug = productData.slug;
+        if (slug === toSlug('Certidão de Protesto')) {
+            const middleFlow = [];
+            middleFlow.push({ id: 'formato', title: 'Formato', Component: StepFormato });
+            middleFlow.push(servicosAdicionaisStep);
 
-        if (slug === 'pesquisa-qualificada' || slug === 'pesquisa-previa') {
+            if (formData.formato === 'Certidão em papel') {
+                middleFlow.push(enderecoStep);
+            }
+            
             newFlow = [
-                { id: 'dadosPesquisaAvancada', title: 'Dados da Pesquisa', Component: StepPesquisaAvancada },
-                requerenteStep
+                { id: 'protestoCartorio', title: 'Localização', Component: StepProtestoCartorio },
+                { id: 'protestoDados', title: 'Dados da Certidão', Component: StepProtestoDados },
+                ...middleFlow,
+                requerenteStep,
             ];
-        } else if (slug === 'pesquisa-de-imoveis') {
+        } else if (category === 'Pesquisa' || (category === 'Cartório de Registro de Imóveis' && productData.pesquisaType) || (category === 'Tabelionato de Notas (Escrituras)' && productData.skipValidationAndTerms)) {
+            let primeiraEtapa = {};
+            
+            if (productData.pesquisaType === 'previa' || productData.pesquisaType === 'qualificada') {
+                primeiraEtapa = { id: 'dadosPesquisaAvancada', title: 'Dados da Pesquisa', Component: StepPesquisaAvancada };
+            } else {
+                switch(slug) {
+                    case toSlug('Pesquisa Completa de Veículo'):
+                    case toSlug('Pesquisa Leilão de Veículo'):
+                    case toSlug('Pesquisa Gravame de Veículo'):
+                        primeiraEtapa = { id: 'dadosVeiculo', title: 'Dados do Veículo', Component: StepPesquisaVeiculo };
+                        break;
+                    case toSlug('Histórico de Roubo ou Furto de Veículo'):
+                        primeiraEtapa = { id: 'dadosRouboFurto', title: 'Dados da Pesquisa', Component: StepPesquisaRouboFurto };
+                        break;
+                    case toSlug('Pesquisa Processos Judiciais e Administrativos'):
+                    case toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ'):
+                        primeiraEtapa = { id: 'dadosProcessos', title: 'Dados da Pesquisa', Component: StepPesquisaProcessos };
+                        break;
+                    case toSlug('Pesquisa Sintegra Estadual'):
+                        primeiraEtapa = { id: 'dadosSintegra', title: 'Dados da Pesquisa', Component: StepPesquisaSintegra };
+                        break;
+                    case toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ'):
+                         primeiraEtapa = { id: 'dadosEscrituras', title: 'Dados da Pesquisa', Component: StepPesquisaEscrituras };
+                         break;
+                }
+            }
+
+            if (productData.skipValidationAndTerms) {
+                newFlow = [primeiraEtapa, requerenteStep];
+            } else {
+                newFlow = [primeiraEtapa, requerenteStep, confirmacaoLgpdStep];
+            }
+        
+        } else if (category === 'Tabelionato de Notas (Escrituras)') {
             newFlow = [
-                { id: 'localizacao', title: 'Localização', Component: StepLocalizacaoPesquisa },
-                dadosPesquisaStep,
-                requerenteStep
+                { id: 'cartorio', title: 'Localização', Component: StepCartorio },
+                { id: 'dadosEscritura', title: 'Dados da Certidão', Component: StepEscritura },
+                { id: 'formato', title: 'Formato', Component: StepFormato },
+                { id: 'servicosAdicionais', title: 'Serviços Adicionais', Component: StepServicosAdicionais },
+                { id: 'endereco', title: 'Endereço', Component: StepEndereco },
+                requerenteStep,
             ];
-        } else if (slug === 'visualizao-de-matrcula') {
+        } else if (slug === 'visualizacao-de-matricula') {
             newFlow = [
                 { id: 'localizacaoMatricula', title: 'Localização', Component: StepLocalizacaoMatricula },
                 requerenteStep
             ];
-        } else if (slug === 'certido-de-penhor-e-safra') { // SLUG CORRETO
+        } else if (slug === 'certidao-de-penhor-e-safra') {
             newFlow = [
                 { id: 'cartorio', title: 'Localização', Component: StepCartorio },
-                { id: 'dadosPenhorSafra', title: 'Dados da Certidão', Component: StepDadosPenhorSafra }, // ETAPA CORRETA
+                { id: 'dadosPenhorSafra', title: 'Dados da Certidão', Component: StepDadosPenhorSafra },
                 servicosAdicionaisStep,
                 enderecoStep,
                 requerenteStep
             ];
-        } else { // Fluxo padrão para "Certidão de Imóvel"
-            const baseFlow = [
-                { id: 'cartorio', title: 'Cartório', Component: StepCartorio },
-                { id: 'tipoCertidao', title: 'Dados da Certidão', Component: StepTipoCertidao },
-            ];
-            let middleFlow = [];
-            const { tipo_certidao, formato } = formData;
-            switch (tipo_certidao) {
-                case 'Matrícula': case 'Vintenária': case 'Transcrição':
-                    middleFlow.push({ id: 'formato', title: 'Formato', Component: StepFormato });
-                    middleFlow.push(servicosAdicionaisStep);
-                    if (formato === 'Certidão em papel' || formato === 'Certidão em papel + eletrônica') {
-                        middleFlow.push(enderecoStep);
-                    }
-                    middleFlow.push(requerenteStep);
-                    break;
-                default:
-                    middleFlow.push(requerenteStep);
-                    break;
+        } else {
+            const baseFlow = [];
+            
+            if(category === 'Cartório de Registro Civil') {
+                 baseFlow.push({ id: 'cartorio', title: 'Localização', Component: StepCartorio });
+                 baseFlow.push({ id: 'dadosCertidaoCivil', title: 'Dados da Certidão', Component: StepTipoCertidao });
+            } else { 
+                 baseFlow.push({ id: 'cartorio', title: 'Localização', Component: StepCartorio });
+                 baseFlow.push({ id: 'tipoCertidao', title: 'Dados da Certidão', Component: StepTipoCertidao });
             }
+
+            let middleFlow = [];
+            const { formato } = formData;
+            
+            middleFlow.push({ id: 'formato', title: 'Formato', Component: StepFormato });
+            middleFlow.push(servicosAdicionaisStep);
+
+            if (formato === 'Certidão em papel') {
+                middleFlow.push(enderecoStep);
+            }
+            
+            middleFlow.push(requerenteStep);
             newFlow = [...baseFlow, ...middleFlow];
         }
         
         setFormFlow(newFlow);
         if (currentStep >= newFlow.length) { setCurrentStep(newFlow.length - 1); }
 
-    }, [productData.slug, formData.tipo_certidao, formData.formato, currentStep]);
+    }, [productData.slug, productData.category, productData.pesquisaType, productData.skipValidationAndTerms, formData.formato, currentStep]);
 
     useEffect(() => {
         const stepFromUrl = parseInt(searchParams.get('step'));
         const stepIndex = !isNaN(stepFromUrl) ? stepFromUrl - 1 : 0;
-        if (stepIndex !== currentStep) {
+        if (stepIndex !== currentStep && stepIndex < formFlow.length) {
             setCurrentStep(stepIndex);
         }
-    }, [searchParams, currentStep]);
+    }, [searchParams, currentStep, formFlow.length]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -134,12 +208,44 @@ export default function MultiStepForm({ productData }) {
 
     useEffect(() => {
         let newPrice = productData.price;
-        if (formData.formato === 'Certidão em papel') newPrice += 20.00;
-        if (formData.formato === 'Certidão em papel + eletrônica') newPrice += 289.90;
-        if (formData.apostilamento) newPrice += 100.00;
-        if (formData.aviso_recebimento) newPrice += 15.00;
+        const CUSTO_PAPEL = 20.00;
+        const CUSTO_APOSTILAMENTO = 100.00;
+        const CUSTO_AR = 15.00;
+        const CUSTO_RECONHECIMENTO_FIRMA = 25.00;
+        const CUSTO_TEOR_TRANSCRICAO = 30.00; 
+        const CUSTO_TEOR_REPROGRAFICA = 40.00;
+
+        // Custos Gerais de Formato
+        if (formData.formato === 'Certidão em papel') newPrice += CUSTO_PAPEL;
+        if (formData.formato === 'Certidão Reprográfica') newPrice += 20.00; // Custo de Escritura
+
+        // Serviços Adicionais (agora com uma verificação genérica)
+        if (
+            formData.apostilamento_digital || 
+            formData.apostilamento_fisico || 
+            formData.apostilamento
+        ) {
+            newPrice += CUSTO_APOSTILAMENTO;
+        }
+        if (formData.reconhecimento_firma) newPrice += CUSTO_RECONHECIMENTO_FIRMA;
+        if (formData.aviso_recebimento) newPrice += CUSTO_AR;
+        
+        // Serviço de Inteiro Teor
+        if (formData.inteiro_teor) {
+            newPrice += formData.tipo_inteiro_teor === 'Reprográfica' ? CUSTO_TEOR_REPROGRAFICA : CUSTO_TEOR_TRANSCRICAO;
+        }
+        
+        // Serviço de busca de Escritura
+        if (formData.localizar_pra_mim) newPrice += 99.90;
+
+        // Custos específicos de Protesto
+        if (productData.slug === toSlug('Certidão de Protesto')) {
+            if(formData.tempo_pesquisa === '10 anos') newPrice += 50.00; // Valor exemplo
+            if(formData.todos_cartorios_protesto) newPrice += 100.00; // Valor exemplo
+        }
+
         setFinalPrice(newPrice);
-    }, [formData, productData.price]);
+    }, [formData, productData.price, productData.slug]);
 
     const handleChange = useCallback((e) => {
         const { name, value, type, checked } = e.target;
@@ -162,78 +268,82 @@ export default function MultiStepForm({ productData }) {
       }
 
       const currentStepId = formFlow[currentStep]?.id;
+      setValidationError('');
 
-      if (currentStepId === 'dadosPesquisaAvancada') {
-        const doc = formData.cpf_cnpj_pesquisa || '';
-        const cleanedDoc = doc.replace(/\D/g, '');
-        if (cleanedDoc.length === 11 && !isValidCPF(doc)) {
-            setValidationError('CPF inválido. Por favor, verifique.');
-            return;
-        }
-        if (cleanedDoc.length === 14 && !isValidCNPJ(doc)) {
-            setValidationError('CNPJ inválido. Por favor, verifique.');
-            return;
-        }
-        if (cleanedDoc.length !== 11 && cleanedDoc.length !== 14) {
-            setValidationError('Documento inválido. Digite um CPF ou CNPJ.');
-            return;
-        }
+      // Validações de Pesquisas
+      if (currentStepId === 'dadosVeiculo' && !formData.placa_chassi) {
+          setValidationError('O campo Placa ou Chassi é obrigatório.');
+          return;
       }
-
-      if (currentStepId === 'tipoCertidao') {
-        const tipoCertidao = formData.tipo_certidao;
-        if (tipoCertidao === 'Pacto Antenupcial' && (!isValidCPF(formData.pacto_conjuge1_cpf) || !isValidCPF(formData.pacto_conjuge2_cpf))) {
-          setValidationError('Um ou mais CPFs são inválidos. Por favor, verifique.');
-          return;
-        }
-        if (tipoCertidao === 'Livro 3 - Garantias' && !isValidCPF(formData.livro3g_cpf)) {
-          setValidationError('CPF inválido. Por favor, verifique.');
-          return;
-        }
-        if (tipoCertidao === 'Livro 3 - Auxiliar' && !isValidCPF(formData.livro3a_cpf)) {
-          setValidationError('CPF inválido. Por favor, verifique.');
-          return;
-        }
+      if (currentStepId === 'dadosRouboFurto' && !formData.placa && !formData.renavam) {
+        setValidationError('Preencha pelo menos um campo (Placa ou Renavam).');
+        return;
       }
-      
-      if (currentStepId === 'dadosPesquisa') {
-        const tipoPesquisa = formData.tipo_pesquisa || 'pessoa';
-        if (tipoPesquisa === 'pessoa' && !isValidCPF(formData.cpf)) {
-          setValidationError('CPF inválido. Por favor, verifique.');
-          return;
-        }
-        if (tipoPesquisa === 'empresa' && !isValidCNPJ(formData.cnpj)) {
-          setValidationError('CNPJ inválido. Por favor, verifique.');
-          return;
-        }
-      }
-
-      // ==================================================================
-      // ===== INÍCIO DA ADIÇÃO DA LÓGICA DE VALIDAÇÃO PENHOR E SAFRA =====
-      // ==================================================================
-      if (currentStepId === 'dadosPenhorSafra') {
-        const tipoPessoa = formData.tipo_pessoa || 'fisica'; // Garante um valor padrão
-        if (tipoPessoa === 'fisica' && !isValidCPF(formData.cpf)) {
-            setValidationError('CPF inválido. Por favor, verifique.');
-            return;
-        }
-        if (tipoPessoa === 'juridica' && !isValidCNPJ(formData.cnpj)) {
-            setValidationError('CNPJ inválido. Por favor, verifique.');
-            return;
-        }
-      }
-      // ==================================================================
-      // ===== FIM DA ADIÇÃO DA LÓGICA DE VALIDAÇÃO PENHOR E SAFRA ========
-      // ==================================================================
-
-      if (currentStepId === 'requerente' && !isValidCPF(formData.requerente_cpf)) {
-        setValidationError('CPF inválido. Por favor, verifique.');
+      if (currentStepId === 'dadosSintegra' && !formData.cnpj && !formData.inscricao_estadual && !formData.nire) {
+        setValidationError('Preencha pelo menos um campo (CNPJ, Inscrição Estadual ou NIRE).');
         return;
       }
 
-      const nextStepIndex = Math.min(currentStep + 1, formFlow.length - 1);
-      navigateToStep(nextStepIndex);
-      window.scrollTo(0, 0);
+      // Validações de Documentos (CPF/CNPJ)
+      if (['dadosPesquisaAvancada', 'dadosProcessos', 'dadosEscrituras', 'protestoDados'].includes(currentStepId)) {
+        const doc = formData.cpf_cnpj || formData.cpf_cnpj_pesquisa || '';
+        const cleanedDoc = doc.replace(/\D/g, '');
+        if (cleanedDoc.length > 0 && cleanedDoc.length < 11) {
+            setValidationError('Documento incompleto.'); return;
+        }
+        if (cleanedDoc.length === 11 && !isValidCPF(doc)) {
+            setValidationError('CPF inválido. Por favor, verifique.'); return;
+        }
+        if (cleanedDoc.length > 11 && cleanedDoc.length < 14) {
+            setValidationError('Documento incompleto.'); return;
+        }
+        if (cleanedDoc.length === 14 && !isValidCNPJ(doc)) {
+            setValidationError('CNPJ inválido. Por favor, verifique.'); return;
+        }
+      }
+      
+      if (currentStepId === 'dadosEscritura') {
+          if (!isValidCPF(formData.cpf)) {
+              setValidationError('CPF/CNPJ inválido. Por favor, verifique.'); return;
+          }
+      }
+
+      // Validações de Imóveis
+      if (currentStepId === 'tipoCertidao') {
+        const tipoCertidao = formData.tipo_certidao;
+        if (tipoCertidao === 'Pacto Antenupcial' && (!isValidCPF(formData.pacto_conjuge1_cpf) || !isValidCPF(formData.pacto_conjuge2_cpf))) {
+          setValidationError('Um ou mais CPFs são inválidos. Por favor, verifique.'); return;
+        }
+        if (tipoCertidao === 'Livro 3 - Garantias' && !isValidCPF(formData.livro3g_cpf)) {
+          setValidationError('CPF inválido. Por favor, verifique.'); return;
+        }
+        if (tipoCertidao === 'Livro 3 - Auxiliar' && !isValidCPF(formData.livro3a_cpf)) {
+          setValidationError('CPF inválido. Por favor, verifique.'); return;
+        }
+      }
+      
+      // Validações de Penhor e Safra
+      if (currentStepId === 'dadosPenhorSafra') {
+        const tipoPessoa = formData.tipo_pessoa || 'fisica';
+        if (tipoPessoa === 'fisica' && !isValidCPF(formData.cpf)) {
+            setValidationError('CPF inválido. Por favor, verifique.'); return;
+        }
+        if (tipoPessoa === 'juridica' && !isValidCNPJ(formData.cnpj)) {
+            setValidationError('CNPJ inválido. Por favor, verifique.'); return;
+        }
+      }
+
+      // Validação do Requerente (última etapa antes da confirmação)
+      if (currentStepId === 'requerente' && !isValidCPF(formData.requerente_cpf)) {
+        setValidationError('CPF do solicitante é inválido. Por favor, verifique.');
+        return;
+      }
+
+      const nextStepIndex = Math.min(currentStep + 1, formFlow.length);
+      if (nextStepIndex < formFlow.length) {
+          navigateToStep(nextStepIndex);
+          window.scrollTo(0, 0);
+      }
     };
     
     const handlePrevStep = () => {
@@ -254,8 +364,8 @@ export default function MultiStepForm({ productData }) {
             form.reportValidity();
             return;
         }
-        if (!isValidCPF(formData.requerente_cpf)) {
-            setValidationError('CPF inválido. Por favor, verifique.');
+        if (formFlow[currentStep]?.id === 'requerente' && !isValidCPF(formData.requerente_cpf)) {
+            setValidationError('CPF do solicitante é inválido. Por favor, verifique.');
             return;
         }
         setIsConfirmModalOpen(true);
@@ -271,7 +381,6 @@ export default function MultiStepForm({ productData }) {
     const renderCurrentStep = () => {
         if (formFlow.length === 0 || !formFlow[currentStep]) return <div>Carregando...</div>;
         const { Component } = formFlow[currentStep];
-        // Passa o erro para o componente filho
         return <Component formData={formData} handleChange={handleChange} productData={productData} error={validationError} />;
     };
 
@@ -283,7 +392,7 @@ export default function MultiStepForm({ productData }) {
                 <div className={styles.mainContent}>
                     <StepProgressBar steps={formFlow} currentStep={currentStep} />
                     <div className={styles.formContainer}>
-                        <form onSubmit={handleOpenConfirmation} noValidate>
+                        <form onSubmit={(e) => { isLastStep ? handleOpenConfirmation(e) : e.preventDefault() }} noValidate>
                             {renderCurrentStep()}
                             <div className={styles.navigation}>
                                 {currentStep > 0 && <button type="button" onClick={handlePrevStep} className={styles.prevButton}>Voltar</button>}
@@ -291,7 +400,7 @@ export default function MultiStepForm({ productData }) {
                                 {!isLastStep 
                                     ? <button type="button" onClick={handleNextStep} className={styles.nextButton}>Continuar</button>
                                     : <button type="submit" className={styles.submitButton}>
-                                        Finalizar Compra
+                                        Ir para o Pagamento
                                       </button>
                                 }
                             </div>
@@ -314,8 +423,7 @@ export default function MultiStepForm({ productData }) {
             {isConfirmModalOpen && (
                 <ConfirmationModal
                     orderDetails={{ 
-                        cartItems: [{ ...productData, formData, price: finalPrice }], 
-                        billingDetails: formData,
+                        item: { ...productData, formData },
                         total: finalPrice 
                     }}
                     onClose={() => setIsConfirmModalOpen(false)}

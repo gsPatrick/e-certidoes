@@ -97,11 +97,10 @@ export default function StepPesquisaAvancada({ formData, handleChange, productDa
               type="text" 
               name="cpf_cnpj_pesquisa" 
               value={formData.cpf_cnpj_pesquisa || ''} 
-              onChange={handleCpfCnpjChange} // Usa a função com máscara
+              onChange={handleCpfCnpjChange}
               placeholder="Digite o CPF ou CNPJ" 
               required 
             />
-            {/* Exibe o erro de validação vindo do componente pai */}
             {error && <small className={styles.errorMessage}>{error}</small>}
           </div>
           {isCNPJInput && (
@@ -113,7 +112,7 @@ export default function StepPesquisaAvancada({ formData, handleChange, productDa
       </div>
       
       <div className={styles.formGroup}>
-        <label htmlFor="nome_razao_social">{isCNPJInput ? 'Razão Social (Opcional)' : 'Nome Completo (Opcional)'}</label>
+        <label htmlFor="nome_razao_social">{isCNPJInput ? 'Razão Social a ser pesquisada (Opcional)' : 'Nome completo a ser pesquisado (Opcional)'}</label>
         <input
           type="text"
           id="nome_razao_social"
@@ -154,7 +153,7 @@ export default function StepPesquisaAvancada({ formData, handleChange, productDa
       </div>
 
       <p className={styles.advertencia}>
-        <strong>ADVERTÊNCIA:</strong> O titular dos dados pesquisados poderá solicitar ao ONR informações relativas à identificação do solicitante e indicação da finalidade (Provimento CNJ n. 134/2022, art. 50, Parágrafo único).
+        <strong>ADVERTÊNCIA:</strong> O titular dos dados pesquisados poderá solicitar a <strong>A e-Certidões</strong> informações relativas à identificação do solicitante e indicação da finalidade (Provimento CNJ n. 134/2022, art. 50, Parágrafo único).
       </p>
 
       <div className={styles.finalConfirm}>
