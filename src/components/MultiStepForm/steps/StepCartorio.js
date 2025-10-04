@@ -7,14 +7,12 @@ import api from '@/services/api';
 import styles from './StepCartorio.module.css';
 import SearchableDropdown from './SearchableDropdown';
 
-// --- ALTERAÇÃO INICIADA: Ícones adicionados ---
 const UploadIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
 );
 const CloseIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 );
-// --- ALTERAÇÃO FINALIZADA ---
 
 export default function StepCartorio({ formData, handleChange, productData }) {
   const [estados, setEstados] = useState([]);
@@ -23,10 +21,8 @@ export default function StepCartorio({ formData, handleChange, productData }) {
   const [loading, setLoading] = useState({ estados: false, cidades: false, cartorios: false });
   const [showManualCartorio, setShowManualCartorio] = useState(false);
   
-  // --- ALTERAÇÃO INICIADA: Lógica de upload de arquivo ---
   const [selectedFile, setSelectedFile] = useState(null);
   const isRegistroCivil = productData?.category === 'Cartório de Registro Civil';
-  // --- ALTERAÇÃO FINALIZADA ---
 
   useEffect(() => {
     setLoading(prev => ({ ...prev, estados: true }));
@@ -48,12 +44,10 @@ export default function StepCartorio({ formData, handleChange, productData }) {
       setCartorios([]);
       return;
     }
-    // --- ALTERAÇÃO INICIADA: Lógica para pegar ID da atribuição foi refinada ---
     const atribuicaoId = productData?.atribuicaoId;
-    // --- ALTERAÇÃO FINALIZADA ---
     setLoading(prev => ({ ...prev, cartorios: true }));
     const params = new URLSearchParams({ estado: formData.estado, cidade: formData.cidade });
-    if (atribuicaoId) params.append('atribuicaoId', atribuicaoId);
+    if (atribuicaoId) params.append('atribuicaoId', String(atribuicaoId));
     api.get(`/cartorios?${params.toString()}`).then(res => setCartorios(res.data)).finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
   }, [formData.cidade, formData.estado, productData?.atribuicaoId]);
 
@@ -79,7 +73,6 @@ export default function StepCartorio({ formData, handleChange, productData }) {
     }
   };
 
-  // --- ALTERAÇÃO INICIADA: Novas funções para "Não sei o cartório" ---
   const handleNaoSeiCartorioChange = (e) => {
     const { checked } = e.target;
     handleChange(e);
@@ -108,20 +101,17 @@ export default function StepCartorio({ formData, handleChange, productData }) {
   };
   
   const certidaoTipo = productData.name.split(' de ')[1]?.toLowerCase() || 'documento';
-  // --- ALTERAÇÃO FINALIZADA ---
 
   return (
     <div>
       <h3 className={styles.stepTitle}>1. Localização do Cartório</h3>
       
-      {/* --- ALTERAÇÃO INICIADA: Box de informação condicional --- */}
       {isRegistroCivil && (
         <div className={styles.infoBox}>
           <span className={styles.lightbulb}>💡</span>
           <span>A certidão de {certidaoTipo} geralmente informa em qual cartório o ato foi registrado, incluindo o endereço da serventia.</span>
         </div>
       )}
-      {/* --- ALTERAÇÃO FINALIZADA --- */}
 
       <div className={styles.formGroup}>
         <label htmlFor="estado">Estado do Cartório *</label>
@@ -140,11 +130,10 @@ export default function StepCartorio({ formData, handleChange, productData }) {
           value={formData.cartorio || ''}
           onChange={(value) => handleDropdownChange('cartorio', value)}
           placeholder={loading.cartorios ? 'Buscando...' : 'Selecione o Cartório'}
-          disabled={!formData.cidade || loading.cartorios || showManualCartorio || formData.nao_sei_cartorio}
+          disabled={!formData.cidade || loading.cartorios || showManualCartorio || !!formData.nao_sei_cartorio}
         />
       </div>
       
-      {/* --- ALTERAÇÃO INICIADA: Lógica para "Não sei o cartório" e fallback --- */}
       {isRegistroCivil ? (
         <div className={styles.naoSeiCartorioWrapper}>
             <label className={styles.naoSeiCartorioCheck}>
@@ -194,7 +183,6 @@ export default function StepCartorio({ formData, handleChange, productData }) {
             )}
         </div>
       )}
-      {/* --- ALTERAÇÃO FINALIZADA --- */}
     </div>
   );
 }

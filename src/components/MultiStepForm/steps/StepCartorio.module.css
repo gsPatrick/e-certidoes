@@ -5,7 +5,7 @@
     font-weight: 700;
     color: #333;
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .infoBox {
@@ -36,11 +36,23 @@
     margin-bottom: 0.5rem;
 }
 
+/* --- ALTERAÇÃO INICIADA: Estilos para inputs e selects --- */
+.formGroup input,
+.formGroup select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #fff; /* Fundo branco */
+}
+/* --- FIM DA ALTERAÇÃO --- */
+
+
 .fallbackContainer {
   margin-top: 2rem;
   padding: 1.5rem;
   background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
   border-radius: 8px;
   text-align: center;
 }
@@ -61,22 +73,21 @@
 }
 
 .fallbackButton {
-  padding: 0.6rem 1.2rem;
+  padding: 0.7rem 1.5rem;
   border: 1px solid #294B29;
-  background-color: transparent;
+  background-color: #fff;
   color: #294B29;
   border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-family: inherit;
   font-weight: 500;
   transition: all 0.2s;
 }
 
 .fallbackButton:hover {
-  background-color: #eaf0ec;
-  color: #1c331c;
+  background-color: #f1f3f5;
 }
 
 .manualInputWrapper {
@@ -93,8 +104,8 @@
 }
 
 .manualInputWarning {
-    background-color: #fff3cd;
-    border-left: 4px solid #ffeeba;
+    background-color: #fffbe6;
+    border-left: 4px solid #ffc107;
     color: #856404;
     padding: 1rem;
     border-radius: 4px;
@@ -103,7 +114,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* --- ALTERAÇÃO INICIADA: NOVOS ESTILOS --- */
+
 .naoSeiCartorioWrapper {
   margin-top: -0.5rem;
 }
@@ -213,4 +224,3 @@
   padding: 0;
   line-height: 1;
 }
-/* --- ALTERAÇÃO FINALIZADA --- */

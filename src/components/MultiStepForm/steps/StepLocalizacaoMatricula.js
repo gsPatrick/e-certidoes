@@ -4,7 +4,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '@/services/api';
-import styles from './StepCartorio.module.css'; // Reutilizando o CSS
+// --- ALTERAÇÃO AQUI: Importando o CSS correto ---
+import styles from './StepLocalizacaoMatricula.module.css';
 
 export default function StepLocalizacaoMatricula({ formData, handleChange, productData }) {
   const [estados, setEstados] = useState([]);
@@ -55,7 +56,7 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
 
   return (
     <div>
-      <h3 className={styles.stepTitle}>1. DADOS PARA LOCALIZAÇÃO</h3>
+      <h3 className={styles.stepTitle}>1. Dados para Localização</h3>
       <p className={styles.stepDescription}>
         Informe a localização do cartório e o número da matrícula do imóvel.
       </p>

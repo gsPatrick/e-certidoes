@@ -68,16 +68,38 @@
 .orderSummary { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 1.5rem; }
 
 .summaryCard { background-color: #fff; border: 1px solid #e9ecef; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.summaryCardHeader { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #e9ecef; }
+.summaryCardHeader { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #e9ecef; background-color: #f8f9fa; }
 .summaryCardTitle { font-weight: bold; font-size: 1.1rem; margin: 0; color: #3c4f41; }
 .deleteButton { background: none; border: none; cursor: pointer; color: #adb5bd; padding: 0; line-height: 1; }
 .deleteButton:hover { color: #dc3545; }
 
 .summaryCardBody { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-.summaryDetail { display: flex; align-items: center; gap: 0.75rem; color: #495057; font-size: 0.9rem; }
-.summaryDetail svg { color: #6c757d; flex-shrink: 0; }
 
-.summaryActions { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid #e9ecef; background-color: #f8f9fa; }
+.summaryDetailItem {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #495057;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed #e9ecef;
+}
+.summaryCardBody > div:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.detailLabel {
+    font-weight: 500;
+    color: #6c757d;
+    padding-right: 1rem;
+}
+.detailValue {
+    font-weight: 600;
+    color: #212529;
+    text-align: right;
+    word-break: break-word; /* Garante que valores longos quebrem a linha */
+}
+
+.summaryActions { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid #e9ecef; }
 .summaryActions button { background: none; border: none; text-decoration: underline; cursor: pointer; color: #294B29; font-weight: 500; }
 .summaryPrice { font-weight: bold; font-size: 1.2rem; }
 

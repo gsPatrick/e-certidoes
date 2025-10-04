@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import styles from './Checkout.module.css';
-import { CreditCardIcon, PixIcon, BoletoIcon, LocationIcon, UserIcon, FormatIcon, PaperclipIcon } from './SecurityIcons';
+import { CreditCardIcon, PixIcon, BoletoIcon } from './SecurityIcons';
 
 // Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
@@ -16,22 +16,33 @@ const formatLabel = (key) => {
         .replace(/\b\w/g, char => char.toUpperCase());
 };
 
+// Componente auxiliar para renderizar detalhes no resumo
+const DetailItem = ({ label, value }) => {
+    if (value === null || value === undefined || value === '' || value === false) {
+        return null;
+    }
+    const displayValue = typeof value === 'boolean' ? 'Sim' : String(value);
+    return (
+        <div className={styles.summaryDetailItem}>
+            <span className={styles.detailLabel}>{label}:</span>
+            <span className={styles.detailValue}>{displayValue}</span>
+        </div>
+    );
+};
+
+
 // Componente para o card de resumo do pedido na sidebar
 const OrderSummaryCard = ({ item, onRemove }) => {
     if (!item || !item.formData) return null;
-
     const { formData } = item;
     
-    // Filtra e exibe os detalhes mais relevantes
-    const mainDetails = [
-        { Icon: LocationIcon, text: `${formData.cidade || ''} - ${formData.estado || ''}` },
-        { Icon: UserIcon, text: formData.requerente_nome },
-        { Icon: FormatIcon, text: formData.formato },
-        ...Object.entries(formData)
-            .filter(([key, value]) => value && !['requerente_nome', 'cidade', 'estado', 'formato'].includes(key))
-            .slice(0, 2) // Pega mais 2 detalhes importantes
-            .map(([key, value]) => ({ Icon: PaperclipIcon, text: `${formatLabel(key)}: ${value}` }))
-    ];
+    // Lista de chaves que NÃO devem ser exibidas no resumo final
+    const excludeKeys = new Set([
+        'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa',
+    ]);
+
+    const allDetails = Object.entries(formData)
+        .filter(([key]) => !excludeKeys.has(key));
 
     return (
         <div className={styles.summaryCard}>
@@ -42,15 +53,13 @@ const OrderSummaryCard = ({ item, onRemove }) => {
                 </button>
             </div>
             <div className={styles.summaryCardBody}>
-                {mainDetails.map((detail, index) => (
-                    <div key={index} className={styles.summaryDetail}>
-                        <detail.Icon />
-                        <span>{detail.text}</span>
-                    </div>
+                {allDetails.map(([key, value]) => (
+                    <DetailItem key={key} label={formatLabel(key)} value={value} />
                 ))}
             </div>
             <div className={styles.summaryActions}>
-                <button type="button">Ver detalhes</button>
+                {/* O botão "Editar" pode levar de volta à página do produto no futuro */}
+            
                 <span className={styles.summaryPrice}>R$ {item.price.toFixed(2).replace('.', ',')}</span>
             </div>
         </div>
@@ -64,6 +73,7 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(false);
     const [activePayment, setActivePayment] = useState('card');
     const [isClient, setIsClient] = useState(false);
+    
     const [billingInfo, setBillingInfo] = useState({
         firstName: '',
         lastName: '',
@@ -73,7 +83,7 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         setIsClient(true);
-        // Preenche os dados do formulário se o usuário estiver logado
+        
         if (user) {
             setBillingInfo({
                 firstName: user.firstName || '',
@@ -81,8 +91,25 @@ export default function CheckoutPage() {
                 cpf: user.cpf || '',
                 email: user.email || ''
             });
+        } 
+        else if (cartItems.length > 0) {
+            const lastItem = cartItems[cartItems.length - 1];
+            if (lastItem && lastItem.formData) {
+                const { requerente_nome, requerente_cpf, requerente_email } = lastItem.formData;
+                
+                const nomeArray = requerente_nome ? requerente_nome.split(' ') : [''];
+                const firstName = nomeArray[0];
+                const lastName = nomeArray.slice(1).join(' ');
+
+                setBillingInfo({
+                    firstName: firstName || '',
+                    lastName: lastName || '',
+                    cpf: requerente_cpf || '',
+                    email: requerente_email || ''
+                });
+            }
         }
-    }, [user]);
+    }, [user, cartItems]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -90,7 +117,7 @@ export default function CheckoutPage() {
     };
 
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-    const frete = 0; // Lógica de frete a ser adicionada
+    const frete = 0;
     const total = subtotal + frete;
 
     const handleFinalizarCompra = async (e) => {
@@ -133,7 +160,6 @@ export default function CheckoutPage() {
                                         <button type="button" onClick={() => setActivePayment('pix')} className={`${styles.paymentTab} ${activePayment === 'pix' ? styles.activeTab : ''}`}><PixIcon /> PIX</button>
                                     </div>
                                     <div className={styles.paymentContent}>
-                                        {/* ... (Conteúdo de pagamento permanece o mesmo) ... */}
                                          {activePayment === 'card' && (
                                             <div className={styles.creditCardForm}>
                                                 <div className={styles.formGroup}><label>Número do cartão</label><input type="text" placeholder="0000 0000 0000 0000" required/></div>

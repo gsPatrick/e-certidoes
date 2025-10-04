@@ -41,10 +41,9 @@ import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal'
 import StepProgressBar from './StepProgressBar';
 import SummarySidebar from './SummarySidebar';
 
-const FORM_DATA_KEY = 'multiStepFormData';
-
 // Função auxiliar toSlug para consistência
 const toSlug = (str) => {
+  if (!str) return '';
   const normalizedStr = str.normalize('NFD');
   const withoutAccents = normalizedStr.replace(/[\u0300-\u036f]/g, '');
   return withoutAccents
@@ -54,20 +53,30 @@ const toSlug = (str) => {
     .replace(/--+/g, '-');
 };
 
-
 export default function MultiStepForm({ productData }) {
     const { addToCart } = useCart();
     const router = useRouter();
     const searchParams = useSearchParams();
 
+    // Cria uma chave única para o sessionStorage baseada na categoria do produto
+    const getStorageKey = useCallback(() => {
+        if (!productData || !productData.category) return null;
+        const categorySlug = toSlug(productData.category);
+        return `formData_${categorySlug}`;
+    }, [productData.category]);
+
     const [formData, setFormData] = useState(() => {
         if (typeof window === 'undefined') return {};
-        const savedData = window.sessionStorage.getItem(FORM_DATA_KEY);
+
+        const storageKey = getStorageKey();
+        if (!storageKey) return {};
+
+        const savedData = window.sessionStorage.getItem(storageKey);
         return savedData ? JSON.parse(savedData) : {
             tipo_certidao: 'Matrícula',
             tipo_pesquisa: 'pessoa',
             tipo_pessoa: 'Pessoa física',
-            tempo_pesquisa: '5 anos', // Padrão para protesto
+            tempo_pesquisa: '5 anos',
         };
     });
 
@@ -202,9 +211,12 @@ export default function MultiStepForm({ productData }) {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            window.sessionStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData));
+            const storageKey = getStorageKey();
+            if (storageKey) {
+                window.sessionStorage.setItem(storageKey, JSON.stringify(formData));
+            }
         }
-    }, [formData]);
+    }, [formData, getStorageKey]);
 
     useEffect(() => {
         let newPrice = productData.price;
@@ -215,33 +227,22 @@ export default function MultiStepForm({ productData }) {
         const CUSTO_TEOR_TRANSCRICAO = 30.00; 
         const CUSTO_TEOR_REPROGRAFICA = 40.00;
 
-        // Custos Gerais de Formato
         if (formData.formato === 'Certidão em papel') newPrice += CUSTO_PAPEL;
-        if (formData.formato === 'Certidão Reprográfica') newPrice += 20.00; // Custo de Escritura
+        if (formData.formato === 'Certidão Reprográfica') newPrice += 20.00; 
 
-        // Serviços Adicionais (agora com uma verificação genérica)
-        if (
-            formData.apostilamento_digital || 
-            formData.apostilamento_fisico || 
-            formData.apostilamento
-        ) {
-            newPrice += CUSTO_APOSTILAMENTO;
-        }
+        if (formData.apostilamento_digital || formData.apostilamento_fisico || formData.apostilamento) newPrice += CUSTO_APOSTILAMENTO;
         if (formData.reconhecimento_firma) newPrice += CUSTO_RECONHECIMENTO_FIRMA;
         if (formData.aviso_recebimento) newPrice += CUSTO_AR;
         
-        // Serviço de Inteiro Teor
         if (formData.inteiro_teor) {
             newPrice += formData.tipo_inteiro_teor === 'Reprográfica' ? CUSTO_TEOR_REPROGRAFICA : CUSTO_TEOR_TRANSCRICAO;
         }
-        
-        // Serviço de busca de Escritura
+
         if (formData.localizar_pra_mim) newPrice += 99.90;
 
-        // Custos específicos de Protesto
         if (productData.slug === toSlug('Certidão de Protesto')) {
-            if(formData.tempo_pesquisa === '10 anos') newPrice += 50.00; // Valor exemplo
-            if(formData.todos_cartorios_protesto) newPrice += 100.00; // Valor exemplo
+            if(formData.tempo_pesquisa === '10 anos') newPrice += 50.00; 
+            if(formData.todos_cartorios_protesto) newPrice += 100.00;
         }
 
         setFinalPrice(newPrice);
@@ -252,7 +253,7 @@ export default function MultiStepForm({ productData }) {
         const finalValue = type === 'checkbox' ? checked : value;
         setFormData(prev => ({ ...prev, [name]: finalValue }));
         if (validationError) setValidationError('');
-    }, [validationError]);
+    }, [validationError, setFormData, setValidationError]);
 
     const navigateToStep = (stepIndex) => {
         const newStep = stepIndex + 1;
@@ -270,7 +271,6 @@ export default function MultiStepForm({ productData }) {
       const currentStepId = formFlow[currentStep]?.id;
       setValidationError('');
 
-      // Validações de Pesquisas
       if (currentStepId === 'dadosVeiculo' && !formData.placa_chassi) {
           setValidationError('O campo Placa ou Chassi é obrigatório.');
           return;
@@ -284,7 +284,6 @@ export default function MultiStepForm({ productData }) {
         return;
       }
 
-      // Validações de Documentos (CPF/CNPJ)
       if (['dadosPesquisaAvancada', 'dadosProcessos', 'dadosEscrituras', 'protestoDados'].includes(currentStepId)) {
         const doc = formData.cpf_cnpj || formData.cpf_cnpj_pesquisa || '';
         const cleanedDoc = doc.replace(/\D/g, '');
@@ -308,7 +307,6 @@ export default function MultiStepForm({ productData }) {
           }
       }
 
-      // Validações de Imóveis
       if (currentStepId === 'tipoCertidao') {
         const tipoCertidao = formData.tipo_certidao;
         if (tipoCertidao === 'Pacto Antenupcial' && (!isValidCPF(formData.pacto_conjuge1_cpf) || !isValidCPF(formData.pacto_conjuge2_cpf))) {
@@ -322,7 +320,6 @@ export default function MultiStepForm({ productData }) {
         }
       }
       
-      // Validações de Penhor e Safra
       if (currentStepId === 'dadosPenhorSafra') {
         const tipoPessoa = formData.tipo_pessoa || 'fisica';
         if (tipoPessoa === 'fisica' && !isValidCPF(formData.cpf)) {
@@ -333,7 +330,6 @@ export default function MultiStepForm({ productData }) {
         }
       }
 
-      // Validação do Requerente (última etapa antes da confirmação)
       if (currentStepId === 'requerente' && !isValidCPF(formData.requerente_cpf)) {
         setValidationError('CPF do solicitante é inválido. Por favor, verifique.');
         return;
@@ -374,7 +370,14 @@ export default function MultiStepForm({ productData }) {
     const handleFinalConfirmAndSubmit = () => {
         setIsConfirmModalOpen(false);
         addToCart({ ...productData, price: finalPrice, formData });
-        window.sessionStorage.removeItem(FORM_DATA_KEY);
+        
+        if (typeof window !== 'undefined') {
+            const storageKey = getStorageKey();
+            if (storageKey) {
+                window.sessionStorage.removeItem(storageKey);
+            }
+        }
+        
         router.push('/finalizar-compra');
     };
 
