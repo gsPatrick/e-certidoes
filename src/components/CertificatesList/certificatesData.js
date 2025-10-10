@@ -254,6 +254,16 @@ export const allCertificates = [
     faq: '[{"q": "Quem precisa desta certidão?", "a": "Produtores rurais, cooperativas, tradings e instituições financeiras que atuam com crédito agrícola."},{"q": "O que pode ser dado em penhor?", "a": "Colheitas futuras, máquinas, veículos agrícolas e outros bens móveis relacionados à atividade rural."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
+  // --- ADICIONADO DO CÓDIGO 02 ---
+  { id: 64, name: 'Pesquisa Prévia', slug: toSlug('Pesquisa Previa'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Previa')], 
+    description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
+    pesquisaType: 'previa', skipValidationAndTerms: true 
+  },
+  // --- ADICIONADO DO CÓDIGO 02 ---
+  { id: 65, name: 'Pesquisa Qualificada', slug: toSlug('Pesquisa Qualificada'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Qualificada')], 
+    description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
+    pesquisaType: 'qualificada', skipValidationAndTerms: true 
+  },
   { id: 53, name: 'Pacote de Certidões - Compra e Venda de Imóveis', slug: toSlug('Pacote de Certidões - Compra e Venda de Imóveis'), price: 0, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Pacote de Certidões - Compra e Venda de Imóveis')],
     description: 'Obtenha todas as certidões necessárias para a compra ou venda de um imóvel em um único pedido. (Serviço em breve)',
     longDescription: 'Simplifique o processo de compra e venda de imóveis. Este pacote reunirá as principais certidões exigidas, como a matrícula do imóvel, certidões negativas dos vendedores (Justiça Federal, Estadual, Trabalhista) e outras, garantindo total segurança e conformidade para a sua transação. Aguarde!',
@@ -326,6 +336,16 @@ export const allCertificates = [
   { id: 63, name: 'Pesquisa Processos Judiciais e Administrativos', slug: toSlug('Pesquisa Processos Judiciais e Administrativos'), price: 77.30, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Processos Judiciais e Administrativos')], description: 'Dados atuais e históricos de ações judiciais e processos administrativos.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
   { id: 68, name: 'Pesquisa Telefone e Endereço pelo CPF/CNPJ', slug: toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ')], description: 'Localize telefones e endereços através do CPF ou CNPJ.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
   { id: 69, name: 'Pesquisa Sintegra Estadual', slug: toSlug('Pesquisa Sintegra Estadual'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Sintegra Estadual')], description: 'Consulta ao Cadastro de Contribuintes de ICMS (SINTEGRA).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaSintegra, skipValidationAndTerms: true },
+  // --- ADICIONADO DO CÓDIGO 02 ---
+  { id: 64, name: 'Pesquisa Prévia', slug: toSlug('Pesquisa Previa'), price: 139.50, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Previa')], 
+    description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
+    pesquisaType: 'previa', skipValidationAndTerms: true 
+  },
+  // --- ADICIONADO DO CÓDIGO 02 ---
+  { id: 65, name: 'Pesquisa Qualificada', slug: toSlug('Pesquisa Qualificada'), price: 139.50, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Qualificada')], 
+    description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
+    pesquisaType: 'qualificada', skipValidationAndTerms: true 
+  },
 
   // --- Certidões Federais e Estaduais ---
   ...[
