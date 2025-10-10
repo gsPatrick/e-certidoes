@@ -129,3 +129,70 @@
   .tabNav button:last-child { border-bottom: none; }
   .tabNav .activeTab { border-bottom: 1px solid #e9ecef; background-color: #f8f9fa; }
 }
+
+/* === ESTILOS PARA O ACORDEÃO DO FAQ === */
+.faqContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.faqItem {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.faqQuestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.faqQuestion:hover {
+  background-color: #f8f9fa;
+}
+
+.faqIcon {
+  color: #294B29;
+  transition: transform 0.3s ease-in-out;
+}
+
+.faqIcon line:last-child {
+  transform-origin: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Gira a linha vertical do ícone para formar um sinal de menos */
+.faqIconOpen line:last-child {
+  transform: rotate(90deg);
+}
+
+.faqAnswer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.faqAnswerOpen {
+  max-height: 500px; /* Um valor alto para acomodar o conteúdo */
+}
+
+.faqAnswerContent {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+}
+
+.faqAnswerContent p {
+  margin: 0;
+  color: #495057;
+  line-height: 1.7;
+}

@@ -7,16 +7,11 @@ import styles from './StepServicosAdicionais.module.css';
 const WarningIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>);
 const InfoIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>);
 
-
 const toSlug = (str) => {
   if (!str) return '';
   const normalizedStr = str.normalize('NFD');
   const withoutAccents = normalizedStr.replace(/[\u0300-\u036f]/g, '');
-  return withoutAccents
-    .toLowerCase()
-    .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-');
+  return withoutAccents.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-');
 };
 
 export default function StepServicosAdicionais({ formData, handleChange, productData }) {
@@ -38,12 +33,11 @@ export default function StepServicosAdicionais({ formData, handleChange, product
       { id: 'aviso_recebimento', label: 'Aviso de Recebimento (AR)', description: 'Comprovação de que o documento foi entregue ao destinatário.', condition: (data) => data.formato === 'Certidão em papel' }
     ];
   } else {
-    // Serviços para Registro Civil e outros
+    // Serviços para Registro Civil e outros (SEM RECONHECIMENTO DE FIRMA)
     allServices = [
         { id: 'apostilamento_digital', label: 'Apostilamento Digital', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão eletrônica' },
         { id: 'inteiro_teor', label: 'Inteiro teor', description: 'Todos os dados da certidão para procedimentos específicos, como processo de cidadania. Pode ser necessário preenchimento de requerimento com assinatura digital ou firma reconhecida.', condition: (data) => data.formato === 'Certidão em papel' },
         { id: 'apostilamento_fisico', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão em papel' },
-        { id: 'reconhecimento_firma', label: 'Reconhecimento de firma', description: 'Selo que reconhece quem assina a certidão tem firma reconhecida.', condition: (data) => data.formato === 'Certidão em papel' },
         { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: (data) => data.formato === 'Certidão em papel' }
     ];
   }

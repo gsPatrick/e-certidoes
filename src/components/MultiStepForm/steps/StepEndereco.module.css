@@ -18,7 +18,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 2.5rem;
+    margin-top: 2.5rem; /* Adicionado para separar dos formulários */
 }
 
 .checkboxLabel {
@@ -70,6 +70,7 @@
 .cepStatus { 
     font-size: 0.85rem; 
     margin-top: 0.25rem; 
+    display: block; /* Garante que o status fique abaixo do input */
 }
 
 .cepError { 
@@ -132,4 +133,61 @@
     outline: none; 
     border-color: #294B29; 
     box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1); 
+}
+
+.formAnimation {
+    animation: fadeIn 0.5s ease;
+}
+
+/* --- Estilos para o Modal de Erro --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #c0392b; /* Vermelho para indicar erro */
+}
+
+.modalContent p {
+  margin-bottom: 2rem;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.modalButton {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modalButton:hover {
+  background-color: #3a6b3a;
 }

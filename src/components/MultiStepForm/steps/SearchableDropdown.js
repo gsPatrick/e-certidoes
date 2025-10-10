@@ -9,15 +9,21 @@ export default function SearchableDropdown({ options, value, onChange, placehold
   const [searchTerm, setSearchTerm] = useState(value || '');
   const dropdownRef = useRef(null);
 
-  // Sincroniza o valor interno com a prop externa
   useEffect(() => {
     setSearchTerm(value || '');
   }, [value]);
 
-  // Filtra as opções com base na busca
-  const filteredOptions = options.filter(option =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // =======================================================
+  // === AQUI ESTÁ A CORREÇÃO DEFINITIVA ===
+  // =======================================================
+  // Garante que 'options' seja um array e filtra as opções com segurança,
+  // verificando se cada 'option' é uma string antes de chamar .toLowerCase().
+  const filteredOptions = Array.isArray(options)
+    ? options.filter(option =>
+        typeof option === 'string' && option.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
+  // =======================================================
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -28,16 +34,15 @@ export default function SearchableDropdown({ options, value, onChange, placehold
 
   const handleOptionClick = (option) => {
     setSearchTerm(option);
-    onChange(option); // Notifica o componente pai da mudança
+    onChange(option);
     setIsOpen(false);
   };
 
-  // Fecha o dropdown se o usuário clicar fora dele
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
-        setSearchTerm(value || ''); // Restaura o valor selecionado se fechar sem escolher
+        setSearchTerm(value || '');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
