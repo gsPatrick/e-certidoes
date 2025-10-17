@@ -54,26 +54,24 @@
   box-shadow: 0 0 0 4px rgba(41, 75, 41, 0.1);
 }
 
-/* === NOVO ESTILO PARA O CONTÊINER BRANCO === */
 .contentWrapper {
   background-color: #fff;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  overflow: hidden; /* Garante que os cantos arredondados funcionem */
+  overflow: hidden;
 }
 
-/* === NOVO ESTILO PARA A BARRA DE FILTROS === */
 .filterHeader {
-  display: flex; /* A chave para a linha única */
+  display: flex;
   border-bottom: 1px solid #e9ecef;
 }
 
 .filterButton {
-  flex: 1; /* Faz cada botão ocupar o mesmo espaço */
+  flex: 1;
   background: none;
   border: none;
-  border-right: 1px solid #e9ecef; /* Linha divisória */
+  border-right: 1px solid #e9ecef;
   padding: 1rem 0.5rem;
   cursor: pointer;
   font-size: 0.9rem;
@@ -84,7 +82,7 @@
 }
 
 .filterButton:last-child {
-  border-right: none; /* Remove a borda do último item */
+  border-right: none;
 }
 
 .filterButton:hover {
@@ -97,9 +95,36 @@
   font-weight: bold;
 }
 
-/* === AJUSTES NA LISTA PARA SE ENCAIXAR NO NOVO LAYOUT === */
+/* --- NOVOS ESTILOS PARA O SUB-FILTRO --- */
+.subFilterHeader {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.subFilterHeader button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.subFilterHeader .activeSubFilter {
+  background-color: #e9ecef;
+  color: #294B29;
+}
+/* --- FIM DOS NOVOS ESTILOS --- */
+
+
 .listContainer {
-  /* Não precisa mais de fundo ou borda própria */
+  /* Estilos mantidos */
 }
 
 .listItem {
@@ -163,16 +188,24 @@
   background-color: #3a6b3a;
 }
 
-/* === RESPONSIVIDADE PARA OS FILTROS === */
 @media (max-width: 768px) {
   .filterHeader {
-    overflow-x: auto; /* Permite rolar horizontalmente */
-    justify-content: flex-start; /* Alinha os itens à esquerda */
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filterHeader::-webkit-scrollbar {
+    display: none;
+  }
+  .filterHeader {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   .filterButton {
-    flex: 0 0 auto; /* Impede que os botões encolham */
-    white-space: nowrap; /* Impede que o texto quebre a linha */
-    padding: 1rem 1.25rem; /* Padding fixo para cada botão */
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 1rem 1.25rem;
   }
 }

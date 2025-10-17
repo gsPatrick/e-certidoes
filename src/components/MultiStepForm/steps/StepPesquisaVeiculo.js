@@ -1,7 +1,7 @@
 // Salve em: src/components/MultiStepForm/steps/StepPesquisaVeiculo.js
 'use client';
 
-import styles from './StepPesquisa.module.css'; // Usaremos um CSS genérico para pesquisas simples
+import styles from './StepPesquisa.module.css'; // Usando o CSS genérico para pesquisas simples
 
 export default function StepPesquisaVeiculo({ formData, handleChange, error, productData }) {
   return (
@@ -12,14 +12,15 @@ export default function StepPesquisaVeiculo({ formData, handleChange, error, pro
       </p>
 
       <div className={styles.formGroup}>
-        <label htmlFor="placa_chassi">Placa ou Chassi *</label>
+        {/* --- MODIFICAÇÃO AQUI --- */}
+        <label htmlFor="placa">Placa *</label>
         <input
           type="text"
-          id="placa_chassi"
-          name="placa_chassi"
-          value={formData.placa_chassi || ''}
+          id="placa"
+          name="placa" // O 'name' também foi ajustado para consistência
+          value={formData.placa || ''}
           onChange={handleChange}
-          placeholder="Digite a placa ou o chassi do veículo"
+          placeholder="Digite a placa do veículo"
           required
         />
         {error && <small className={styles.errorMessage}>{error}</small>}

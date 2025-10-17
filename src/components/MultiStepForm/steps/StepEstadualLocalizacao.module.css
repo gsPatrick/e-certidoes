@@ -1,0 +1,29 @@
+/* Salve em: src/components/MultiStepForm/steps/StepEstadualLocalizacao.module.css */
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.stepDescription {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+/* Os estilos do input vêm do componente SearchableDropdown */

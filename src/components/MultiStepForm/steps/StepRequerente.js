@@ -3,22 +3,20 @@
 
 import styles from './StepRequerente.module.css';
 
-// Função para aplicar a máscara de CPF
-const maskCPF = (value) => {
-  return value
-    .replace(/\D/g, '') // Remove tudo que não é dígito
-    .slice(0, 11) // Limita a 11 dígitos
-    .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto depois do terceiro dígito
-    .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto depois do sexto dígito
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca hífen depois do nono dígito
+// Funções para aplicar máscaras
+const maskCPF = (value) => value.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+const maskTelefone = (value) => {
+    let v = value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    if (v.length > 6) return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    if (v.length > 2) return v.replace(/(\d{2})(\d*)/, '($1) $2');
+    return v.replace(/(\d*)/, '($1');
 };
 
 export default function StepRequerente({ formData, handleChange, error }) {
   
-  const handleCpfChange = (e) => {
-    // Aplica a máscara e propaga a mudança
-    handleChange({ target: { name: 'requerente_cpf', value: maskCPF(e.target.value) } });
-  };
+  const handleCpfChange = (e) => handleChange({ target: { name: 'requerente_cpf', value: maskCPF(e.target.value) } });
+  const handleTelefoneChange = (e) => handleChange({ target: { name: 'requerente_telefone', value: maskTelefone(e.target.value) } });
 
   return (
     <div>
@@ -34,14 +32,19 @@ export default function StepRequerente({ formData, handleChange, error }) {
 
       <div className={styles.formGroup}>
         <label htmlFor="requerente_telefone">Telefone *</label>
-        <input type="tel" id="requerente_telefone" name="requerente_telefone" value={formData.requerente_telefone || ''} onChange={handleChange} placeholder="Telefone do solicitante" required />
+        <input type="tel" id="requerente_telefone" name="requerente_telefone" value={formData.requerente_telefone || ''} onChange={handleTelefoneChange} placeholder="(00) 00000-0000" required />
       </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor="requerente_cpf">CPF *</label>
-        <input type="text" id="requerente_cpf" name="requerente_cpf" value={formData.requerente_cpf || ''} onChange={handleCpfChange} placeholder="000.000.000-00" required />
-        {/* Exibe a mensagem de erro se ela existir */}
-        {error && <small className={styles.errorMessage}>{error}</small>}
+      
+      <div className={styles.formGrid}>
+        <div className={styles.formGroup}>
+          <label htmlFor="requerente_cpf">CPF *</label>
+          <input type="text" id="requerente_cpf" name="requerente_cpf" value={formData.requerente_cpf || ''} onChange={handleCpfChange} placeholder="000.000.000-00" required />
+          {error && <small className={styles.errorMessage}>{error}</small>}
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="requerente_rg">RG *</label>
+          <input type="text" id="requerente_rg" name="requerente_rg" value={formData.requerente_rg || ''} onChange={handleChange} placeholder="Digite seu RG" required />
+        </div>
       </div>
 
       <div className={styles.formGroup}>

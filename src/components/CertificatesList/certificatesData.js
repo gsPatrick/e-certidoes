@@ -13,6 +13,7 @@ export const icons = {
 
 // --- CONSTANTES DE PREÇO BASE (APENAS PARA ONDE NÃO HÁ VARIAÇÃO POR ESTADO) ---
 const PRICE_FEDERAL_ESTADUAL = 43.70;
+const PRICE_MUNICIPAL = 77.30;
 const PRICE_PROTESTO_BASE_SP = 127.70; // Usado como fallback, o cálculo final será por estado.
 
 export const categories = [
@@ -23,6 +24,7 @@ export const categories = [
   'Cartório de Protesto',
   'Pesquisa',
   'Certidões Federais e Estaduais',
+  'Certidões Municipais',
   'Assessoria Jurídica'
 ];
 
@@ -38,7 +40,7 @@ const toSlug = (str) => {
 };
 
 
-// --- TEMPLATES DE FORMULÁRIO (SEM ALTERAÇÕES) ---
+// --- TEMPLATES DE FORMULÁRIO ---
 
 const formTemplateRequerente = {
   groupTitle: 'Dados do(a) requerente',
@@ -106,16 +108,7 @@ const formTemplateCertidaoImovel = [
       { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', type: 'checkbox', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.' },
     ]
   },
-  {
-    groupTitle: 'Dados do(a) requerente',
-    groupDescription: 'Informe seus dados para o andamento e recebimento de atualizações do seu serviço.',
-    fields: [
-      { id: 'requerente_nome', label: 'Nome completo do(a) solicitante', type: 'text', required: true },
-      { id: 'requerente_telefone', label: 'Telefone', type: 'tel', required: true },
-      { id: 'requerente_cpf', label: 'CPF', type: 'text', required: true },
-      { id: 'requerente_email', label: 'E-mail', type: 'email', required: true, placeholder: 'E-mail para receber informações do pedido' },
-    ]
-  }
+  formTemplateRequerente
 ];
 
 const formTemplateVisualizacaoMatricula = [
@@ -191,8 +184,17 @@ const formTemplateFederal = [
   formTemplateRequerente,
 ];
 
+const formTemplateMunicipal = [
+  { groupTitle: 'Dados para Emissão da Certidão Municipal', fields: [
+      { id: 'cpf_cnpj', label: 'CPF ou CNPJ para a consulta', type: 'text', required: true },
+      { id: 'nome_completo_razao_social', label: 'Nome Completo ou Razão Social', type: 'text', required: true },
+      { id: 'inscricao_imovel', label: 'Inscrição do Imóvel', type: 'text', required: true },
+  ]},
+  formTemplateRequerente,
+];
+
 const formTemplatePesquisaVeiculo = [
-  { groupTitle: 'Dados da Pesquisa', fields: [ { id: 'placa_chassi', label: 'Placa ou chassi', type: 'text', required: true } ] },
+  { groupTitle: 'Dados da Pesquisa', fields: [ { id: 'placa', label: 'Placa', type: 'text', required: true } ] }, // Ajustado para placa
   formTemplateRequerente,
 ];
 
@@ -254,13 +256,11 @@ export const allCertificates = [
     faq: '[{"q": "Quem precisa desta certidão?", "a": "Produtores rurais, cooperativas, tradings e instituições financeiras que atuam com crédito agrícola."},{"q": "O que pode ser dado em penhor?", "a": "Colheitas futuras, máquinas, veículos agrícolas e outros bens móveis relacionados à atividade rural."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
-  // --- ADICIONADO DO CÓDIGO 02 ---
-  { id: 64, name: 'Pesquisa Prévia', slug: toSlug('Pesquisa Previa'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Previa')], 
+  { id: 64, name: 'Pesquisa Prévia', slug: toSlug('Pesquisa Previa'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
     description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
     pesquisaType: 'previa', skipValidationAndTerms: true 
   },
-  // --- ADICIONADO DO CÓDIGO 02 ---
-  { id: 65, name: 'Pesquisa Qualificada', slug: toSlug('Pesquisa Qualificada'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Qualificada')], 
+  { id: 65, name: 'Pesquisa Qualificada', slug: toSlug('Pesquisa Qualificada'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
     description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
     pesquisaType: 'qualificada', skipValidationAndTerms: true 
   },
@@ -302,7 +302,7 @@ export const allCertificates = [
     { id: 32, name: 'Certidão de Escritura de Compra e Venda' }, { id: 44, name: 'Certidão de Procuração' }, { id: 37, name: 'Certidão de Escritura de Ata Notarial' }, { id: 41, name: 'Certidão de Escritura de Pacto Antenupcial' }, { id: 34, name: 'Certidão de Escritura de Doação' }, { id: 39, name: 'Certidão de Escritura de Hipoteca' }, { id: 35, name: 'Certidão de Escritura de Testamento' }, { id: 42, name: 'Certidão de Escritura de União Estável' }, { id: 40, name: 'Certidão de Escritura de Permuta' }, { id: 33, name: 'Certidão de Escritura de Inventário' }, { id: 36, name: 'Certidão de Escritura de Divórcio' }, { id: 38, name: 'Certidão de Escritura de Emancipação' }
   ].map(cert => ({ 
       ...cert, 
-      price: null, // Preço será definido dinamicamente
+      price: null,
       slug: toSlug(cert.name), 
       atribuicaoId: 1,
       category: 'Tabelionato de Notas (Escrituras)', 
@@ -336,21 +336,35 @@ export const allCertificates = [
   { id: 63, name: 'Pesquisa Processos Judiciais e Administrativos', slug: toSlug('Pesquisa Processos Judiciais e Administrativos'), price: 77.30, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Processos Judiciais e Administrativos')], description: 'Dados atuais e históricos de ações judiciais e processos administrativos.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
   { id: 68, name: 'Pesquisa Telefone e Endereço pelo CPF/CNPJ', slug: toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ')], description: 'Localize telefones e endereços através do CPF ou CNPJ.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
   { id: 69, name: 'Pesquisa Sintegra Estadual', slug: toSlug('Pesquisa Sintegra Estadual'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Sintegra Estadual')], description: 'Consulta ao Cadastro de Contribuintes de ICMS (SINTEGRA).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaSintegra, skipValidationAndTerms: true },
-  // --- ADICIONADO DO CÓDIGO 02 ---
-  { id: 64, name: 'Pesquisa Prévia', slug: toSlug('Pesquisa Previa'), price: 139.50, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Previa')], 
-    description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
-    pesquisaType: 'previa', skipValidationAndTerms: true 
-  },
-  // --- ADICIONADO DO CÓDIGO 02 ---
-  { id: 65, name: 'Pesquisa Qualificada', slug: toSlug('Pesquisa Qualificada'), price: 139.50, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Qualificada')], 
-    description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
-    pesquisaType: 'qualificada', skipValidationAndTerms: true 
-  },
-
-  // --- Certidões Federais e Estaduais ---
+  
+  // --- Certidões Federais e Estaduais (COM A NOVA PROPRIEDADE 'esfera') ---
   ...[
-    { id: 1, name: 'Certidão de Distribuição da Justiça Federal (TRF)' }, { id: 2, name: 'Certidão do Distribuidor (STF)' }, { id: 3, name: 'Certidão do STJ' }, { id: 4, name: 'Certidão Negativa de Ações Criminais (STM)' }, { id: 5, name: 'Certidão de Antecedentes Criminais' }, { id: 6, name: 'Certidão Negativa do Ministério Público Federal (MPF)' }, { id: 7, name: 'Certidão Negativa de Débitos Trabalhistas (CNDT-TST)' }, { id: 8, name: 'Certidão de Cumprimento da Cota de PCDs (MT)' }, { id: 9, name: 'Certidão de Débitos Trabalhistas (MT)' }, { id: 10, name: 'Certidão de Infrações Trabalhistas (MT)' }, { id: 11, name: 'Certidão Negativa do FGTS' }, { id: 12, name: 'Cadastro de Imóveis Rurais (CAFIR)' }, { id: 13, name: 'Certidão de Tributos Federais de Imóvel Rural (ITR)' }, { id: 14, name: 'Certidão de Embargos (IBAMA)' }, { id: 15, name: 'Certidão Negativa de Débitos (CND) do Ibama' }, { id: 16, name: 'Certidão Negativa de Débitos da União (CNTNIDA)' }, { id: 17, name: 'Certidão de Quitação Eleitoral (TSE)' }, { id: 18, name: 'Certidão de Improbidade Administrativa (CNJ)' }, { id: 19, name: 'Certidão do Tribunal de Contas (TCU)' }, { id: 20, name: 'Certidão de Propriedade de Aeronave' },
-    { id: 21, name: 'Certidão de Distribuição Estadual (TJ)' }, { id: 22, name: 'Certidão de Inquérito Criminal (MPE)' }, { id: 23, name: 'Certidão de Inquérito Civil (MPE)' }, { id: 24, name: 'Certidão de Ações Trabalhistas (CEAT-TRT)' }, { id: 25, name: 'Certidão Negativa de Débitos Ambientais' }, { id: 26, name: 'Certidão Negativa de Débitos Tributários Estaduais (CND)' }, { id: 27, name: 'Certidão de Tributos da Procuradoria Geral (PGE)' },
+    { id: 1, name: 'Certidão de Distribuição da Justiça Federal (TRF)', esfera: 'Federal' }, 
+    { id: 2, name: 'Certidão do Distribuidor (STF)', esfera: 'Federal' }, 
+    { id: 3, name: 'Certidão do STJ', esfera: 'Federal' }, 
+    { id: 4, name: 'Certidão Negativa de Ações Criminais (STM)', esfera: 'Federal' }, 
+    { id: 5, name: 'Certidão de Antecedentes Criminais', esfera: 'Federal' }, 
+    { id: 6, name: 'Certidão Negativa do Ministério Público Federal (MPF)', esfera: 'Federal' }, 
+    { id: 7, name: 'Certidão Negativa de Débitos Trabalhistas (CNDT-TST)', esfera: 'Federal' }, 
+    { id: 8, name: 'Certidão de Cumprimento da Cota de PCDs (MT)', esfera: 'Federal' }, 
+    { id: 9, name: 'Certidão de Débitos Trabalhistas (MT)', esfera: 'Federal' }, 
+    { id: 10, name: 'Certidão de Infrações Trabalhistas (MT)', esfera: 'Federal' }, 
+    { id: 11, name: 'Certidão Negativa do FGTS', esfera: 'Federal' }, 
+    { id: 12, name: 'Cadastro de Imóveis Rurais (CAFIR)', esfera: 'Federal' }, 
+    { id: 13, name: 'Certidão de Tributos Federais de Imóvel Rural (ITR)', esfera: 'Federal' }, 
+    { id: 14, name: 'Certidão de Embargos (IBAMA)', esfera: 'Federal' }, 
+    { id: 15, name: 'Certidão Negativa de Débitos (CND) do Ibama', esfera: 'Federal' }, 
+    { id: 16, name: 'Certidão Negativa de Débitos da União (CNTNIDA)', esfera: 'Federal' }, 
+    { id: 17, name: 'Certidão de Quitação Eleitoral (TSE)', esfera: 'Federal' }, 
+    { id: 18, name: 'Certidão de Improbidade Administrativa (CNJ)', esfera: 'Federal' }, 
+    { id: 19, name: 'Certidão do Tribunal de Contas (TCU)', esfera: 'Federal' }, 
+    { id: 21, name: 'Certidão de Distribuição Estadual (TJ)', esfera: 'Estadual' }, 
+    { id: 22, name: 'Certidão de Inquérito Criminal (MPE)', esfera: 'Estadual' }, 
+    { id: 23, name: 'Certidão de Inquérito Civil (MPE)', esfera: 'Estadual' }, 
+    { id: 24, name: 'Certidão de Ações Trabalhistas (CEAT-TRT)', esfera: 'Estadual' }, 
+    { id: 25, name: 'Certidão Negativa de Débitos Ambientais', esfera: 'Estadual' }, 
+    { id: 26, name: 'Certidão Negativa de Débitos Tributários Estaduais (CND)', esfera: 'Estadual' }, 
+    { id: 27, name: 'Certidão de Tributos da Procuradoria Geral (PGE)', esfera: 'Estadual' },
   ].map(cert => ({ 
     ...cert, 
     price: PRICE_FEDERAL_ESTADUAL, 
@@ -363,11 +377,27 @@ export const allCertificates = [
     faq: `[{"q": "Qual a diferença entre a certidão da Justiça Federal e da Estadual?", "a": "A Justiça Federal trata de causas de interesse da União (ex: crimes federais, INSS), enquanto a Justiça Estadual cuida das demais causas cíveis e criminais."},{"q": "O que significa uma certidão 'negativa'?", "a": "Significa que, na data da emissão, não foi encontrada nenhuma pendência em nome da pessoa ou empresa consultada naquele órgão específico."}]`,
     formFields: formTemplateFederal 
   })),
-  { 
-    id: 28, name: 'Certidão da Empresa (Junta Comercial)', price: PRICE_FEDERAL_ESTADUAL, slug: toSlug('Certidão da Empresa Junta Comercial'), category: 'Certidões Federais e Estaduais', icon: icons.JUSTICE, imageSrc: productImagePaths[toSlug('Certidão da Empresa Junta Comercial')],
-    description: 'Consulte os dados cadastrais de uma empresa. (Serviço em breve)', 
-    isPlaceholder: true 
-  },
+
+  // --- Certidões Municipais ---
+  ...[
+    { id: 101, name: 'Certidão de Valor Venal' },
+    { id: 102, name: 'CND Municipal - Certidão Negativa de Débitos Tributários Municipais' },
+    { id: 103, name: 'Certidão Negativa de Débitos de Tributos Imobiliários' },
+    { id: 104, name: 'Certidão Ambiental Municipal' },
+    { id: 105, name: 'Certidão de Extrato de Débitos Municipais' },
+    { id: 106, name: 'Certidão de Dados Cadastrais do Imóvel' }
+  ].map(cert => ({
+    ...cert,
+    price: PRICE_MUNICIPAL,
+    slug: toSlug(cert.name),
+    category: 'Certidões Municipais',
+    icon: icons.JUSTICE,
+    imageSrc: productImagePaths[toSlug('certidao-de-distribuicao-estadual-tj')] || '/certidoes/default-municipal.png',
+    description: `Emita a ${cert.name} para verificar a situação fiscal e cadastral perante o município.`,
+    longDescription: `A ${cert.name} é um documento emitido pela prefeitura para atestar informações sobre pessoas, empresas ou imóveis no âmbito municipal. É essencial para processos de compra e venda de imóveis, participação em licitações e regularização de pendências com o município.`,
+    faq: `[{"q": "Para que serve esta certidão?", "a": "Geralmente é usada para comprovar que não há débitos de impostos como IPTU (no caso de imóveis) ou ISS (no caso de empresas), ou para obter informações cadastrais para processos legais."},{"q": "Onde obtenho a Inscrição do Imóvel?", "a": "A Inscrição do Imóvel, também conhecida como Inscrição Cadastral ou Inscrição Imobiliária, geralmente consta no carnê do IPTU."}]`,
+    formFields: formTemplateMunicipal
+  })),
   
   // --- Assessoria Jurídica ---
   { id: 58, name: 'Consulta Jurídica', slug: toSlug('Consulta Jurídica'), price: 150.00, category: 'Assessoria Jurídica', icon: icons.LAWYER, imageSrc: productImagePaths[toSlug('Consulta Jurídica')],

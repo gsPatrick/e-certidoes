@@ -2,7 +2,7 @@
 
 .summarySidebar {
     position: sticky;
-    top: 100px; /* Ajuste conforme a altura do seu header */
+    top: 100px;
     width: 100%;
 }
 
@@ -10,13 +10,12 @@
     border-radius: 8px;
     background-color: #fff;
     border: 1px solid #e0e0e0;
-    overflow: hidden; /* Garante que o header arredondado funcione */
+    overflow: hidden;
 }
 
-/* Cabeçalho escuro */
 .summaryHeader {
     padding: 1.5rem;
-    background-color: #3c4f41; /* Cor escura do sistema */
+    background-color: #3c4f41;
     color: #fff;
 }
 
@@ -47,7 +46,6 @@
     line-height: 1.5;
 }
 
-/* Corpo com os resumos */
 .summaryBody {
     padding: 1rem 1.5rem;
 }
@@ -79,7 +77,7 @@
 }
 
 .completedIcon {
-    color: #28a745; /* Verde de sucesso */
+    color: #28a745;
 }
 
 .editLink {
@@ -89,20 +87,40 @@
     text-decoration: underline;
     cursor: pointer;
     font-size: 0.85rem;
+    font-weight: 500;
 }
 
-.summaryContent {
-    font-size: 0.9rem;
-    color: #555;
-    line-height: 1.6;
-}
-
-.summaryContent p {
+.summaryContentList {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.summaryContent small {
-    display: block;
+.detailItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.detailLabel {
     color: #6c757d;
+    margin-right: 1rem;
+    white-space: nowrap;
+}
+
+.detailValue {
+    color: #343a40;
+    font-weight: 500;
+    text-align: right;
+    word-break: break-word; /* --- LINHA ADICIONADA PARA CORREÇÃO --- */
+}
+
+.priceValue {
+    font-weight: 600;
+    color: #294B29;
 }

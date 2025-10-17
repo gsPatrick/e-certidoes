@@ -1,0 +1,86 @@
+/* Salve em: src/components/MultiStepForm/steps/StepMunicipalDados.module.css */
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.stepDescription {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: #294B29;
+    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.tabContainer {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #ced4da;
+    margin-bottom: 2rem;
+}
+
+.tabContainer button {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.tabContainer button:first-child {
+    border-right: 1px solid #ced4da;
+}
+
+.tabContainer .activeTab {
+    background-color: #3B82F6; /* Azul similar ao da referência */
+    color: #fff;
+}
+
+.formContent {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.errorMessage {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: block;
+}

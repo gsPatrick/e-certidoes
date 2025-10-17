@@ -1,0 +1,48 @@
+/* Salve em: src/components/MultiStepForm/steps/StepFederalDados.module.css */
+
+.stepTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.stepDescription {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 2.5rem;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: #294B29;
+    box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.errorMessage {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: block;
+}

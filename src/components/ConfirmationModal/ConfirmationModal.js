@@ -2,7 +2,7 @@
 'use client';
 
 import styles from './ConfirmationModal.module.css';
-import { getTaxa } from '@/utils/pricingData'; // Importa a função de buscar taxas
+import { getTaxa } from '@/utils/pricingData';
 
 // Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
@@ -17,7 +17,7 @@ const formatLabel = (key) => {
         .replace(/\b\w/g, char => char.toUpperCase());
 };
 
-// Componente para renderizar uma linha de detalhe
+// Componente para renderizar uma linha de detalhe, ocultando valores vazios
 const DetailRow = ({ label, value }) => {
     if (value === null || value === undefined || value === '' || value === false) {
         return null;
@@ -32,14 +32,14 @@ const DetailRow = ({ label, value }) => {
     );
 };
 
-// ====================================================================
-// === COMPONENTE ATUALIZADO PARA LÓGICA CONDICIONAL ===
-// ====================================================================
+// Componente para renderizar APENAS os detalhes específicos da certidão
 const DynamicProductDetails = ({ formData, item }) => {
     const slug = item?.slug;
 
+    // Lista de chaves que são exibidas em outras seções e devem ser ignoradas aqui
     const excludeKeys = new Set([
-        'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone',
+        'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
+        'requerente_cep', 'requerente_endereco', 'requerente_numero', 'requerente_complemento', 'requerente_bairro', 'requerente_cidade', 'requerente_estado',
         'formato', 'cep', 'estado', 'cidade', 'bairro', 'endereco', 'numero', 'complemento',
         'entrega_internacional_correios', 'entrega_internacional_dhl', 'pais', 'pais_nome', 'estado_inter', 'cidade_inter', 'cep_inter', 'endereco_inter',
         'apostilamento_digital', 'apostilamento_fisico', 'apostilamento', 'inteiro_teor', 'aviso_recebimento',
@@ -49,19 +49,9 @@ const DynamicProductDetails = ({ formData, item }) => {
 
     const specificDetails = Object.entries(formData)
         .filter(([key, value]) => {
-            // 1. Regra geral: ignora valores vazios/nulos
-            if (value === '' || value === null || value === false) {
-                return false;
-            }
-            // 2. Regra específica: só mostra 'tempo_pesquisa' se for Certidão de Protesto
-            if (key === 'tempo_pesquisa') {
-                return slug === 'certidao-de-protesto';
-            }
-            // 3. Regra de exclusão padrão
-            if (excludeKeys.has(key)) {
-                return false;
-            }
-            // 4. Se passou por todas as regras, mostra o campo
+            if (value === '' || value === null || value === false) return false;
+            if (key === 'tempo_pesquisa') return slug === 'certidao-de-protesto'; // Regra específica
+            if (excludeKeys.has(key)) return false; // Regra de exclusão
             return true;
         });
 
@@ -77,7 +67,7 @@ const DynamicProductDetails = ({ formData, item }) => {
         </>
     );
 };
-// ====================================================================
+
 
 export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) {
   if (!orderDetails) return null;
@@ -127,7 +117,6 @@ export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) 
         <div className={styles.content}>
           <div className={styles.section}>
             <h4>{item.name.toUpperCase()}</h4>
-            {/* Passando o 'item' para o componente de detalhes */}
             <DynamicProductDetails formData={formData} item={item} />
           </div>
 
@@ -148,13 +137,15 @@ export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) 
             <DetailRow label="CPF" value={formData.requerente_cpf} />
             <DetailRow label="E-mail" value={formData.requerente_email} />
             <DetailRow label="Telefone" value={formData.requerente_telefone} />
+            <DetailRow label="RG" value={formData.requerente_rg} />
+            <DetailRow label="Endereço Solicitante" value={[formData.requerente_endereco, formData.requerente_numero, formData.requerente_bairro, `${formData.requerente_cidade || ''}/${formData.requerente_estado || ''}`].filter(Boolean).join(', ')} />
           </div>
 
           <div className={`${styles.section} ${styles.summarySection}`}>
             <h4>Resumo Financeiro</h4>
             <DetailRow 
               label={`Valor do Serviço (${item.name})`} 
-              value={`R$ ${valorServico.toFixed(2).replace('.', ',')}`} 
+              value={`R$ ${valorServico > 0 ? valorServico.toFixed(2).replace('.', ',') : '0,00'}`} 
             />
             {item.name.includes('Condomínio') && <DetailRow label="Acréscimo (Condomínio)" value={`R$ ${ACRESCIMO_CONDOMINIO.toFixed(2).replace('.', ',')}`} />}
             {formData.formato === 'Certidão em papel' && <DetailRow label="Custo de Envio (Documento Físico)" value={`R$ ${CUSTO_ENVIO_FISICO.toFixed(2).replace('.', ',')}`} />}
