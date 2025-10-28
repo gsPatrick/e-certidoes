@@ -22,7 +22,7 @@
     margin-bottom: 2rem;
 }
 
-.tabContainer button {
+.tabButton {
     flex: 1;
     padding: 0.8rem;
     border: none;
@@ -30,14 +30,21 @@
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
+    color: #495057;
     transition: all 0.2s ease;
 }
 
-.tabContainer button:first-child {
+.tabButton:first-child {
     border-right: 1px solid #ced4da;
 }
 
-.tabContainer .activeTab {
+.activeTab {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    cursor: default;
+    font-size: 1rem;
+    font-weight: 600;
     background-color: #3B82F6; /* Azul similar ao da referência */
     color: #fff;
 }

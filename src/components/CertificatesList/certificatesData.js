@@ -14,7 +14,7 @@ export const icons = {
 // --- CONSTANTES DE PREÇO BASE (APENAS PARA ONDE NÃO HÁ VARIAÇÃO POR ESTADO) ---
 const PRICE_FEDERAL_ESTADUAL = 43.70;
 const PRICE_MUNICIPAL = 77.30;
-const PRICE_PROTESTO_BASE_SP = 127.70; // Usado como fallback, o cálculo final será por estado.
+// Preços de Protesto, Registro Civil, Imóveis e Notas agora são por estado (null)
 
 export const categories = [
   'Todos',
@@ -22,10 +22,10 @@ export const categories = [
   'Cartório de Registro Civil',
   'Tabelionato de Notas (Escrituras)',
   'Cartório de Protesto',
-  'Pesquisa',
   'Certidões Federais e Estaduais',
   'Certidões Municipais',
-  'Assessoria Jurídica'
+  'Assessoria Jurídica',
+  'Pesquisa' // Movido para o final
 ];
 
 const toSlug = (str) => {
@@ -53,6 +53,7 @@ const formTemplateRequerente = {
   ]
 };
 
+// Template ajustado para ter apenas Matrícula
 const formTemplateCertidaoImovel = [
   {
     groupTitle: 'Dados do Imóvel',
@@ -75,37 +76,22 @@ const formTemplateCertidaoImovel = [
         conditionalFields: [
           { id: 'matricula', label: 'Matrícula*', type: 'text', required: true, placeholder: 'Digite o número da matrícula do imóvel' }
         ]
-      },
-      {
-        value: 'Vintenária (Últimos 20 anos)',
-        label: 'Vintenária',
-        description: 'Exibe o histórico do imóvel por vinte anos.',
-        conditionalFields: []
-      },
-      {
-        value: 'Transcrição (Registros anteriores a 1976)',
-        label: 'Transcrição',
-        description: 'É o antigo registro de imóveis realizado antes de 1975. O levantamento é feito pelo cartório através de buscas manuais nos livros físicos, o que aumenta o prazo de entrega da certidão.',
-        conditionalFields: [
-          { id: 'numero_transcricao', label: 'Transcrição*', type: 'text', required: true },
-          { id: 'dados_imovel_transcricao', label: 'Dados do imóvel', type: 'textarea' }
-        ]
-      },
+      }
     ]
   },
   {
     groupTitle: 'Formato da Entrega',
     type: 'radio',
     options: [
-      { id: 'formato', value: 'Certidão Impressa', label: 'Certidão em papel', description: 'Enviada no endereço' },
+      { id: 'formato', value: 'Certidão Impressa', label: 'Certidão em papel', description: 'Enviada no endereço. Acréscimo de R$ 40,00.' },
       { id: 'formato', value: 'Certidão Digital', label: 'Certidão eletrônica', description: 'Enviada por e-mail em PDF' },
     ]
   },
   {
-    groupTitle: 'Serviços Adicionais',
+    groupTitle: 'Serviços Adicionais (Opcional)',
     fields: [
-      { id: 'apostilamento', label: 'Apostilamento', type: 'checkbox', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.' },
-      { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', type: 'checkbox', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.' },
+      { id: 'apostilamento', label: 'Apostilamento', type: 'checkbox', description: 'Para validade em outros países. R$ 290,00' },
+      { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', type: 'checkbox', description: 'Recibo dos correios que comprova a entrega. R$ 35,00' },
     ]
   },
   formTemplateRequerente
@@ -121,8 +107,30 @@ const formTemplateVisualizacaoMatricula = [
   formTemplateRequerente,
 ];
 
-const formTemplateNascimento = [
-  { groupTitle: 'Dados do Registro', fields: [
+// Template base para Registro Civil com adicionais
+const createFormTemplateRegistroCivil = (fieldsGroup) => [
+  fieldsGroup,
+  {
+    groupTitle: 'Formato da Entrega',
+    type: 'radio',
+    options: [
+        { id: 'formato', value: 'Certidão Impressa', label: 'Certidão em papel', description: 'Enviada no endereço. Acréscimo de R$ 40,00.' },
+        { id: 'formato', value: 'Certidão Digital', label: 'Certidão eletrônica', description: 'Enviada por e-mail em PDF' },
+    ]
+  },
+  {
+    groupTitle: 'Serviços Adicionais (Opcional)',
+    fields: [
+        { id: 'apostilamento', label: 'Apostilamento', type: 'checkbox', description: 'Para validade em outros países. R$ 290,00' },
+        { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', type: 'checkbox', description: 'Recibo dos correios que comprova a entrega. R$ 35,00' },
+    ]
+  },
+  formTemplateRequerente
+];
+
+const formTemplateNascimento = createFormTemplateRegistroCivil({
+  groupTitle: 'Dados do Registro',
+  fields: [
     { id: 'nome_completo_registrado', label: 'Nome completo do registrado(a)', type: 'text', required: true },
     { id: 'nome_completo_mae', label: 'Nome Completo da Mãe na Certidão', type: 'text', required: true },
     { id: 'nome_completo_pai', label: 'Nome Completo do Pai na Certidão', type: 'text', required: true },
@@ -130,22 +138,24 @@ const formTemplateNascimento = [
     { id: 'numero_livro', label: 'Número do livro (opcional)', type: 'text', required: false },
     { id: 'numero_folha', label: 'Número da folha (opcional)', type: 'text', required: false },
     { id: 'numero_termo', label: 'Número do termo (opcional)', type: 'text', required: false },
-  ]},
-];
+  ]
+});
 
-const formTemplateCasamento = [
-  { groupTitle: 'Dados do Registro', fields: [
+const formTemplateCasamento = createFormTemplateRegistroCivil({
+  groupTitle: 'Dados do Registro',
+  fields: [
     { id: 'nome_conjuge1', label: 'Nome completo do Cônjuge 1 na Certidão', type: 'text', required: true },
     { id: 'nome_conjuge2', label: 'Nome completo do Cônjuge 2 na Certidão', type: 'text', required: true },
     { id: 'data_casamento', label: 'Data do casamento', type: 'date', required: true },
     { id: 'numero_livro', label: 'Número do livro (opcional)', type: 'text', required: false },
     { id: 'numero_folha', label: 'Número da folha (opcional)', type: 'text', required: false },
     { id: 'numero_termo', label: 'Número do termo (opcional)', type: 'text', required: false },
-  ]},
-];
+  ]
+});
 
-const formTemplateObito = [
-  { groupTitle: 'Dados do Registro', fields: [
+const formTemplateObito = createFormTemplateRegistroCivil({
+  groupTitle: 'Dados do Registro',
+  fields: [
     { id: 'nome_completo_falecido', label: 'Nome completo do Falecido(a) na Certidão', type: 'text', required: true },
     { id: 'nome_completo_mae', label: 'Nome Completo da Mãe na Certidão', type: 'text', required: true },
     { id: 'nome_completo_pai', label: 'Nome Completo do Pai na Certidão', type: 'text', required: true },
@@ -153,11 +163,12 @@ const formTemplateObito = [
     { id: 'numero_livro', label: 'Número do livro (opcional)', type: 'text', required: false },
     { id: 'numero_folha', label: 'Número da folha (opcional)', type: 'text', required: false },
     { id: 'numero_termo', label: 'Número do termo (opcional)', type: 'text', required: false },
-  ]},
-];
+  ]
+});
 
-const formTemplateInterdicao = [
-  { groupTitle: 'Dados do Registro', fields: [
+const formTemplateInterdicao = createFormTemplateRegistroCivil({
+  groupTitle: 'Dados do Registro',
+  fields: [
     { id: 'nome_completo_interditado', label: 'Nome completo do interditado(a)', type: 'text', required: true },
     { id: 'nome_completo_mae', label: 'Nome Completo da Mãe na Certidão', type: 'text', required: true },
     { id: 'nome_completo_pai', label: 'Nome Completo do Pai na Certidão', type: 'text', required: true },
@@ -165,15 +176,48 @@ const formTemplateInterdicao = [
     { id: 'numero_livro', label: 'Número do livro (opcional)', type: 'text', required: false },
     { id: 'numero_folha', label: 'Número da folha (opcional)', type: 'text', required: false },
     { id: 'numero_termo', label: 'Número do termo (opcional)', type: 'text', required: false },
-  ]},
-];
+  ]
+});
 
 const formTemplateEscritura = [
-  { groupTitle: 'Dados da Escritura', fields: [] },
+    { groupTitle: 'Dados da Escritura', fields: [
+        // Campos específicos da escritura, se houver
+    ] },
+    {
+      groupTitle: 'Formato da Entrega',
+      type: 'radio',
+      options: [
+          { id: 'formato', value: 'Certidão Impressa', label: 'Certidão em papel', description: 'Enviada no endereço. Acréscimo de R$ 40,00.' },
+          { id: 'formato', value: 'Certidão Digital', label: 'Certidão eletrônica', description: 'Enviada por e-mail em PDF' },
+      ]
+    },
+    {
+      groupTitle: 'Serviços Adicionais (Opcional)',
+      fields: [
+          { id: 'apostilamento', label: 'Apostilamento', type: 'checkbox', description: 'Para validade em outros países. R$ 290,00' },
+          { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', type: 'checkbox', description: 'Recibo dos correios que comprova a entrega. R$ 35,00' },
+      ]
+    },
+    formTemplateRequerente
 ];
 
 const formTemplateProtesto = [
-  { groupTitle: 'Dados para Pesquisa de Protesto', fields: [] },
+  { groupTitle: 'Dados para Pesquisa de Protesto', fields: [
+      { id: 'cpf_cnpj', label: 'CPF ou CNPJ', type: 'text', required: true },
+      { id: 'nome_razao_social', label: 'Nome / Razão Social', type: 'text', required: true },
+      { 
+        id: 'periodo', 
+        label: 'Período da Pesquisa', 
+        type: 'radio', 
+        options: [
+            { value: '5', label: 'Últimos 5 anos' },
+            { value: '10', label: 'Últimos 10 anos' }
+        ], 
+        required: true 
+      }
+  ] },
+  // A entrega é apenas eletrônica para protesto
+  formTemplateRequerente,
 ];
 
 const formTemplateFederal = [
@@ -194,8 +238,18 @@ const formTemplateMunicipal = [
 ];
 
 const formTemplatePesquisaVeiculo = [
-  { groupTitle: 'Dados da Pesquisa', fields: [ { id: 'placa', label: 'Placa', type: 'text', required: true } ] }, // Ajustado para placa
+  { groupTitle: 'Dados da Pesquisa', fields: [ { id: 'placa', label: 'Placa', type: 'text', required: true } ] },
   formTemplateRequerente,
+];
+
+const formTemplatePesquisaLeilao = [
+    { groupTitle: 'Dados da Pesquisa', fields: [ { id: 'placa_chassi', label: 'Placa ou Chassi', type: 'text', required: true } ] },
+    formTemplateRequerente,
+];
+
+const formTemplatePesquisaGravame = [
+    { groupTitle: 'Dados da Pesquisa', fields: [ { id: 'placa_chassi', label: 'Placa ou Chassi', type: 'text', required: true } ] },
+    formTemplateRequerente,
 ];
 
 const formTemplatePesquisaRouboFurto = [
@@ -228,23 +282,44 @@ const formTemplatePesquisaEscrituras = [
     formTemplateRequerente,
 ];
 
+// NOVO TEMPLATE DE FORMULÁRIO PARA CONSULTORIA JURÍDICA
+const formTemplateConsultaJuridica = [
+  {
+    groupTitle: 'Dados para Contato',
+    groupDescription: 'Informe seus dados para que um de nossos advogados possa entrar em contato para agendar sua consulta.',
+    fields: [
+      { id: 'nome_completo_contato', label: 'Nome completo', type: 'text', required: true, placeholder: 'Seu nome completo' },
+      { id: 'email_contato', label: 'E-mail', type: 'email', required: true, placeholder: 'Seu melhor e-mail' },
+      { id: 'telefone_contato', label: 'Telefone', type: 'tel', required: true, placeholder: '(00) 00000-0000' },
+      { id: 'assunto_contato', label: 'Assunto da Consulta', type: 'select', required: true, options: [ // Adicionado options
+        { value: '', label: 'Selecione um assunto' },
+        { value: 'imobiliario', label: 'Direito Imobiliário' },
+        { value: 'familia', label: 'Direito de Família' },
+        { value: 'contratos', label: 'Contratos e Obrigações' },
+        { value: 'outro', label: 'Outro assunto' },
+      ]},
+      { id: 'mensagem_contato', label: 'Descreva brevemente sua dúvida', type: 'textarea', required: false, placeholder: 'Ex: Dúvida sobre compra de imóvel, divórcio, etc.' },
+    ]
+  }
+];
+
 
 // --- LISTA COMPLETA DE CERTIDÕES ---
 export const allCertificates = [
   // --- Cartório de Registro de Imóveis ---
-  { id: 46, name: 'Certidão de Imóvel', slug: toSlug('Certidão de Imóvel'), price: 193.30, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Imóvel')],
-    description: 'Solicite a certidão de matrícula, vintenária ou de transcrição do seu imóvel, essencial para transações de compra e venda.',
+  { id: 46, name: 'Certidão de Imóvel', slug: toSlug('Certidão de Imóvel'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Imóvel')],
+    description: 'Solicite a certidão de matrícula do seu imóvel, essencial para transações de compra e venda.',
     longDescription: 'A Certidão de Imóvel é o documento oficial que comprova a situação jurídica de uma propriedade. Ela contém informações cruciais como a descrição do imóvel, o nome do proprietário atual, o histórico de transações (compra, venda, doação) e a existência de quaisquer ônus, como hipotecas, penhoras ou alienações fiduciárias. É indispensável para garantir a segurança em negócios imobiliários.',
-    faq: '[{"q": "Qual a diferença entre Matrícula, Transcrição e Vintenária?", "a": "A Matrícula é o registro atual do imóvel (pós-1976). A Transcrição é o registro antigo (anterior a 1976). A Vintenária detalha o histórico do imóvel nos últimos 20 anos."},{"q": "Para que serve esta certidão?", "a": "É essencial para processos de compra e venda, financiamentos, inventários, partilhas e para comprovar a propriedade e a inexistência de dívidas atreladas ao imóvel."},{"q": "Qual a validade da certidão de imóvel?", "a": "Geralmente, para atos oficiais como escrituras, a validade é de 30 dias. Para simples conferência, não há prazo de validade."}]',
+    faq: '[{"q": "Para que serve esta certidão?", "a": "É essencial para processos de compra e venda, financiamentos, inventários, partilhas e para comprovar a propriedade e a inexistência de dívidas atreladas ao imóvel."},{"q": "Qual a validade da certidão de imóvel?", "a": "Geralmente, para atos oficiais como escrituras, a validade é de 30 dias. Para simples conferência, não há prazo de validade."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
-  { id: 52, name: 'Visualização de Matrícula', slug: toSlug('Visualização de Matrícula'), price: 82.30, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Visualização de Matrícula')],
+  { id: 52, name: 'Visualização de Matrícula', slug: toSlug('Visualização de Matrícula'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Visualização de Matrícula')],
     description: 'Visualize a matrícula de um imóvel antes de requerer a sua certidão. Obs.: Não possui valor jurídico.',
     longDescription: 'A visualização de matrícula é uma cópia digital não certificada do documento oficial do imóvel, ideal para consultas rápidas e verificações de informações pontuais. Por não ser um documento oficial com fé pública, não substitui a certidão para fins legais, como em transações de compra e venda ou financiamentos.',
     faq: '[{"q": "Este documento tem valor legal?", "a": "Não, a visualização de matrícula é um documento meramente informativo e não possui validade jurídica para atos oficiais."},{"q": "Quando devo usar a visualização em vez da certidão?", "a": "Use a visualização para conferir dados rapidamente, como o nome do proprietário ou o número da matrícula, sem a necessidade de um documento oficial."}]',
     formFields: formTemplateVisualizacaoMatricula 
   },
-  { id: 56, name: 'Certidão de Matrícula com Ônus e Ações', slug: toSlug('Certidão de Matrícula com Ônus e Ações'), price: 223.65, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Matrícula com Ônus e Ações')],
+  { id: 56, name: 'Certidão de Matrícula com Ônus e Ações', slug: toSlug('Certidão de Matrícula com Ônus e Ações'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Matrícula com Ônus e Ações')],
     description: 'Certidão completa que informa a situação do imóvel, incluindo dívidas, hipotecas e processos judiciais.',
     longDescription: 'A Certidão de Matrícula com Negativa de Ônus e Ações Reipersecutórias é o documento mais completo para verificar a segurança jurídica de um imóvel. Ela detalha não apenas a titularidade e as características do bem, mas também informa se existem quaisquer ônus (como hipotecas, penhoras, usufruto) ou ações judiciais que possam afetar a propriedade. É a certidão mais solicitada por bancos para financiamentos.',
     faq: '[{"q": "O que são ônus e ações reipersecutórias?", "a": "Ônus são dívidas ou obrigações que recaem sobre o imóvel (ex: hipoteca). Ações reipersecutórias são processos judiciais que podem resultar na perda da propriedade pelo atual dono."},{"q": "Por que esta certidão é mais segura?", "a": "Porque ela garante que o imóvel está livre de pendências financeiras e judiciais, protegendo o comprador de futuras complicações."}]',
@@ -256,19 +331,13 @@ export const allCertificates = [
     faq: '[{"q": "Quem precisa desta certidão?", "a": "Produtores rurais, cooperativas, tradings e instituições financeiras que atuam com crédito agrícola."},{"q": "O que pode ser dado em penhor?", "a": "Colheitas futuras, máquinas, veículos agrícolas e outros bens móveis relacionados à atividade rural."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
-  { id: 64, name: 'Pesquisa Prévia', slug: toSlug('Pesquisa Previa'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
+  { id: 64, name: 'Pesquisa Prévia de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Previa de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
     description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
-    pesquisaType: 'previa', skipValidationAndTerms: true 
+    pesquisaType: 'previa' // Removido skipValidationAndTerms: true
   },
-  { id: 65, name: 'Pesquisa Qualificada', slug: toSlug('Pesquisa Qualificada'), price: 139.50, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
+  { id: 65, name: 'Pesquisa Qualificada de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
     description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
-    pesquisaType: 'qualificada', skipValidationAndTerms: true 
-  },
-  { id: 53, name: 'Pacote de Certidões - Compra e Venda de Imóveis', slug: toSlug('Pacote de Certidões - Compra e Venda de Imóveis'), price: 0, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Pacote de Certidões - Compra e Venda de Imóveis')],
-    description: 'Obtenha todas as certidões necessárias para a compra ou venda de um imóvel em um único pedido. (Serviço em breve)',
-    longDescription: 'Simplifique o processo de compra e venda de imóveis. Este pacote reunirá as principais certidões exigidas, como a matrícula do imóvel, certidões negativas dos vendedores (Justiça Federal, Estadual, Trabalhista) e outras, garantindo total segurança e conformidade para a sua transação. Aguarde!',
-    faq: '[{"q": "Quais certidões geralmente estão inclusas?", "a": "Normalmente, o pacote inclui a certidão de matrícula atualizada, certidões negativas de débitos dos vendedores e certidões fiscais do município."}]',
-    isPlaceholder: true 
+    pesquisaType: 'qualificada' // Removido skipValidationAndTerms: true
   },
 
   // --- Cartório de Registro Civil ---
@@ -317,54 +386,20 @@ export const allCertificates = [
     description: 'Busca por registros de procurações e/ou escrituras públicas nos Tabelionatos de Notas.',
     longDescription: 'Este serviço realiza uma busca nos índices de Tabelionatos de Notas para localizar escrituras (como compra e venda, doação, inventário) ou procurações públicas que tenham sido registradas em nome de uma determinada pessoa física (CPF) ou jurídica (CNPJ).',
     faq: `[{"q": "Qual a diferença entre esta pesquisa e pedir a certidão de uma escritura?", "a": "A pesquisa serve para localizar se existem e onde estão registradas as escrituras. A certidão é a cópia de uma escritura que você já sabe onde foi feita."}]`,
-    formFields: formTemplatePesquisaEscrituras, skipValidationAndTerms: true 
+    formFields: formTemplatePesquisaEscrituras // Removido skipValidationAndTerms: true
   },
 
   // --- Cartório de Protesto ---
-  { id: 57, name: 'Certidão de Protesto', slug: toSlug('Certidão de Protesto'), price: PRICE_PROTESTO_BASE_SP, atribuicaoId: 2, category: 'Cartório de Protesto', icon: icons.PROTEST, imageSrc: productImagePaths[toSlug('Certidão de Protesto')],
+  { id: 57, name: 'Certidão de Protesto', slug: toSlug('Certidão de Protesto'), price: null, atribuicaoId: 2, category: 'Cartório de Protesto', icon: icons.PROTEST, imageSrc: productImagePaths[toSlug('Certidão de Protesto')],
     description: 'Verifique a existência de dívidas protestadas em cartório para um CPF ou CNPJ.',
     longDescription: 'A Certidão de Protesto informa se uma pessoa física ou jurídica possui títulos não pagos que foram levados a protesto, como cheques sem fundo, duplicatas ou notas promissórias. Uma certidão negativa (sem protestos) é sinal de boa reputação no mercado e é frequentemente exigida em licitações, empréstimos e transações imobiliárias.',
     faq: '[{"q": "O que significa ter um nome protestado?", "a": "Significa que uma dívida não paga foi registrada oficialmente em um Cartório de Protesto, tornando a inadimplência pública e podendo levar a restrições de crédito."},{"q": "Esta certidão abrange todo o Brasil?", "a": "Não, a pesquisa é realizada por cidade. Para uma pesquisa nacional, é necessário consultar os cartórios de cada localidade de interesse ou utilizar serviços de abrangência nacional."}]',
     formFields: formTemplateProtesto 
   },
   
-  // --- Pesquisa ---
-  { id: 59, name: 'Pesquisa Completa de Veículo', slug: toSlug('Pesquisa Completa de Veículo'), price: 77.60, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Completa de Veículo')], description: 'Informações detalhadas sobre o veículo e seu proprietário.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaVeiculo },
-  { id: 60, name: 'Pesquisa Leilão de Veículo', slug: toSlug('Pesquisa Leilão de Veículo'), price: 65.40, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Leilão de Veículo')], description: 'Verifique o histórico de leilões para um veículo específico.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaVeiculo },
-  { id: 61, name: 'Pesquisa Gravame de Veículo', slug: toSlug('Pesquisa Gravame de Veículo'), price: 52.40, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Gravame de Veículo')], description: 'Consulte se o veículo possui restrições financeiras (alienação fiduciária).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaVeiculo },
-  { id: 62, name: 'Histórico de Roubo ou Furto de Veículo', slug: toSlug('Histórico de Roubo ou Furto de Veículo'), price: 34.60, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Histórico de Roubo ou Furto de Veículo')], description: 'Verifique se um veículo possui registro de roubo ou furto.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaRouboFurto },
-  { id: 63, name: 'Pesquisa Processos Judiciais e Administrativos', slug: toSlug('Pesquisa Processos Judiciais e Administrativos'), price: 77.30, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Processos Judiciais e Administrativos')], description: 'Dados atuais e históricos de ações judiciais e processos administrativos.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
-  { id: 68, name: 'Pesquisa Telefone e Endereço pelo CPF/CNPJ', slug: toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ')], description: 'Localize telefones e endereços através do CPF ou CNPJ.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
-  { id: 69, name: 'Pesquisa Sintegra Estadual', slug: toSlug('Pesquisa Sintegra Estadual'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Sintegra Estadual')], description: 'Consulta ao Cadastro de Contribuintes de ICMS (SINTEGRA).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaSintegra, skipValidationAndTerms: true },
-  
-  // --- Certidões Federais e Estaduais (COM A NOVA PROPRIEDADE 'esfera') ---
+  // --- Certidões Federais e Estaduais ---
   ...[
-    { id: 1, name: 'Certidão de Distribuição da Justiça Federal (TRF)', esfera: 'Federal' }, 
-    { id: 2, name: 'Certidão do Distribuidor (STF)', esfera: 'Federal' }, 
-    { id: 3, name: 'Certidão do STJ', esfera: 'Federal' }, 
-    { id: 4, name: 'Certidão Negativa de Ações Criminais (STM)', esfera: 'Federal' }, 
-    { id: 5, name: 'Certidão de Antecedentes Criminais', esfera: 'Federal' }, 
-    { id: 6, name: 'Certidão Negativa do Ministério Público Federal (MPF)', esfera: 'Federal' }, 
-    { id: 7, name: 'Certidão Negativa de Débitos Trabalhistas (CNDT-TST)', esfera: 'Federal' }, 
-    { id: 8, name: 'Certidão de Cumprimento da Cota de PCDs (MT)', esfera: 'Federal' }, 
-    { id: 9, name: 'Certidão de Débitos Trabalhistas (MT)', esfera: 'Federal' }, 
-    { id: 10, name: 'Certidão de Infrações Trabalhistas (MT)', esfera: 'Federal' }, 
-    { id: 11, name: 'Certidão Negativa do FGTS', esfera: 'Federal' }, 
-    { id: 12, name: 'Cadastro de Imóveis Rurais (CAFIR)', esfera: 'Federal' }, 
-    { id: 13, name: 'Certidão de Tributos Federais de Imóvel Rural (ITR)', esfera: 'Federal' }, 
-    { id: 14, name: 'Certidão de Embargos (IBAMA)', esfera: 'Federal' }, 
-    { id: 15, name: 'Certidão Negativa de Débitos (CND) do Ibama', esfera: 'Federal' }, 
-    { id: 16, name: 'Certidão Negativa de Débitos da União (CNTNIDA)', esfera: 'Federal' }, 
-    { id: 17, name: 'Certidão de Quitação Eleitoral (TSE)', esfera: 'Federal' }, 
-    { id: 18, name: 'Certidão de Improbidade Administrativa (CNJ)', esfera: 'Federal' }, 
-    { id: 19, name: 'Certidão do Tribunal de Contas (TCU)', esfera: 'Federal' }, 
-    { id: 21, name: 'Certidão de Distribuição Estadual (TJ)', esfera: 'Estadual' }, 
-    { id: 22, name: 'Certidão de Inquérito Criminal (MPE)', esfera: 'Estadual' }, 
-    { id: 23, name: 'Certidão de Inquérito Civil (MPE)', esfera: 'Estadual' }, 
-    { id: 24, name: 'Certidão de Ações Trabalhistas (CEAT-TRT)', esfera: 'Estadual' }, 
-    { id: 25, name: 'Certidão Negativa de Débitos Ambientais', esfera: 'Estadual' }, 
-    { id: 26, name: 'Certidão Negativa de Débitos Tributários Estaduais (CND)', esfera: 'Estadual' }, 
-    { id: 27, name: 'Certidão de Tributos da Procuradoria Geral (PGE)', esfera: 'Estadual' },
+    { id: 1, name: 'Certidão de Distribuição da Justiça Federal (TRF)', esfera: 'Federal' }, { id: 2, name: 'Certidão do Distribuidor (STF)', esfera: 'Federal' }, { id: 3, name: 'Certidão do STJ', esfera: 'Federal' }, { id: 4, name: 'Certidão Negativa de Ações Criminais (STM)', esfera: 'Federal' }, { id: 5, name: 'Certidão de Antecedentes Criminais', esfera: 'Federal' }, { id: 6, name: 'Certidão Negativa do Ministério Público Federal (MPF)', esfera: 'Federal' }, { id: 7, name: 'Certidão Negativa de Débitos Trabalhistas (CNDT-TST)', esfera: 'Federal' }, { id: 8, name: 'Certidão de Cumprimento da Cota de PCDs (MT)', esfera: 'Federal' }, { id: 9, name: 'Certidão de Débitos Trabalhistas (MT)', esfera: 'Federal' }, { id: 10, name: 'Certidão de Infrações Trabalhistas (MT)', esfera: 'Federal' }, { id: 11, name: 'Certidão Negativa do FGTS', esfera: 'Federal' }, { id: 12, name: 'Cadastro de Imóveis Rurais (CAFIR)', esfera: 'Federal' }, { id: 13, name: 'Certidão de Tributos Federais de Imóvel Rural (ITR)', esfera: 'Federal' }, { id: 14, name: 'Certidão de Embargos (IBAMA)', esfera: 'Federal' }, { id: 15, name: 'Certidão Negativa de Débitos (CND) do Ibama', esfera: 'Federal' }, { id: 16, name: 'Certidão Negativa de Débitos da União (CNTNIDA)', esfera: 'Federal' }, { id: 17, name: 'Certidão de Quitação Eleitoral (TSE)', esfera: 'Federal' }, { id: 18, name: 'Certidão de Improbidade Administrativa (CNJ)', esfera: 'Federal' }, { id: 19, name: 'Certidão do Tribunal de Contas (TCU)', esfera: 'Federal' }, { id: 21, name: 'Certidão de Distribuição Estadual (TJ)', esfera: 'Estadual' }, { id: 22, name: 'Certidão de Inquérito Criminal (MPE)', esfera: 'Estadual' }, { id: 23, name: 'Certidão de Inquérito Civil (MPE)', esfera: 'Estadual' }, { id: 24, name: 'Certidão de Ações Trabalhistas (CEAT-TRT)', esfera: 'Estadual' }, { id: 25, name: 'Certidão Negativa de Débitos Ambientais', esfera: 'Estadual' }, { id: 26, name: 'Certidão Negativa de Débitos Tributários Estaduais (CND)', esfera: 'Estadual' }, { id: 27, name: 'Certidão de Tributos da Procuradoria Geral (PGE)', esfera: 'Estadual' },
   ].map(cert => ({ 
     ...cert, 
     price: PRICE_FEDERAL_ESTADUAL, 
@@ -380,12 +415,7 @@ export const allCertificates = [
 
   // --- Certidões Municipais ---
   ...[
-    { id: 101, name: 'Certidão de Valor Venal' },
-    { id: 102, name: 'CND Municipal - Certidão Negativa de Débitos Tributários Municipais' },
-    { id: 103, name: 'Certidão Negativa de Débitos de Tributos Imobiliários' },
-    { id: 104, name: 'Certidão Ambiental Municipal' },
-    { id: 105, name: 'Certidão de Extrato de Débitos Municipais' },
-    { id: 106, name: 'Certidão de Dados Cadastrais do Imóvel' }
+    { id: 101, name: 'Certidão de Valor Venal' }, { id: 102, name: 'CND Municipal - Certidão Negativa de Débitos Tributários Municipais' }, { id: 103, name: 'Certidão Negativa de Débitos de Tributos Imobiliários' }, { id: 104, name: 'Certidão Ambiental Municipal' }, { id: 105, name: 'Certidão de Extrato de Débitos Municipais' }, { id: 106, name: 'Certidão de Dados Cadastrais do Imóvel' }
   ].map(cert => ({
     ...cert,
     price: PRICE_MUNICIPAL,
@@ -403,6 +433,31 @@ export const allCertificates = [
   { id: 58, name: 'Consulta Jurídica', slug: toSlug('Consulta Jurídica'), price: 150.00, category: 'Assessoria Jurídica', icon: icons.LAWYER, imageSrc: productImagePaths[toSlug('Consulta Jurídica')],
     description: 'Converse com um advogado especialista para tirar dúvidas sobre documentos, contratos e processos.',
     longDescription: 'Nossa consulta jurídica online conecta você a advogados experientes para obter orientação sobre questões imobiliárias, contratuais, familiares, entre outras. Entenda seus direitos e os próximos passos a serem tomados com segurança e conveniência.',
-    faq: '[{"q": "Como funciona a consulta?", "a": "Após a contratação, você agenda um horário para uma chamada de vídeo ou telefone com um de nossos advogados parceiros para discutir seu caso."},{"q": "A consulta resolve meu problema legal?", "a": "A consulta serve para orientar e esclarecer dúvidas. Caso seja necessário ingressar com uma ação ou elaborar um documento complexo, o advogado poderá apresentar uma proposta para estes serviços."}]'
+    faq: '[{"q": "Como funciona a consulta?", "a": "Após a contratação, você agenda um horário para uma chamada de vídeo ou telefone com um de nossos advogados parceiros para discutir seu caso."},{"q": "A consulta resolve meu problema legal?", "a": "A consulta serve para orientar e esclarecer dúvidas. Caso seja necessário ingressar com uma ação ou elaborar um documento complexo, o advogado poderá apresentar uma proposta para estes serviços."}]',
+    formFields: formTemplateConsultaJuridica, // Adicionado o formFields
+    skipValidationAndTerms: true // Para um fluxo mais simples
   },
+
+  // --- Pesquisa (agora no final e com ordem específica) ---
+  { id: 59, name: 'Pesquisa Completa de Veículo', slug: toSlug('Pesquisa Completa de Veículo'), price: 77.60, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Completa de Veículo')], description: 'Informações detalhadas sobre o veículo e seu proprietário.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaVeiculo },
+  { id: 60, name: 'Pesquisa Leilão de Veículo', slug: toSlug('Pesquisa Leilão de Veículo'), price: 65.40, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Leilão de Veículo')], description: 'Verifique o histórico de leilões para um veículo específico.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaLeilao },
+  { id: 61, name: 'Pesquisa Gravame de Veículo', slug: toSlug('Pesquisa Gravame de Veículo'), price: 52.40, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Gravame de Veículo')], description: 'Consulte se o veículo possui restrições financeiras (alienação fiduciária).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaGravame },
+  { id: 62, name: 'Histórico de Roubo ou Furto de Veículo', slug: toSlug('Histórico de Roubo ou Furto de Veículo'), price: 34.60, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Histórico de Roubo ou Furto de Veículo')], description: 'Verifique se um veículo possui registro de roubo ou furto.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaRouboFurto },
+  { id: 63, name: 'Pesquisa Processos Judiciais e Administrativos', slug: toSlug('Pesquisa Processos Judiciais e Administrativos'), price: 77.30, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Processos Judiciais e Administrativos')], description: 'Dados atuais e históricos de ações judiciais e processos administrativos.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
+  { id: 64, name: 'Pesquisa Prévia de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Previa de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
+    description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
+    pesquisaType: 'previa' // Removido skipValidationAndTerms: true
+  },
+  { id: 65, name: 'Pesquisa Qualificada de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
+    description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
+    pesquisaType: 'qualificada' // Removido skipValidationAndTerms: true
+  },
+  { id: 67, name: 'Pesquisa Escrituras e Procurações por CPF/CNPJ', slug: toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ'), price: 68.30, category: 'Tabelionato de Notas (Escrituras)', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ')],
+    description: 'Busca por registros de procurações e/ou escrituras públicas nos Tabelionatos de Notas.',
+    longDescription: 'Este serviço realiza uma busca nos índices de Tabelionatos de Notas para localizar escrituras (como compra e venda, doação, inventário) ou procurações públicas que tenham sido registradas em nome de uma determinada pessoa física (CPF) ou jurídica (CNPJ).',
+    faq: `[{"q": "Qual a diferença entre esta pesquisa e pedir a certidão de uma escritura?", "a": "A pesquisa serve para localizar se existem e onde estão registradas as escrituras. A certidão é a cópia de uma escritura que você já sabe onde foi feita."}]`,
+    formFields: formTemplatePesquisaEscrituras // Removido skipValidationAndTerms: true
+  },
+  { id: 68, name: 'Pesquisa Telefone e Endereço pelo CPF/CNPJ', slug: toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ')], description: 'Localize telefones e endereços através do CPF ou CNPJ.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
+  { id: 69, name: 'Pesquisa Sintegra Estadual', slug: toSlug('Pesquisa Sintegra Estadual'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Sintegra Estadual')], description: 'Consulta ao Cadastro de Contribuintes de ICMS (SINTEGRA).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaSintegra }, // Removido skipValidationAndTerms: true
 ];

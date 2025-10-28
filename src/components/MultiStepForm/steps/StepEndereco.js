@@ -48,8 +48,8 @@ export default function StepEndereco({ formData, handleChange }) {
       setCepLoading(true); setCepError('');
       try {
         const { data } = await axios.get(`https://brasilapi.com.br/api/cep/v1/${cep}`);
-        handleChange({ target: { name: 'estado', value: data.state } });
-        handleChange({ target: { name: 'cidade', value: data.city } });
+        handleChange({ target: { name: 'estado_entrega', value: data.state } }); // NOVO NOME
+        handleChange({ target: { name: 'cidade_entrega', value: data.city } }); // NOVO NOME
         handleChange({ target: { name: 'bairro', value: data.neighborhood } });
         handleChange({ target: { name: 'endereco', value: data.street } });
         setAddressFound(true);
@@ -104,7 +104,7 @@ export default function StepEndereco({ formData, handleChange }) {
           <div className={styles.formGroup}>
             <label>País/Country *</label>
             <SearchableDropdown
-              options={countries.map(c => c.name)} // <-- CORREÇÃO AQUI
+              options={countries.map(c => c.name)}
               value={formData.pais_nome || ''}
               onChange={handleCountryChange}
               placeholder="Digite para buscar o país"
@@ -141,8 +141,8 @@ export default function StepEndereco({ formData, handleChange }) {
             </div>
             {(addressFound || cepError) && ( 
               <div className={styles.addressFields}>
-                <div className={styles.formGroup}><label>Estado *</label><input type="text" name="estado" value={formData.estado || ''} onChange={handleChange} required disabled={!cepError} /></div>
-                <div className={styles.formGroup}><label>Cidade *</label><input type="text" name="cidade" value={formData.cidade || ''} onChange={handleChange} required disabled={!cepError} /></div>
+                <div className={styles.formGroup}><label>Estado *</label><input type="text" name="estado_entrega" value={formData.estado_entrega || ''} onChange={handleChange} required disabled={!cepError} /></div> {/* NOVO NOME */}
+                <div className={styles.formGroup}><label>Cidade *</label><input type="text" name="cidade_entrega" value={formData.cidade_entrega || ''} onChange={handleChange} required disabled={!cepError} /></div> {/* NOVO NOME */}
                 <div className={styles.formGroup}><label>Bairro *</label><input type="text" name="bairro" value={formData.bairro || ''} onChange={handleChange} required /></div>
                 <div className={styles.formGroup}><label>Endereço *</label><input type="text" name="endereco" value={formData.endereco || ''} onChange={handleChange} required /></div>
                 <div className={styles.formGroup}><label>Número *</label><input type="text" name="numero" value={formData.numero || ''} onChange={handleChange} required /></div>

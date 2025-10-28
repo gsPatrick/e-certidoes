@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '@/services/api';
-// --- ALTERAÇÃO AQUI: Importando o CSS correto ---
 import styles from './StepLocalizacaoMatricula.module.css';
 
 export default function StepLocalizacaoMatricula({ formData, handleChange, productData }) {
@@ -21,35 +20,35 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
 
   // Busca cidades
   useEffect(() => {
-    if (!formData.estado) {
+    if (!formData.estado_matricula) { // NOVO NOME
       setCidades([]);
       setCartorios([]);
       return;
     }
     setLoading(prev => ({ ...prev, cidades: true }));
-    api.get(`/cartorios/estados/${formData.estado}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false })));
-  }, [formData.estado]);
+    api.get(`/cartorios/estados/${formData.estado_matricula}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false }))); // NOVO NOME
+  }, [formData.estado_matricula]); // NOVO NOME
 
   // Busca cartórios
   useEffect(() => {
-    if (!formData.estado || !formData.cidade) {
+    if (!formData.estado_matricula || !formData.cidade_matricula) { // NOVOS NOMES
       setCartorios([]);
       return;
     }
     const atribuicaoId = productData?.atribuicaoId;
     setLoading(prev => ({ ...prev, cartorios: true }));
-    const params = new URLSearchParams({ estado: formData.estado, cidade: formData.cidade });
+    const params = new URLSearchParams({ estado: formData.estado_matricula, cidade: formData.cidade_matricula }); // NOVOS NOMES
     if (atribuicaoId) params.append('atribuicaoId', atribuicaoId);
     api.get(`/cartorios?${params.toString()}`).then(res => setCartorios(res.data)).finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
-  }, [formData.cidade, formData.estado, productData?.atribuicaoId]);
+  }, [formData.cidade_matricula, formData.estado_matricula, productData?.atribuicaoId]); // NOVOS NOMES
 
   const handleSelectChange = (e) => {
     handleChange(e);
-    if (e.target.name === 'estado') {
-      handleChange({ target: { name: 'cidade', value: '' } });
+    if (e.target.name === 'estado_matricula') { // NOVO NOME
+      handleChange({ target: { name: 'cidade_matricula', value: '' } }); // NOVO NOME
       handleChange({ target: { name: 'cartorio', value: '' } });
     }
-    if (e.target.name === 'cidade') {
+    if (e.target.name === 'cidade_matricula') { // NOVO NOME
       handleChange({ target: { name: 'cartorio', value: '' } });
     }
   };
@@ -62,16 +61,16 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
       </p>
 
       <div className={styles.formGroup}>
-        <label htmlFor="estado">Estado *</label>
-        <select id="estado" name="estado" value={formData.estado || ''} onChange={handleSelectChange} required disabled={loading.estados}>
+        <label htmlFor="estado_matricula">Estado *</label> {/* NOVO NOME */}
+        <select id="estado_matricula" name="estado_matricula" value={formData.estado_matricula || ''} onChange={handleSelectChange} required disabled={loading.estados}> {/* NOVO NOME */}
           <option value="">{loading.estados ? 'Carregando...' : 'Selecione o estado'}</option>
           {estados.map(est => <option key={est} value={est}>{est}</option>)}
         </select>
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="cidade">Cidade *</label>
-        <select id="cidade" name="cidade" value={formData.cidade || ''} onChange={handleSelectChange} required disabled={!formData.estado || loading.cidades}>
+        <label htmlFor="cidade_matricula">Cidade *</label> {/* NOVO NOME */}
+        <select id="cidade_matricula" name="cidade_matricula" value={formData.cidade_matricula || ''} onChange={handleSelectChange} required disabled={!formData.estado_matricula || loading.cidades}> {/* NOVO NOME */}
           <option value="">{loading.cidades ? 'Carregando...' : 'Selecione a cidade'}</option>
           {cidades.map(cid => <option key={cid} value={cid}>{cid}</option>)}
         </select>
@@ -79,7 +78,7 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
 
       <div className={styles.formGroup}>
         <label htmlFor="cartorio">Cartório de Registro de Imóveis *</label>
-        <select id="cartorio" name="cartorio" value={formData.cartorio || ''} onChange={handleChange} required disabled={!formData.cidade || loading.cartorios}>
+        <select id="cartorio" name="cartorio" value={formData.cartorio || ''} onChange={handleChange} required disabled={!formData.cidade_matricula || loading.cartorios}> {/* NOVO NOME */}
           <option value="">{loading.cartorios ? 'Buscando...' : 'Selecione o cartório'}</option>
           {cartorios.map(cart => <option key={cart.value} value={cart.label}>{cart.label}</option>)}
         </select>

@@ -26,6 +26,9 @@ export default function CertidaoPage() {
     return notFound();
   }
 
+  // CORREÇÃO: Adiciona uma verificação para a imagem, usando um placeholder se não existir
+  const imageSrc = certificate.imageSrc || '/certidoes/default-placeholder.png'; // Crie uma imagem placeholder
+
   return (
     <>
       <Header />
@@ -34,17 +37,20 @@ export default function CertidaoPage() {
           <ProductHeader 
             title={certificate.name}
             description={certificate.description}
-            imageSrc={certificate.imageSrc}
-            // --- MODIFICAÇÃO: Passando as funções para o ProductHeader ---
+            imageSrc={imageSrc} // Usa a imagem verificada
             onOpenPaymentModal={() => setPaymentModalOpen(true)}
             onOpenDeliveryModal={() => setDeliveryModalOpen(true)}
           />
           
-          {/* --- MODIFICAÇÃO: A seção de links separada foi removida daqui --- */}
-
           <div id="form-inicio">
-            {!certificate.isPlaceholder && (
+            {/* O placeholder é uma propriedade que pode ser usada para desativar o formulário */}
+            {!certificate.isPlaceholder ? (
               <MultiStepForm productData={certificate} />
+            ) : (
+              <div style={{ textAlign: 'center', padding: '2rem', background: '#fff', borderRadius: '8px', border: '1px solid #e9ecef' }}>
+                <h3>Serviço em Breve</h3>
+                <p>Este serviço está sendo finalizado para oferecer a você a melhor experiência. Volte em breve!</p>
+              </div>
             )}
           </div>
 
@@ -56,19 +62,33 @@ export default function CertidaoPage() {
       </main>
       <Footer />
 
-      {/* MODAIS (permanecem iguais) */}
+      {/* MODAL DE PAGAMENTO CORRIGIDO */}
       <InfoModal 
         isOpen={isPaymentModalOpen} 
         onClose={() => setPaymentModalOpen(false)}
         title="Formas de pagamento"
       >
         <ul className={modalStyles.infoList}>
-          <li><strong>Cartão de crédito</strong><p>Parcele em até 3X sem juros no cartão de crédito.</p><div className={modalStyles.paymentMethods}><Image src="/payment-logos/visa.png" alt="Visa" width={40} height={25} /><Image src="/payment-logos/mastercard.png" alt="Mastercard" width={40} height={25} /><Image src="/payment-logos/elo.png" alt="Elo" width={40} height={25} /><Image src="/payment-logos/hiper.png" alt="Hipercard" width={40} height={25} /><Image src="/payment-logos/alelo.png" alt="Alelo" width={40} height={25} /></div></li>
-          <li><strong>Boleto</strong><p>Receba 5% de desconto pagando via Boleto.</p></li>
-          <li><strong>Pix</strong><p>Efetue o pagamento via PIX e tenha aprovação imediata.</p></li>
+          <li>
+            <strong>Cartão de crédito</strong>
+            <p>Parcele suas compras em até 3X no cartão de crédito.</p>
+            <div className={modalStyles.paymentMethods}>
+              {/* SUBSTITUIÇÃO: Apenas uma imagem para todas as bandeiras */}
+              <Image src="/payment-logos/bandeiras.png" alt="Bandeiras de Cartão" width={200} height={30} />
+            </div>
+          </li>
+          <li>
+            <strong>Boleto</strong>
+            <p>Realize o pagamento via Boleto Bancário. A compensação pode levar até 2 dias úteis.</p>
+          </li>
+          <li>
+            <strong>Pix</strong>
+            <p>Efetue o pagamento via PIX e tenha aprovação imediata.</p>
+          </li>
         </ul>
       </InfoModal>
 
+      {/* MODAL DE ENTREGA (Mantido) */}
       <InfoModal 
         isOpen={isDeliveryModalOpen} 
         onClose={() => setDeliveryModalOpen(false)}

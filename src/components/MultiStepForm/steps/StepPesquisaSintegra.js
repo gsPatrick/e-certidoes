@@ -1,4 +1,4 @@
-
+// Salve em: src/components/MultiStepForm/steps/StepPesquisaSintegra.js
 'use client';
 
 import styles from './StepPesquisa.module.css';

@@ -100,7 +100,7 @@ export default function StepTipoCertidao({ formData, handleChange, error, produc
         <>
           <p className={styles.stepDescription}>Escolha o tipo de certidão:</p>
           <div className={styles.radioGroupContainer}>
-            {imovelOptions.map(opt => (
+            {imovelOptions.slice(0, 1).map(opt => ( // Mostra apenas Matrícula
               <label key={opt.value} className={styles.radioOption}>
                 <input type="radio" name="tipo_certidao" value={opt.value} checked={selectedOption === opt.value} onChange={handleOptionChange} required />
                 <div className={styles.radioDetails}>

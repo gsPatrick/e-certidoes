@@ -541,7 +541,7 @@ export const protestoCartorios = {
         "CARTÓRIO MACHADO 2º OFÍCIO - Centro- JUAZEIRO DO NORTE",
         "CARTÓRIO DO 3º OFICIO - Centro- JUAZEIRO DO NORTE",
         "Cartório do 4o Ofício Luis Machado- Centro - JUAZEIRO DO NORTE",
-        "CARTORIO 5° OFICIO - Centro- JUAZEIRO DO NORTE"
+        "CARTORIO 5° OFICIO - Centro- JUAZEiro DO NORTE"
     ],
     "Jucás": [
         "CARTÓRIO DO DISTRITO DE CANAFÍSTULA – JUCAS",
@@ -2042,7 +2042,7 @@ export const protestoCartorios = {
       "Tabelião de Notas e de Protesto - Centro - Bebedouro"
     ],
     "Birigui": [
-      "1º TABELIÃO DE NOTAS – Centro – BIRIGUI",
+      "1º TABELIÃO DE NOTAS – Centro - BIRIGUI",
       "2º Cartório - Centro – Birigui"
     ],
     "Botucatu": [

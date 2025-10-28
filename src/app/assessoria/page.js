@@ -1,6 +1,9 @@
+// Salve em: src/app/assessoria/page.js
+
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import FormSection from "@/components/FormSection/FormSection";
+import styles from '../contato/ContactPage.module.css'; // Reutiliza o estilo da página de contato
 
 export const metadata = {
   title: "Assessoria Jurídica - E-Certidões",
@@ -8,7 +11,6 @@ export const metadata = {
 };
 
 export default function AssessoriaJuridicaPage() {
-  // O texto descritivo para a página de assessoria
   const assessoriaDescription = (
     <>
       <p>
@@ -18,24 +20,21 @@ export default function AssessoriaJuridicaPage() {
         Prestamos assessoria jurídica especializada no âmbito do direito imobiliário, civil e empresarial.
       </p>
       <p>
-        Através do formulário abaixo você poderá solicitar uma consulta por videoconferência com um advogado especialista. Ou fale conosco através do WhatsApp: +55 (19) 99915-8230.
+        Através do formulário abaixo você poderá solicitar uma consulta por videoconferência com um advogado especialista. Ou fale conosco através do WhatsApp: <strong>(19) 99915-8230</strong>.
       </p>
     </>
   );
 
   return (
-    // Esta página não precisa do layout de altura total, então usamos uma estrutura padrão
-    <>
+    <div className={styles.fullPageContainer}>
       <Header />
-      <main>
-        <FormSection
-          imageSrc="/acessor.png"
-          imageAlt="Advogado sorrindo em um escritório"
-          title="Assessoria Jurídica"
-          description={assessoriaDescription}
-        />
-      </main>
+      <FormSection
+        imageSrc="/acessor.png"
+        imageAlt="Advogado sorrindo em um escritório"
+        title="Assessoria Jurídica"
+        description={assessoriaDescription}
+      />
       <Footer />
-    </>
+    </div>
   );
 }

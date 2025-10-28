@@ -4,13 +4,19 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
+import PageLoader from '@/components/PageLoader/PageLoader'; // Importa o loader
 import styles from './Checkout.module.css';
 import { CreditCardIcon, PixIcon, BoletoIcon } from './SecurityIcons';
 
 // Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
+    // Adiciona exceções para não formatar chaves específicas
+    if (['cpf', 'cnpj', 'rg'].includes(key.toLowerCase())) {
+        return key.toUpperCase();
+    }
     return key
         .replace(/_/g, ' ')
         .replace(/\b\w/g, char => char.toUpperCase());
@@ -30,15 +36,15 @@ const DetailItem = ({ label, value }) => {
     );
 };
 
-
 // Componente para o card de resumo do pedido na sidebar
 const OrderSummaryCard = ({ item, onRemove }) => {
     if (!item || !item.formData) return null;
     const { formData } = item;
     
-    // Lista de chaves que NÃO devem ser exibidas no resumo final
+    // Lista de chaves a serem ignoradas na exibição dos detalhes
     const excludeKeys = new Set([
         'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa',
+        'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg'
     ]);
 
     const allDetails = Object.entries(formData)
@@ -58,78 +64,53 @@ const OrderSummaryCard = ({ item, onRemove }) => {
                 ))}
             </div>
             <div className={styles.summaryActions}>
-                {/* O botão "Editar" pode levar de volta à página do produto no futuro */}
-            
                 <span className={styles.summaryPrice}>R$ {item.price.toFixed(2).replace('.', ',')}</span>
             </div>
         </div>
     );
 };
 
-
 export default function CheckoutPage() {
     const { cartItems, itemCount, removeFromCart } = useCart();
-    const { user } = useAuth();
+    const { user, isAuthenticated, loading: authLoading } = useAuth();
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [activePayment, setActivePayment] = useState('card');
     const [isClient, setIsClient] = useState(false);
     
-    const [billingInfo, setBillingInfo] = useState({
-        firstName: '',
-        lastName: '',
-        cpf: '',
-        email: ''
-    });
-
     useEffect(() => {
         setIsClient(true);
-        
-        if (user) {
-            setBillingInfo({
-                firstName: user.firstName || '',
-                lastName: user.lastName || '',
-                cpf: user.cpf || '',
-                email: user.email || ''
-            });
-        } 
-        else if (cartItems.length > 0) {
-            const lastItem = cartItems[cartItems.length - 1];
-            if (lastItem && lastItem.formData) {
-                const { requerente_nome, requerente_cpf, requerente_email } = lastItem.formData;
-                
-                const nomeArray = requerente_nome ? requerente_nome.split(' ') : [''];
-                const firstName = nomeArray[0];
-                const lastName = nomeArray.slice(1).join(' ');
-
-                setBillingInfo({
-                    firstName: firstName || '',
-                    lastName: lastName || '',
-                    cpf: requerente_cpf || '',
-                    email: requerente_email || ''
-                });
-            }
+        // CORREÇÃO: Lógica de redirecionamento para login
+        if (!authLoading && !isAuthenticated) {
+            router.push('/minha-conta?redirect=/finalizar-compra');
         }
-    }, [user, cartItems]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setBillingInfo(prev => ({...prev, [name]: value}));
-    };
+    }, [isAuthenticated, authLoading, router]);
 
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-    const frete = 0;
+    const frete = 0; // Pode ser ajustado no futuro
     const total = subtotal + frete;
 
     const handleFinalizarCompra = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const orderData = { items: cartItems, billingInfo, paymentMethod: activePayment, total };
+        const orderData = { user, items: cartItems, paymentMethod: activePayment, total };
         console.log("Enviando para API de pagamento:", orderData);
         alert(`Iniciando pagamento de R$ ${total.toFixed(2)} via ${activePayment}...`);
+        // Simulação de chamada de API
+        await new Promise(resolve => setTimeout(resolve, 2000));
         setLoading(false);
+        // router.push('/pedido-confirmado/12345'); // Exemplo de redirecionamento pós-pagamento
     };
-
-    if (!isClient) return null;
+    
+    // CORREÇÃO: Exibe um loader enquanto verifica a autenticação
+    if (!isClient || authLoading) {
+        return <PageLoader />; 
+    }
+    
+    // Se não estiver autenticado após o loading, a página fica em branco enquanto o redirect acontece
+    if(!isAuthenticated) {
+        return null;
+    }
 
     return (
         <>
@@ -138,20 +119,11 @@ export default function CheckoutPage() {
                 <div className={styles.container}>
                     <h1 className={styles.title}>Finalizar Compra</h1>
                     {itemCount === 0 ? (
-                        <p>Seu carrinho está vazio.</p>
+                        <p>Seu carrinho está vazio. <Link href="/certidoes">Voltar para a loja.</Link></p>
                     ) : (
                         <form onSubmit={handleFinalizarCompra} className={styles.checkoutGrid}>
                             <div className={styles.mainContent}>
-                                <div className={styles.detailsBox}>
-                                    <h2>Detalhes da Cobrança</h2>
-                                    <div className={styles.formRow}>
-                                        <div className={styles.formGroup}><label>Nome *</label><input type="text" name="firstName" value={billingInfo.firstName} onChange={handleInputChange} required /></div>
-                                        <div className={styles.formGroup}><label>Sobrenome *</label><input type="text" name="lastName" value={billingInfo.lastName} onChange={handleInputChange} required /></div>
-                                    </div>
-                                    <div className={styles.formGroup}><label>CPF *</label><input type="text" name="cpf" value={billingInfo.cpf} onChange={handleInputChange} required /></div>
-                                    <div className={styles.formGroup}><label>E-mail *</label><input type="email" name="email" value={billingInfo.email} onChange={handleInputChange} required /></div>
-                                </div>
-
+                                {/* CORREÇÃO: Seção "Detalhes da Cobrança" foi removida */}
                                 <div className={`${styles.detailsBox} ${styles.paymentBox}`}>
                                     <h2>Pagamento</h2>
                                     <div className={styles.paymentTabs}>
@@ -168,7 +140,12 @@ export default function CheckoutPage() {
                                                     <div className={styles.formGroup}><label>Código (CVV)</label><input type="text" placeholder="123" required/></div>
                                                 </div>
                                                 <div className={styles.formGroup}><label>Parcelas</label>
-                                                    <select><option>1x de R$ {total.toFixed(2).replace('.',',')} sem juros</option><option>2x de R$ {(total / 2).toFixed(2).replace('.',',')} sem juros</option><option>3x de R$ {(total / 3).toFixed(2).replace('.',',')} sem juros</option></select>
+                                                    {/* CORREÇÃO: Removido "sem juros" */}
+                                                    <select>
+                                                        <option>1x de R$ {total.toFixed(2).replace('.',',')}</option>
+                                                        <option>2x de R$ {(total / 2).toFixed(2).replace('.',',')}</option>
+                                                        <option>3x de R$ {(total / 3).toFixed(2).replace('.',',')}</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         )}

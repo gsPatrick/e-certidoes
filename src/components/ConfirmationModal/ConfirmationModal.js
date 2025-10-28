@@ -11,10 +11,30 @@ const formatLabel = (key) => {
     if (key === 'cidade_inter') return 'Cidade Internacional';
     if (key === 'estado_inter') return 'Estado Internacional';
     if (key === 'endereco_inter') return 'Endereço Internacional';
+    if (key === 'cpf_cnpj') return 'CPF/CNPJ';
+    if (key === 'cpf_cnpj_pesquisa') return 'CPF/CNPJ da Pesquisa';
+    if (key === 'cpf_cnpj_escritura') return 'CPF/CNPJ da Escritura';
+    if (key === 'estado_cartorio') return 'Estado do Cartório'; // NOVO
+    if (key === 'cidade_cartorio') return 'Cidade do Cartório'; // NOVO
+    if (key === 'estado_entrega') return 'Estado de Entrega'; // NOVO
+    if (key === 'cidade_entrega') return 'Cidade de Entrega'; // NOVO
+    if (key === 'estado_matricula') return 'Estado da Matrícula'; // NOVO
+    if (key === 'cidade_matricula') return 'Cidade da Matrícula'; // NOVO
+    if (key === 'nome_completo_contato') return 'Nome Completo'; // Para Consulta Jurídica
+    if (key === 'email_contato') return 'E-mail'; // Para Consulta Jurídica
+    if (key === 'telefone_contato') return 'Telefone'; // Para Consulta Jurídica
+    if (key === 'assunto_contato') return 'Assunto'; // Para Consulta Jurídica
+    if (key === 'mensagem_contato') return 'Mensagem'; // Para Consulta Jurídica
+
 
     return key
         .replace(/_/g, ' ')
         .replace(/\b\w/g, char => char.toUpperCase());
+};
+
+const toSlug = (str) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 };
 
 // Componente para renderizar uma linha de detalhe, ocultando valores vazios
@@ -40,27 +60,43 @@ const DynamicProductDetails = ({ formData, item }) => {
     const excludeKeys = new Set([
         'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
         'requerente_cep', 'requerente_endereco', 'requerente_numero', 'requerente_complemento', 'requerente_bairro', 'requerente_cidade', 'requerente_estado',
-        'formato', 'cep', 'estado', 'cidade', 'bairro', 'endereco', 'numero', 'complemento',
+        'formato', 'cep', 'bairro', 'endereco', 'numero', 'complemento',
         'entrega_internacional_correios', 'entrega_internacional_dhl', 'pais', 'pais_nome', 'estado_inter', 'cidade_inter', 'cep_inter', 'endereco_inter',
         'apostilamento_digital', 'apostilamento_fisico', 'apostilamento', 'inteiro_teor', 'aviso_recebimento',
         'tipo_inteiro_teor', 'inteiro_teor_nacionalidade', 'inteiro_teor_estado_civil', 'inteiro_teor_profissao', 'inteiro_teor_parentesco',
         'tipo_pesquisa', 'tipo_pessoa', 'aceite_lgpd', 'ciente', 'localizar_pra_mim', 'todos_cartorios_protesto',
+        'tipo_certidao', // Removido para ser tratado de forma especial
+        // Novos campos de localização que serão tratados separadamente ou já foram
+        'estado_cartorio', 'cidade_cartorio', 'estado_entrega', 'cidade_entrega', 'estado_matricula', 'cidade_matricula',
     ]);
 
     const specificDetails = Object.entries(formData)
         .filter(([key, value]) => {
             if (value === '' || value === null || value === false) return false;
-            if (key === 'tempo_pesquisa') return slug === 'certidao-de-protesto'; // Regra específica
+            if (key === 'tempo_pesquisa' && slug !== toSlug('Certidão de Protesto')) return false; // Regra específica
             if (excludeKeys.has(key)) return false; // Regra de exclusão
             return true;
         });
 
-    if (specificDetails.length === 0) {
+    if (specificDetails.length === 0 && !formData.tipo_certidao && !formData.cartorio && !formData.cartorio_manual && !formData.numero_matricula) {
         return <p className={styles.noDetails}>Nenhum detalhe adicional informado.</p>;
     }
 
     return (
         <>
+            <DetailRow 
+                label={item.category.includes('Pesquisa') ? 'Tipo de Pesquisa' : 'Tipo de Certidão'}
+                value={item.name}
+            />
+            {/* Adiciona a exibição do cartório se presente */}
+            {(formData.cartorio || formData.cartorio_manual) && (
+                <DetailRow label="Cartório Selecionado" value={formData.cartorio || formData.cartorio_manual} />
+            )}
+            {/* Adiciona o número da matrícula se presente */}
+            {formData.numero_matricula && (
+                <DetailRow label="Número da Matrícula" value={formData.numero_matricula} />
+            )}
+
             {specificDetails.map(([key, value]) => (
                 <DetailRow key={key} label={formatLabel(key)} value={value} />
             ))}
@@ -103,8 +139,18 @@ export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) 
 
   const valorServico = total - custoTotalAdicionais - custoProtesto;
 
-  const enderecoCompleto = [formData.endereco, formData.numero, formData.complemento, formData.bairro, `${formData.cidade || ''}/${formData.estado || ''}`, formData.cep].filter(Boolean).join(', ');
+  // Ajustado para usar os novos nomes de campos
+  const enderecoCompleto = [formData.endereco, formData.numero, formData.complemento, formData.bairro, `${formData.cidade_entrega || ''}/${formData.estado_entrega || ''}`, formData.cep].filter(Boolean).join(', ');
   const enderecoInternacional = [formData.endereco_inter, formData.cidade_inter, formData.estado_inter, formData.pais_nome, formData.cep_inter].filter(Boolean).join(', ');
+  
+  // Ajustado para usar os novos nomes de campos
+  let localizacaoCartorio = '';
+  if (formData.estado_cartorio && formData.cidade_cartorio) {
+      localizacaoCartorio = `${formData.cidade_cartorio} - ${formData.estado_cartorio}`;
+  } else if (formData.estado_matricula && formData.cidade_matricula) {
+      localizacaoCartorio = `${formData.cidade_matricula} - ${formData.estado_matricula}`;
+  }
+
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -117,6 +163,7 @@ export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) 
         <div className={styles.content}>
           <div className={styles.section}>
             <h4>{item.name.toUpperCase()}</h4>
+            {localizacaoCartorio && <DetailRow label="Localização do Cartório" value={localizacaoCartorio} />} {/* NOVO LABEL */}
             <DynamicProductDetails formData={formData} item={item} />
           </div>
 
@@ -138,7 +185,10 @@ export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) 
             <DetailRow label="E-mail" value={formData.requerente_email} />
             <DetailRow label="Telefone" value={formData.requerente_telefone} />
             <DetailRow label="RG" value={formData.requerente_rg} />
-            <DetailRow label="Endereço Solicitante" value={[formData.requerente_endereco, formData.requerente_numero, formData.requerente_bairro, `${formData.requerente_cidade || ''}/${formData.requerente_estado || ''}`].filter(Boolean).join(', ')} />
+            {/* Ajustado para usar os novos nomes de campos, se houver endereço do requerente */}
+            { (formData.requerente_endereco || formData.requerente_cidade_entrega) && (
+                <DetailRow label="Endereço Solicitante" value={[formData.requerente_endereco, formData.requerente_numero, formData.requerente_bairro, `${formData.requerente_cidade_entrega || ''}/${formData.requerente_estado_entrega || ''}`].filter(Boolean).join(', ')} />
+            )}
           </div>
 
           <div className={`${styles.section} ${styles.summarySection}`}>

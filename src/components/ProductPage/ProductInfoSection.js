@@ -16,18 +16,21 @@ const ProductInfoSection = () => {
           <ul className={styles.infoList}>
             <li>
               <strong>Cartão de crédito</strong>
-              <p>Parcele em até 3X sem juros no cartão de crédito.</p>
+              {/* CORREÇÃO: Removido "sem juros" */}
+              <p>Parcele suas compras em até 3X no cartão de crédito.</p>
               <div className={styles.paymentMethods}>
+                {/* CORREÇÃO: Adicionadas logomarcas */}
                 <Image src="/payment-logos/visa.png" alt="Visa" width={40} height={25} />
                 <Image src="/payment-logos/mastercard.png" alt="Mastercard" width={40} height={25} />
                 <Image src="/payment-logos/elo.png" alt="Elo" width={40} height={25} />
                 <Image src="/payment-logos/hiper.png" alt="Hipercard" width={40} height={25} />
-                <Image src="/payment-logos/alelo.png" alt="Alelo" width={40} height={25} />
+                <Image src="/payment-logos/amex.png" alt="American Express" width={40} height={25} />
               </div>
             </li>
             <li>
               <strong>Boleto</strong>
-              <p>Receba 5% de desconto pagando via Boleto.</p>
+              {/* CORREÇÃO: Removido desconto */}
+              <p>Realize o pagamento via Boleto Bancário. A compensação pode levar até 2 dias úteis.</p>
             </li>
             <li>
               <strong>Pix</strong>

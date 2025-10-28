@@ -4,13 +4,29 @@
 import { useEffect } from 'react';
 import styles from './StepFormato.module.css';
 
+const toSlug = (str) => {
+  if (!str) return '';
+  const normalizedStr = str.normalize('NFD');
+  const withoutAccents = normalizedStr.replace(/[\u0300-\u036f]/g, '');
+  return withoutAccents.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-');
+};
+
 export default function StepFormato({ formData, handleChange, productData }) {
 
-  // --- ALTERAÇÃO INICIADA: Lógica condicional para formato ---
   let formatOptions = [];
   const isEscritura = productData?.category === 'Tabelionato de Notas (Escrituras)';
+  const isProtesto = productData?.slug === toSlug('Certidão de Protesto');
 
-  if (isEscritura) {
+  if (isProtesto) {
+    formatOptions = [
+      { 
+        value: 'Certidão eletrônica', 
+        label: 'Certidão eletrônica', 
+        description: 'Será disponibilizada no painel do usuário e enviada ao e-mail.',
+        price_add: null,
+      },
+    ];
+  } else if (isEscritura) {
     formatOptions = [
       { 
         value: 'Certidão Transcrita', 
@@ -30,31 +46,33 @@ export default function StepFormato({ formData, handleChange, productData }) {
       { 
         value: 'Certidão eletrônica', 
         label: 'Certidão eletrônica', 
-        description: 'É a mais pedida e usual. Emitida em breve relato de forma mais rápida. Será disponibilizada no painel do usuário e enviada ao e-mail.',
+        description: 'É a mais pedida e usual. Será disponibilizada no painel do usuário e enviada ao e-mail.',
         price_add: null,
         isMostPopular: true
       },
       { 
         value: 'Certidão em papel', 
         label: 'Certidão em papel', 
-        description: 'Necessária em casos de cidadania. Será enviada no endereço informado através dos Correios. Contém todos os dados registrados no livro do assento.', 
-        price_add: 20.00,
+        description: 'Será enviada no endereço informado através dos Correios. Contém todos os dados registrados no livro do assento.', 
+        price_add: 40.00, // Preço corrigido para 40,00
       },
     ];
   }
-  // --- ALTERAÇÃO FINALIZADA ---
 
   const selectedValue = formData.formato || formatOptions[0].value;
 
   useEffect(() => {
-    if (!formData.formato) {
+    // Garante que uma opção padrão seja selecionada ao carregar
+    if (!formData.formato || !formatOptions.some(opt => opt.value === formData.formato)) {
       handleChange({ target: { name: 'formato', value: formatOptions[0].value } });
     }
   }, [formData.formato, handleChange, formatOptions]);
 
+  const stepNumber = isProtesto ? '3' : '3'; // Pode ajustar se o número da etapa mudar
+
   return (
     <div>
-      <h3 className={styles.stepTitle}>3. Formato</h3>
+      <h3 className={styles.stepTitle}>{stepNumber}. Formato</h3>
       
       <div className={styles.radioGroupContainer}>
         {formatOptions.map(opt => (

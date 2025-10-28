@@ -12,12 +12,11 @@ export default function StepPesquisaVeiculo({ formData, handleChange, error, pro
       </p>
 
       <div className={styles.formGroup}>
-        {/* --- MODIFICAÇÃO AQUI --- */}
         <label htmlFor="placa">Placa *</label>
         <input
           type="text"
           id="placa"
-          name="placa" // O 'name' também foi ajustado para consistência
+          name="placa"
           value={formData.placa || ''}
           onChange={handleChange}
           placeholder="Digite a placa do veículo"

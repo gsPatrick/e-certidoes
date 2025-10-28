@@ -41,7 +41,7 @@ export default function StepMunicipalDados({ formData, handleChange, error, prod
     const fetchMunicipios = async () => {
       setLoading(prev => ({ ...prev, municipios: true }));
       try {
-        // Usando a API de cartórios para cidades, pois já temos
+        // Usando a API de cartórios para cidades
         const { data } = await api.get(`/cartorios/estados/${formData.estado}/cidades`);
         setMunicipios(data);
       } catch (error) {
@@ -93,8 +93,8 @@ export default function StepMunicipalDados({ formData, handleChange, error, prod
       </div>
 
       <div className={styles.tabContainer}>
-        <button type="button" onClick={() => handleTabChange('Pessoa')} className={activeTab === 'Pessoa' ? styles.activeTab : ''}>Pessoa</button>
-        <button type="button" onClick={() => handleTabChange('Empresa')} className={activeTab === 'Empresa' ? styles.activeTab : ''}>Empresa</button>
+        <button type="button" onClick={() => handleTabChange('Pessoa')} className={`${styles.tabButton} ${activeTab === 'Pessoa' ? styles.activeTab : ''}`}>Pessoa</button>
+        <button type="button" onClick={() => handleTabChange('Empresa')} className={`${styles.tabButton} ${activeTab === 'Empresa' ? styles.activeTab : ''}`}>Empresa</button>
       </div>
       
       <div className={styles.formContent}>

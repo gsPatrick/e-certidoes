@@ -23,20 +23,27 @@ export default function StepServicosAdicionais({ formData, handleChange, product
     }
   }, [formData.inteiro_teor, formData.tipo_inteiro_teor, handleChange]);
 
+  const { category, slug } = productData;
+  const isProtesto = slug === toSlug('Certidão de Protesto');
+  const isTabelionato = category === 'Tabelionato de Notas (Escrituras)';
+  const isRegistroCivil = category === 'Cartório de Registro Civil';
+
   let allServices = [];
-  const isProtesto = productData.slug === toSlug('Certidão de Protesto');
 
   if (isProtesto) {
     allServices = [
-      { id: 'apostilamento_digital', label: 'Apostilamento Digital', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão eletrônica' },
-      { id: 'apostilamento', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão em papel' },
-      { id: 'aviso_recebimento', label: 'Aviso de Recebimento (AR)', description: 'Comprovação de que o documento foi entregue ao destinatário.', condition: (data) => data.formato === 'Certidão em papel' }
+      { id: 'apostilamento_digital', label: 'Apostilamento Digital', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão eletrônica' }
+    ];
+  } else if (isTabelionato) {
+    allServices = [
+      { id: 'apostilamento', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: () => true }, // Sempre disponível para Tabelionato
+      { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: () => true } // Sempre disponível
     ];
   } else {
-    // Serviços para Registro Civil e outros (SEM RECONHECIMENTO DE FIRMA)
+    // Serviços para Registro de Imóveis e Registro Civil
     allServices = [
         { id: 'apostilamento_digital', label: 'Apostilamento Digital', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão eletrônica' },
-        { id: 'inteiro_teor', label: 'Inteiro teor', description: 'Todos os dados da certidão para procedimentos específicos, como processo de cidadania. Pode ser necessário preenchimento de requerimento com assinatura digital ou firma reconhecida.', condition: (data) => data.formato === 'Certidão em papel' },
+        { id: 'inteiro_teor', label: 'Inteiro teor', description: 'Todos os dados da certidão para procedimentos específicos. Pode ser necessário preenchimento de requerimento com assinatura digital ou firma reconhecida.', condition: (data) => data.formato === 'Certidão em papel' },
         { id: 'apostilamento_fisico', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão em papel' },
         { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: (data) => data.formato === 'Certidão em papel' }
     ];
@@ -92,15 +99,18 @@ export default function StepServicosAdicionais({ formData, handleChange, product
                       </label>
                     </div>
                   </div>
-                  <div className={styles.subSection}>
-                    <h4 className={styles.subTitle}>Preencha as informações complementares para a certidão de inteiro teor:</h4>
-                    <div className={styles.formGrid}>
-                        <div className={styles.formGroup}><label htmlFor="nacionalidade">Nacionalidade</label><select id="nacionalidade" name="inteiro_teor_nacionalidade" value={formData.inteiro_teor_nacionalidade || 'Brasileiro'} onChange={handleChange}><option>Brasileiro</option><option>Estrangeiro</option></select></div>
-                        <div className={styles.formGroup}><label htmlFor="estado_civil">Estado civil</label><select id="estado_civil" name="inteiro_teor_estado_civil" value={formData.inteiro_teor_estado_civil || 'Solteiro(a)'} onChange={handleChange}><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select></div>
-                        <div className={styles.formGroup}><label htmlFor="profissao">Profissão</label><select id="profissao" name="inteiro_teor_profissao" value={formData.inteiro_teor_profissao || 'Profissional autônomo'} onChange={handleChange}><option>Profissional autônomo</option><option>Advogado(a)</option><option>Médico(a)</option><option>Engenheiro(a)</option><option>Outra</option></select></div>
-                        <div className={styles.formGroup}><label htmlFor="parentesco">Grau de parentesco</label><select id="parentesco" name="inteiro_teor_parentesco" value={formData.inteiro_teor_parentesco || 'O próprio'} onChange={handleChange}><option>O próprio</option><option>Cônjuge</option><option>Filho(a)</option><option>Pai/Mãe</option><option>Outro</option></select></div>
+                  
+                  {isRegistroCivil && (
+                    <div className={styles.subSection}>
+                      <h4 className={styles.subTitle}>Preencha as informações complementares para a certidão de inteiro teor:</h4>
+                      <div className={styles.formGrid}>
+                          <div className={styles.formGroup}><label htmlFor="nacionalidade">Nacionalidade</label><select id="nacionalidade" name="inteiro_teor_nacionalidade" value={formData.inteiro_teor_nacionalidade || 'Brasileiro'} onChange={handleChange}><option>Brasileiro</option><option>Estrangeiro</option></select></div>
+                          <div className={styles.formGroup}><label htmlFor="estado_civil">Estado civil</label><select id="estado_civil" name="inteiro_teor_estado_civil" value={formData.inteiro_teor_estado_civil || 'Solteiro(a)'} onChange={handleChange}><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select></div>
+                          <div className={styles.formGroup}><label htmlFor="profissao">Profissão</label><select id="profissao" name="inteiro_teor_profissao" value={formData.inteiro_teor_profissao || 'Profissional autônomo'} onChange={handleChange}><option>Profissional autônomo</option><option>Advogado(a)</option><option>Médico(a)</option><option>Engenheiro(a)</option><option>Outra</option></select></div>
+                          <div className={styles.formGroup}><label htmlFor="parentesco">Grau de parentesco</label><select id="parentesco" name="inteiro_teor_parentesco" value={formData.inteiro_teor_parentesco || 'O próprio'} onChange={handleChange}><option>O próprio</option><option>Cônjuge</option><option>Filho(a)</option><option>Pai/Mãe</option><option>Outro</option></select></div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>

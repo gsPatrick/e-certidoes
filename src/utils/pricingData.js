@@ -6,15 +6,15 @@
  * 
  * Estrutura:
  * - custas_cartorios: Preços base para certidões de Registro de Imóveis (Matrícula, Ônus, etc.).
- * - registro_imoveis_pesquisas: Preços para serviços de pesquisa de imóveis.
- * - tabelionato_registro_civil: Preços por estado para certidões de Notas e Registro Civil.
- * - protesto_por_estado: Preços base para a Certidão de Protesto, variando por estado.
+ * - registro_imoveis_pesquisas: Preços para serviços de pesquisa de imóveis. (TABELA ATUALIZADA)
+ * - tabelionato_registro_civil: Preços por estado para certidões de Notas e Registro Civil. (TABELA ATUALIZADA)
+ * - protesto_por_estado: Preços base para a Certidão de Protesto, variando por estado. (TABELA ATUALIZADA)
  * - certidoes_adm_publica: Preços para certidões Federais, Estaduais e Municipais.
  * - taxas_servicos: Valores padronizados para todos os serviços adicionais e taxas do site.
  */
 
 export const pricingData = {
-  // --- SEÇÃO 1: CUSTAS DE REGISTRO DE IMÓVEIS ---
+  // --- SEÇÃO 1: CUSTAS DE REGISTRO DE IMÓVEIS (Estrutura original mantida) ---
   "custas_cartorios": {
     "descricao": "Custas das Certidões dos Cartórios de Registro de Imóveis",
     "tabela": [
@@ -24,29 +24,53 @@ export const pricingData = {
     ]
   },
 
-  // --- SEÇÃO 2: PESQUISAS DE REGISTRO DE IMÓVEIS ---
+  // --- SEÇÃO 2: PESQUISAS DE REGISTRO DE IMÓVEIS (TABELA ATUALIZADA CONFORME PDF) ---
   "registro_imoveis_pesquisas": {
     "descricao": "Tabela do Registro de Imóveis + Pesquisas",
     "tabela": [
-      { "estado": "SP", "certidao_imovel": 214.30, "visualizacao_matricula": 82.30, "pesquisa_previa": 67.30, "pesquisa_qualificada": 7.43 },
-      { "estado": "RS", "certidao_imovel": 214.30, "visualizacao_matricula": 86.30, "pesquisa_previa": 124.30, "pesquisa_qualificada": 27.41 },
-      { "estado": "SC", "certidao_imovel": 194.30, "visualizacao_matricula": 76.30, "pesquisa_previa": 81.30, "pesquisa_qualificada": 11.26 }
+      { "estado": "SP", "certidao_imovel": 214.30, "visualizacao_matricula": 82.30, "pesquisa_previa": 67.30, "pesquisa_qualificada": 67.30 },
+      { "estado": "RS", "certidao_imovel": 214.30, "visualizacao_matricula": 86.30, "pesquisa_previa": 124.30, "pesquisa_qualificada": 87.30 },
+      { "estado": "SC", "certidao_imovel": 194.30, "visualizacao_matricula": 76.30, "pesquisa_previa": 81.30, "pesquisa_qualificada": 78.30 },
+      { "estado": "PR", "certidao_imovel": 234.30, "visualizacao_matricula": 76.30, "pesquisa_previa": 98.30, "pesquisa_qualificada": 78.30 },
+      { "estado": "RJ", "certidao_imovel": 274.30, "visualizacao_matricula": 98.30, "pesquisa_previa": 169.30, "pesquisa_qualificada": 108.30 },
+      { "estado": "ES", "certidao_imovel": 249.65, "visualizacao_matricula": 78.30, "pesquisa_previa": 68.30, "pesquisa_qualificada": 68.30 },
+      { "estado": "MG", "certidao_imovel": 214.30, "visualizacao_matricula": 69.30, "pesquisa_previa": 98.30, "pesquisa_qualificada": 78.30 },
+      { "estado": "MS", "certidao_imovel": 214.30, "visualizacao_matricula": 79.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 78.30 },
+      { "estado": "MT", "certidao_imovel": 214.30, "visualizacao_matricula": 79.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 88.30 },
+      { "estado": "BA", "certidao_imovel": 324.30, "visualizacao_matricula": 98.30, "pesquisa_previa": 118.30, "pesquisa_qualificada": 98.30 },
+      { "estado": "DF", "certidao_imovel": 198.30, "visualizacao_matricula": 78.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 78.30 },
+      { "estado": "GO", "certidao_imovel": 278.30, "visualizacao_matricula": 98.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 88.30 },
+      { "estado": "TO", "certidao_imovel": 208.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
+      { "estado": "RO", "certidao_imovel": 197.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
+      { "estado": "AC", "certidao_imovel": 228.65, "visualizacao_matricula": 68.30, "pesquisa_previa": null, "pesquisa_qualificada": 68.30 },
+      { "estado": "SE", "certidao_imovel": 228.30, "visualizacao_matricula": 84.30, "pesquisa_previa": null, "pesquisa_qualificada": 88.30 },
+      { "estado": "AL", "certidao_imovel": 198.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": null },
+      { "estado": "PE", "certidao_imovel": 214.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 68.30 },
+      { "estado": "PB", "certidao_imovel": 328.30, "visualizacao_matricula": 118.30, "pesquisa_previa": null, "pesquisa_qualificada": 118.30 },
+      { "estado": "RN", "certidao_imovel": 314.30, "visualizacao_matricula": 112.30, "pesquisa_previa": null, "pesquisa_qualificada": 83.30 },
+      { "estado": "CE", "certidao_imovel": null, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
+      { "estado": "PI", "certidao_imovel": 214.65, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": 98.30 },
+      { "estado": "MA", "certidao_imovel": null, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": null },
+      { "estado": "PA", "certidao_imovel": 214.30, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
+      { "estado": "AP", "certidao_imovel": 228.30, "visualizacao_matricula": null, "pesquisa_previa": null, "pesquisa_qualificada": null },
+      { "estado": "AM", "certidao_imovel": 314.30, "visualizacao_matricula": 113.30, "pesquisa_previa": null, "pesquisa_qualificada": 118.30 },
+      { "estado": "RR", "certidao_imovel": null, "visualizacao_matricula": 73.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 }
     ]
   },
   
-  // --- SEÇÃO 3: PREÇOS POR ESTADO PARA NOTAS E REGISTRO CIVIL (TABELA ATUALIZADA) ---
+  // --- SEÇÃO 3: PREÇOS POR ESTADO PARA NOTAS E REGISTRO CIVIL (TABELA ATUALIZADA CONFORME PDF) ---
   "tabelionato_registro_civil": {
     "descricao": "Preços base para certidões de Tabelionato de Notas (Escrituras) e Registro Civil (Nascimento, Casamento, Óbito) por estado.",
     "tabela": [
       { "estado": "SP", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "RS", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "SC", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
-      { "estado": "PR", "valor_notas": 267.30, "valor_civil": 227.20, "valor": 227.20 },
-      { "estado": "RJ", "valor_notas": 227.20, "valor_civil": 364.65, "valor": 364.65 },
+      { "estado": "PR", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
+      { "estado": "RJ", "valor_notas": 267.30, "valor_civil": 364.65, "valor": 364.65 },
       { "estado": "ES", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "MG", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
-      { "estado": "MS", "valor_notas": 227.20, "valor_civil": 227.65, "valor": 227.65 },
-      { "estado": "MT", "valor_notas": 287.20, "valor_civil": 237.65, "valor": 237.65 },
+      { "estado": "MS", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
+      { "estado": "MT", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "BA", "valor_notas": 287.20, "valor_civil": 357.20, "valor": 357.20 },
       { "estado": "DF", "valor_notas": 167.65, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "GO", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
@@ -54,21 +78,21 @@ export const pricingData = {
       { "estado": "RO", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "AC", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "SE", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
-      { "estado": "AL", "valor_notas": 227.20, "valor_civil": 257.25, "valor": 257.25 },
-      { "estado": "PE", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
+      { "estado": "AL", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
+      { "estado": "PE", "valor_notas": 227.20, "valor_civil": 237.25, "valor": 237.25 },
       { "estado": "PB", "valor_notas": 227.20, "valor_civil": 257.65, "valor": 257.65 },
       { "estado": "RN", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "CE", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "PI", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
-      { "estado": "MA", "valor_notas": 227.20, "valor_civil": 357.65, "valor": 357.65 },
-      { "estado": "PA", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
-      { "estado": "AP", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
-      { "estado": "AM", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
+      { "estado": "MA", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
+      { "estado": "PA", "valor_notas": 227.20, "valor_civil": 357.65, "valor": 357.65 },
+      { "estado": "AP", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
+      { "estado": "AM", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "RR", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 }
     ]
   },
 
-  // --- SEÇÃO 4: TABELA DE PREÇOS PARA CARTÓRIO DE PROTESTO ---
+  // --- SEÇÃO 4: TABELA DE PREÇOS PARA CARTÓRIO DE PROTESTO (TABELA ATUALIZADA CONFORME PDF) ---
   "protesto_por_estado": {
     "descricao": "Custo base para uma certidão de protesto por estado. Se a cidade tiver múltiplos cartórios e o cliente selecionar 'todos', este valor será multiplicado.",
     "tabela": [
@@ -102,7 +126,7 @@ export const pricingData = {
     ]
   },
 
-  // --- SEÇÃO 5: PREÇOS PARA CERTIDÕES DA ADMINISTRAÇÃO PÚBLICA ---
+  // --- SEÇÃO 5: PREÇOS PARA CERTIDÕES DA ADMINISTRAÇÃO PÚBLICA (Estrutura original mantida) ---
   "certidoes_adm_publica": {
     "descricao": "Preços fixos para certidões Federais, Estaduais e Municipais.",
     "tabela": [
@@ -112,7 +136,7 @@ export const pricingData = {
     ]
   },
 
-  // --- SEÇÃO 6: TAXAS PADRONIZADAS DE SERVIÇOS E ACRÉSCIMOS ---
+  // --- SEÇÃO 6: TAXAS PADRONIZADAS DE SERVIÇOS E ACRÉSCIMOS (Estrutura original mantida) ---
   "taxas_servicos": {
     "descricao": "Valores fixos para serviços adicionais aplicáveis a todo o site.",
     "custo_papel": 40.00,             // Acréscimo para qualquer certidão física/impressa

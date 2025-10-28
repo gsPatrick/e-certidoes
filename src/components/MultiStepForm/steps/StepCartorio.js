@@ -30,35 +30,51 @@ export default function StepCartorio({ formData, handleChange, productData }) {
   }, []);
 
   useEffect(() => {
-    if (!formData.estado) {
+    if (!formData.estado_cartorio) { // Usar novo nome
       setCidades([]);
       setCartorios([]);
+      handleChange({ target: { name: 'cidade_cartorio', value: '' } }); // Usar novo nome
       return;
     }
     setLoading(prev => ({ ...prev, cidades: true }));
-    api.get(`/cartorios/estados/${formData.estado}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false })));
-  }, [formData.estado]);
+    api.get(`/cartorios/estados/${formData.estado_cartorio}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false }))); // Usar novo nome
+  }, [formData.estado_cartorio, handleChange]); // Usar novo nome
 
   useEffect(() => {
-    if (!formData.estado || !formData.cidade) {
+    if (!formData.estado_cartorio || !formData.cidade_cartorio) { // Usar novos nomes
       setCartorios([]);
+      handleChange({ target: { name: 'cartorio', value: '' } });
       return;
     }
     const atribuicaoId = productData?.atribuicaoId;
     setLoading(prev => ({ ...prev, cartorios: true }));
-    const params = new URLSearchParams({ estado: formData.estado, cidade: formData.cidade });
+    const params = new URLSearchParams({ estado: formData.estado_cartorio, cidade: formData.cidade_cartorio }); // Usar novos nomes
     if (atribuicaoId) params.append('atribuicaoId', String(atribuicaoId));
-    api.get(`/cartorios?${params.toString()}`).then(res => setCartorios(res.data)).finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
-  }, [formData.cidade, formData.estado, productData?.atribuicaoId]);
+    
+    api.get(`/cartorios?${params.toString()}`)
+      .then(res => {
+        if (res.data.length === 0) {
+          setCartorios([{ value: 'cartorio-unico', label: '(Cartório Único - Serventia Extrajudicial)' }]);
+        } else {
+          setCartorios(res.data);
+        }
+      })
+      .catch(error => {
+        console.error("Erro ao buscar cartórios:", error);
+        setCartorios([{ value: 'cartorio-unico', label: '(Cartório Único - Serventia Extrajudicial)' }]);
+      })
+      .finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
+
+  }, [formData.cidade_cartorio, formData.estado_cartorio, productData?.atribuicaoId, handleChange]); // Usar novos nomes
 
   const handleDropdownChange = (name, value) => {
     if (formData[name] === value) return;
     handleChange({ target: { name, value } });
-    if (name === 'estado') {
-      handleChange({ target: { name: 'cidade', value: '' } });
+    if (name === 'estado_cartorio') { // Usar novo nome
+      handleChange({ target: { name: 'cidade_cartorio', value: '' } }); // Usar novo nome
       handleChange({ target: { name: 'cartorio', value: '' } });
     }
-    if (name === 'cidade') {
+    if (name === 'cidade_cartorio') { // Usar novo nome
       handleChange({ target: { name: 'cartorio', value: '' } });
     }
   };
@@ -77,7 +93,7 @@ export default function StepCartorio({ formData, handleChange, productData }) {
     const { checked } = e.target;
     handleChange(e);
     if (checked) {
-      handleChange({ target: { name: 'cartorio', value: '' } });
+      handleChange({ target: { name: 'cartorio', value: '' } }); // Limpa o cartório selecionado se "Não sei" for marcado
     }
   };
 
@@ -91,6 +107,7 @@ export default function StepCartorio({ formData, handleChange, productData }) {
       }
       setSelectedFile(file);
       handleChange({ target: { name: 'anexo_busca_nome', value: file.name } });
+      // Aqui você adicionaria a lógica para fazer o upload do arquivo para o seu backend
     }
   };
 
@@ -114,13 +131,13 @@ export default function StepCartorio({ formData, handleChange, productData }) {
       )}
 
       <div className={styles.formGroup}>
-        <label htmlFor="estado">Estado do Cartório *</label>
-        <SearchableDropdown options={estados} value={formData.estado || ''} onChange={(value) => handleDropdownChange('estado', value)} placeholder="Digite ou selecione o estado" loading={loading.estados} />
+        <label htmlFor="estado_cartorio">Estado do Cartório *</label> {/* NOVO NOME */}
+        <SearchableDropdown options={estados} value={formData.estado_cartorio || ''} onChange={(value) => handleDropdownChange('estado_cartorio', value)} placeholder="Digite ou selecione o estado" loading={loading.estados} /> {/* NOVO NOME */}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="cidade">Cidade do Cartório *</label>
-        <SearchableDropdown options={cidades} value={formData.cidade || ''} onChange={(value) => handleDropdownChange('cidade', value)} placeholder="Digite ou selecione a cidade" disabled={!formData.estado} loading={loading.cidades} />
+        <label htmlFor="cidade_cartorio">Cidade do Cartório *</label> {/* NOVO NOME */}
+        <SearchableDropdown options={cidades} value={formData.cidade_cartorio || ''} onChange={(value) => handleDropdownChange('cidade_cartorio', value)} placeholder="Digite ou selecione a cidade" disabled={!formData.estado_cartorio} loading={loading.cidades} /> {/* NOVO NOME */}
       </div>
 
       <div className={styles.formGroup}>
@@ -130,7 +147,7 @@ export default function StepCartorio({ formData, handleChange, productData }) {
           value={formData.cartorio || ''}
           onChange={(value) => handleDropdownChange('cartorio', value)}
           placeholder={loading.cartorios ? 'Buscando...' : 'Selecione o Cartório'}
-          disabled={!formData.cidade || loading.cartorios || showManualCartorio || !!formData.nao_sei_cartorio}
+          disabled={!formData.cidade_cartorio || loading.cartorios || showManualCartorio || !!formData.nao_sei_cartorio} // NOVO NOME
         />
       </div>
       
@@ -168,7 +185,7 @@ export default function StepCartorio({ formData, handleChange, productData }) {
         <div className={styles.fallbackContainer}>
             <p className={styles.fallbackTitle}>Não localizou o cartório na lista ou não sabe informar?</p>
             <div className={styles.fallbackActions}>
-            <Link href="/certidoes/pesquisa-previa" className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
+            <Link href="/certidoes/pesquisa-escrituras-e-procuracoes-por-cpf-cnpj" className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
             <button type="button" onClick={toggleManualCartorio} className={styles.fallbackButton}>{showManualCartorio ? 'Voltar para a lista' : 'Informe manualmente clicando aqui'}</button>
             </div>
 
