@@ -30,22 +30,34 @@ export default function StepServicosAdicionais({ formData, handleChange, product
 
   let allServices = [];
 
+  const isPapel = formData.formato === 'Certidão em papel' || formData.formato === 'Certidão Transcrita' || formData.formato === 'Certidão Reprográfica';
+
+  // 2. OPÇÃO SEDEX ADICIONADA E CONDICIONADA AOS FORMATOS FÍSICOS
+  const sedexOption = { 
+    id: 'sedex', 
+    label: 'SEDEX', 
+    description: 'Receba sua certidão de forma mais rápida através do serviço SEDEX dos Correios.', 
+    condition: () => isPapel
+  };
+
   if (isProtesto) {
     allServices = [
       { id: 'apostilamento_digital', label: 'Apostilamento Digital', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão eletrônica' }
     ];
   } else if (isTabelionato) {
     allServices = [
-      { id: 'apostilamento', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: () => true }, // Sempre disponível para Tabelionato
-      { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: () => true } // Sempre disponível
+      { id: 'apostilamento', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: () => true },
+      { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: () => isPapel },
+      sedexOption
     ];
   } else {
     // Serviços para Registro de Imóveis e Registro Civil
     allServices = [
         { id: 'apostilamento_digital', label: 'Apostilamento Digital', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão eletrônica' },
-        { id: 'inteiro_teor', label: 'Inteiro teor', description: 'Todos os dados da certidão para procedimentos específicos. Pode ser necessário preenchimento de requerimento com assinatura digital ou firma reconhecida.', condition: (data) => data.formato === 'Certidão em papel' },
-        { id: 'apostilamento_fisico', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: (data) => data.formato === 'Certidão em papel' },
-        { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: (data) => data.formato === 'Certidão em papel' }
+        { id: 'inteiro_teor', label: 'Inteiro teor', description: 'Todos os dados da certidão para procedimentos específicos. Pode ser necessário preenchimento de requerimento com assinatura digital ou firma reconhecida.', condition: () => isPapel },
+        { id: 'apostilamento_fisico', label: 'Apostilamento', description: 'É um certificado de autenticidade, emitido da Convenção de Haia.', condition: () => isPapel },
+        { id: 'aviso_recebimento', label: 'Aviso de recebimento (A.R)', description: 'Recibo dos correios que comprova a entrega do documento para o remetente.', condition: () => isPapel },
+        sedexOption
     ];
   }
 
@@ -119,28 +131,6 @@ export default function StepServicosAdicionais({ formData, handleChange, product
           <p className={styles.noServicesText}>Nenhum serviço adicional disponível para o formato selecionado.</p>
         )}
       </div>
-
-       {isTeorModalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setIsTeorModalOpen(false)}>
-            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <div className={styles.modalHeader}>
-                    <h3><InfoIcon /> O que é Inteiro Teor?</h3>
-                    <button onClick={() => setIsTeorModalOpen(false)} className={styles.modalCloseButton}>×</button>
-                </div>
-                <div className={styles.modalBody}>
-                    <p>A certidão em Inteiro Teor é a reprodução fiel de todas as informações que constam no livro de registro do cartório. Ela contém todos os dados do registro original, incluindo eventuais averbações (alterações) que tenham ocorrido ao longo do tempo.</p>
-                    <p><strong>Quando é necessária?</strong></p>
-                    <ul>
-                        <li>Processos de cidadania (italiana, portuguesa, etc.).</li>
-                        <li>Processos judiciais que exigem a comprovação detalhada do registro.</li>
-                        <li>Transações imobiliárias complexas.</li>
-                        <li>Inventários e partilhas de bens.</li>
-                    </ul>
-                    <p>Por ser uma cópia completa, o custo e o prazo para sua emissão podem ser maiores que os da certidão em breve relato.</p>
-                </div>
-            </div>
-        </div>
-      )}
     </div>
   );
 }

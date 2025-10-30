@@ -8,20 +8,39 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Carrinho.module.css';
 
-const FormDetails = ({ formData }) => {
+// Componente FormDetails ajustado para a nova lógica
+const FormDetails = ({ formData, item }) => {
     if (!formData) return null;
-    const { preco_final, ...details } = formData;
+
+    // Chaves que não devem ser exibidas ou são tratadas de outra forma
+    const excludeKeys = new Set([
+        'preco_final', 'tipo_pesquisa', 'tipo_pessoa',
+        'aceite_lgpd', 'ciente', 'tipo_certidao'
+    ]);
+
+    // Filtra e formata os detalhes
+    const details = Object.entries(formData)
+        .filter(([key, value]) => {
+            if (!value || value === 'on') return false;
+            // Regra específica: só mostrar 'tempo_pesquisa' se for Certidão de Protesto
+            if (key === 'tempo_pesquisa' && item.slug !== 'certidao-de-protesto') return false;
+            if (excludeKeys.has(key)) return false;
+            return true;
+        })
+        .map(([key, value]) => {
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            return { key, label, value };
+        });
+
+    if (details.length === 0) return null;
+
     return (
         <div className={styles.formDetails}>
-            {Object.entries(details).map(([key, value]) => {
-                if (!value || value === 'on') return null;
-                const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                return (
-                    <div key={key} className={styles.detailItem}>
-                        <strong>{label}:</strong> {String(value)}
-                    </div>
-                );
-            })}
+            {details.map(({ key, label, value }) => (
+                <div key={key} className={styles.detailItem}>
+                    <strong>{label}:</strong> {String(value)}
+                </div>
+            ))}
         </div>
     );
 };
@@ -29,11 +48,13 @@ const FormDetails = ({ formData }) => {
 export default function CarrinhoPage() {
   const { cartItems, removeFromCart, itemCount } = useCart();
 
-  // LÓGICA CHAVE: Verifica se algum item requer envio físico
-  const isShippingRequired = cartItems.some(item => item.formData?.formato === 'Certidão Impressa');
+  const isShippingRequired = cartItems.some(item => {
+    const formato = item.formData?.formato;
+    return formato === 'Certidão em papel' || formato === 'Certidão Transcrita' || formato === 'Certidão Reprográfica';
+  });
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-  const total = subtotal; // O custo de entrega será adicionado no futuro, se necessário
+  const total = subtotal;
 
   return (
     <>
@@ -67,7 +88,8 @@ export default function CarrinhoPage() {
                           <Image src={item.imageSrc} alt={item.name} width={60} height={75} />
                           <div>
                             <span className={styles.productName}>{item.name}</span>
-                            <FormDetails formData={item.formData} />
+                            {/* Passando o 'item' completo para o FormDetails */}
+                            <FormDetails formData={item.formData} item={item} />
                           </div>
                         </td>
                         <td className={styles.priceCell}>R$ {item.price.toFixed(2).replace('.', ',')}</td>
@@ -84,7 +106,6 @@ export default function CarrinhoPage() {
                   <span>R$ {subtotal.toFixed(2).replace('.', ',')}</span>
                 </div>
                 
-                {/* RENDERIZAÇÃO CONDICIONAL DA ENTREGA */}
                 {isShippingRequired && (
                     <div className={styles.totalsRow}>
                         <span>Entrega</span>

@@ -7,13 +7,14 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
-import PageLoader from '@/components/PageLoader/PageLoader'; // Importa o loader
+import PageLoader from '@/components/PageLoader/PageLoader';
+import AuthModal from '@/components/AuthModal/AuthModal'; // 1. Importar o novo modal
 import styles from './Checkout.module.css';
 import { CreditCardIcon, PixIcon, BoletoIcon } from './SecurityIcons';
+import Link from 'next/link';
 
 // Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
-    // Adiciona exceções para não formatar chaves específicas
     if (['cpf', 'cnpj', 'rg'].includes(key.toLowerCase())) {
         return key.toUpperCase();
     }
@@ -41,14 +42,18 @@ const OrderSummaryCard = ({ item, onRemove }) => {
     if (!item || !item.formData) return null;
     const { formData } = item;
     
-    // Lista de chaves a serem ignoradas na exibição dos detalhes
     const excludeKeys = new Set([
-        'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa',
+        'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa', 'tipo_certidao',
         'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg'
     ]);
 
     const allDetails = Object.entries(formData)
-        .filter(([key]) => !excludeKeys.has(key));
+        .filter(([key, value]) => {
+            if (!value || value === '' || value === false) return false;
+            if (key === 'tempo_pesquisa' && item.slug !== 'certidao-de-protesto') return false;
+            if (excludeKeys.has(key)) return false;
+            return true;
+        });
 
     return (
         <div className={styles.summaryCard}>
@@ -78,52 +83,60 @@ export default function CheckoutPage() {
     const [activePayment, setActivePayment] = useState('card');
     const [isClient, setIsClient] = useState(false);
     
+    // 2. Novo estado para controlar a visibilidade do modal
+    const [showAuthModal, setShowAuthModal] = useState(false);
+
     useEffect(() => {
         setIsClient(true);
-        // CORREÇÃO: Lógica de redirecionamento para login
+        // 3. Lógica modificada: em vez de redirecionar, mostra o modal
         if (!authLoading && !isAuthenticated) {
-            router.push('/minha-conta?redirect=/finalizar-compra');
+            setShowAuthModal(true);
         }
-    }, [isAuthenticated, authLoading, router]);
+    }, [isAuthenticated, authLoading]);
 
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-    const frete = 0; // Pode ser ajustado no futuro
+    const frete = 0;
     const total = subtotal + frete;
 
     const handleFinalizarCompra = async (e) => {
         e.preventDefault();
+        // 4. Nova verificação: se não estiver logado, não faz nada (o modal já está visível)
+        if (!isAuthenticated) {
+            setShowAuthModal(true);
+            return;
+        }
         setLoading(true);
         const orderData = { user, items: cartItems, paymentMethod: activePayment, total };
         console.log("Enviando para API de pagamento:", orderData);
         alert(`Iniciando pagamento de R$ ${total.toFixed(2)} via ${activePayment}...`);
-        // Simulação de chamada de API
         await new Promise(resolve => setTimeout(resolve, 2000));
         setLoading(false);
-        // router.push('/pedido-confirmado/12345'); // Exemplo de redirecionamento pós-pagamento
+        // router.push('/pedido-confirmado/12345');
     };
     
-    // CORREÇÃO: Exibe um loader enquanto verifica a autenticação
-    if (!isClient || authLoading) {
+    // 5. Função para fechar o modal quando a autenticação for bem-sucedida
+    const handleAuthSuccess = () => {
+        setShowAuthModal(false);
+    };
+    
+    if (!isClient) {
         return <PageLoader />; 
     }
     
-    // Se não estiver autenticado após o loading, a página fica em branco enquanto o redirect acontece
-    if(!isAuthenticated) {
-        return null;
-    }
-
     return (
         <>
+            {/* 6. Renderização condicional do modal */}
+            {showAuthModal && <AuthModal onAuthSuccess={handleAuthSuccess} />}
+
             <Header />
             <main className={styles.pageWrapper}>
                 <div className={styles.container}>
                     <h1 className={styles.title}>Finalizar Compra</h1>
-                    {itemCount === 0 ? (
+                    {itemCount === 0 && isClient ? (
                         <p>Seu carrinho está vazio. <Link href="/certidoes">Voltar para a loja.</Link></p>
                     ) : (
                         <form onSubmit={handleFinalizarCompra} className={styles.checkoutGrid}>
                             <div className={styles.mainContent}>
-                                {/* CORREÇÃO: Seção "Detalhes da Cobrança" foi removida */}
                                 <div className={`${styles.detailsBox} ${styles.paymentBox}`}>
                                     <h2>Pagamento</h2>
                                     <div className={styles.paymentTabs}>
@@ -140,7 +153,6 @@ export default function CheckoutPage() {
                                                     <div className={styles.formGroup}><label>Código (CVV)</label><input type="text" placeholder="123" required/></div>
                                                 </div>
                                                 <div className={styles.formGroup}><label>Parcelas</label>
-                                                    {/* CORREÇÃO: Removido "sem juros" */}
                                                     <select>
                                                         <option>1x de R$ {total.toFixed(2).replace('.',',')}</option>
                                                         <option>2x de R$ {(total / 2).toFixed(2).replace('.',',')}</option>

@@ -34,8 +34,6 @@ export const AuthProvider = ({ children }) => {
       // CORREÇÃO: Redireciona com base na permissão (role) do usuário
       if (data.user.role === 'admin') {
         router.push('/admin/dashboard'); // Admin vai para o dashboard
-      } else {
-        router.push('/minha-conta/painel'); // Cliente vai para o painel
       }
       
       return data;

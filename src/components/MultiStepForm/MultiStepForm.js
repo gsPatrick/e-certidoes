@@ -26,7 +26,7 @@ import StepPesquisaVeiculo from './steps/StepPesquisaVeiculo';
 import StepPesquisaRouboFurto from './steps/StepPesquisaRouboFurto';
 import StepPesquisaProcessos from './steps/StepPesquisaProcessos'; 
 import StepPesquisaSintegra from './steps/StepPesquisaSintegra';
-import StepPesquisaEscrituras from './steps/StepPesquisaEscrituras'; // Corrigido o caminho
+import StepPesquisaEscrituras from './steps/StepPesquisaEscrituras';
 import StepPesquisaAvancada from './steps/StepPesquisaAvancada';
 import StepConfirmacaoLGPD from './steps/StepConfirmacaoLGPD';
 
@@ -117,6 +117,8 @@ export default function MultiStepForm({ productData }) {
         const isFederal = category === 'Certidões Federais e Estaduais' && FEDERAL_KEYWORDS.some(kw => name.includes(kw));
         const isEstadual = category === 'Certidões Federais e Estaduais' && ESTADUAL_KEYWORDS.some(kw => name.includes(kw));
         const isMunicipal = category === 'Certidões Municipais';
+        const isPapel = formato === 'Certidão em papel' || formato === 'Certidão Transcrita' || formato === 'Certidão Reprográfica';
+
 
         if (slug === toSlug('Consulta Jurídica')) {
             newFlow = [
@@ -127,10 +129,10 @@ export default function MultiStepForm({ productData }) {
                 { id: 'dadosCertidaoFederal', title: 'Dados da Certidão', Component: StepFederalDados },
                 formatoStep
             ];
-            if (formato === 'Certidão em papel') {
+            if (isPapel) {
                 newFlow = [...baseFlow, servicosAdicionaisStep, enderecoStep, requerenteStep];
             } else { // Digital
-                newFlow = [...baseFlow, requerenteStep];
+                newFlow = [...baseFlow, servicosAdicionaisStep, requerenteStep];
             }
         } else if (isEstadual) {
             const baseFlow = [
@@ -138,24 +140,24 @@ export default function MultiStepForm({ productData }) {
                 { id: 'dadosCertidaoEstadual', title: 'Dados da Certidão', Component: StepEstadualDados },
                 formatoStep
             ];
-            if (formato === 'Certidão em papel') {
+            if (isPapel) {
                 newFlow = [...baseFlow, servicosAdicionaisStep, enderecoStep, requerenteStep];
             } else { // Digital
-                newFlow = [...baseFlow, requerenteStep];
+                newFlow = [...baseFlow, servicosAdicionaisStep, requerenteStep];
             }
         } else if (isMunicipal) {
             const baseFlow = [
                 { id: 'dadosCertidaoMunicipal', title: 'Dados da Certidão', Component: StepMunicipalDados },
                 formatoStep
             ];
-            if (formato === 'Certidão em papel') {
+            if (isPapel) {
                 newFlow = [...baseFlow, servicosAdicionaisStep, enderecoStep, requerenteStep];
             } else { // Digital
-                newFlow = [...baseFlow, requerenteStep];
+                newFlow = [...baseFlow, servicosAdicionaisStep, requerenteStep];
             }
         } else if (slug === toSlug('Certidão de Protesto')) {
             const middleFlow = [formatoStep, servicosAdicionaisStep];
-            if (formato === 'Certidão em papel') {
+            if (isPapel) {
                 middleFlow.push(enderecoStep);
             }
             newFlow = [
@@ -189,7 +191,7 @@ export default function MultiStepForm({ productData }) {
             }
         } else if (category === 'Tabelionato de Notas (Escrituras)') {
             let middleFlow = [formatoStep, servicosAdicionaisStep];
-             if (formato === 'Certidão em papel') {
+             if (isPapel) {
                 middleFlow.push(enderecoStep);
             }
             middleFlow.push(requerenteStep);
@@ -218,7 +220,7 @@ export default function MultiStepForm({ productData }) {
                  baseFlow.push({ id: 'tipoCertidao', title: 'Dados da Certidão', Component: StepTipoCertidao });
             }
             let middleFlow = [formatoStep, servicosAdicionaisStep];
-            if (formato === 'Certidão em papel') {
+            if (isPapel) {
                 middleFlow.push(enderecoStep);
             }
             middleFlow.push(requerenteStep);
@@ -248,39 +250,43 @@ export default function MultiStepForm({ productData }) {
 
     useEffect(() => {
         let basePrice = productData.price;
-        const { category, slug, pesquisaType } = productData; // Adicionado pesquisaType
+        const { category, slug, pesquisaType } = productData;
         const { 
-            estado_cartorio, cidade_cartorio, // Localização do Cartório
-            estado_entrega, cidade_entrega, // Endereço de Entrega
-            estado_matricula, cidade_matricula, // Localização da Matrícula
+            estado_cartorio, cidade_cartorio,
+            estado_matricula,
+            estado_pesquisa,
             formato, tipo_certidao, todos_cartorios_protesto, tempo_pesquisa 
         } = formData;
         let multiplicadorProtesto = 1;
-
-        // Lógica de preço para Registro Civil e Tabelionato de Notas
-        if (estado_cartorio && (category === 'Cartório de Registro Civil' || category === 'Tabelionato de Notas (Escrituras)')) {
+        
+        if (slug === toSlug('Visualização de Matrícula')) {
+            const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_matricula, 'visualizacao_matricula');
+            if (priceByState) basePrice = priceByState;
+        } 
+        else if (pesquisaType === 'previa') {
+            const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_pesquisa, 'pesquisa_previa');
+            if (priceByState) basePrice = priceByState;
+        } 
+        else if (pesquisaType === 'qualificada') {
+            const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_pesquisa, 'pesquisa_qualificada');
+            if (priceByState) basePrice = priceByState;
+        }
+        else if (estado_cartorio && (category === 'Cartório de Registro Civil' || category === 'Tabelionato de Notas (Escrituras)')) {
             const priceByState = getPrice('tabelionato_registro_civil', 'estado', estado_cartorio, 'valor');
             if (priceByState) {
                 basePrice = priceByState;
             }
         } 
-        // NOVA Lógica de preço para Cartório de Registro de Imóveis (incluindo Penhor e Safra)
         else if (estado_cartorio && category === 'Cartório de Registro de Imóveis') {
             if (slug === toSlug('Certidão de Imóvel') || slug === toSlug('Certidão de Matrícula com Ônus e Ações')) {
                 const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_cartorio, 'certidao_imovel');
                 if (priceByState) basePrice = priceByState;
-            } else if (slug === toSlug('Visualização de Matrícula')) {
-                const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_matricula, 'visualizacao_matricula');
-                if (priceByState) basePrice = priceByState;
             } else if (slug === toSlug('Certidão de Penhor e Safra')) {
-                // Usar 'demais_certidoes' ou um valor padrão se não houver um específico
                 const priceByState = getPrice('custas_cartorios', 'estado', estado_cartorio, 'demais_certidoes');
                 if (priceByState) basePrice = priceByState;
-                else if (productData.price) basePrice = productData.price; // Fallback para o preço base do produto
+                else if (productData.price) basePrice = productData.price;
             }
-            // Adicionar mais condições para outros tipos de certidões de imóveis se necessário
         }
-        // Lógica de preço para Protesto
         else if (slug === toSlug('Certidão de Protesto')) {
             const precoBaseProtesto = getPrice('protesto_por_estado', 'estado', estado_cartorio, 'valor');
             basePrice = precoBaseProtesto || productData.price;
@@ -292,16 +298,6 @@ export default function MultiStepForm({ productData }) {
                 }
             }
         }
-        // Lógica de preço para Pesquisas (se tiver preço nulo e precisar buscar)
-        else if (category === 'Pesquisa' && productData.price === null) {
-             if (pesquisaType === 'previa') {
-                const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', formData.estado_pesquisa, 'pesquisa_previa');
-                if (priceByState) basePrice = priceByState;
-            } else if (pesquisaType === 'qualificada') {
-                const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', formData.estado_pesquisa, 'pesquisa_qualificada');
-                if (priceByState) basePrice = priceByState;
-            }
-        }
         
         let newPrice = (basePrice || 0) * multiplicadorProtesto;
 
@@ -309,17 +305,23 @@ export default function MultiStepForm({ productData }) {
         const CUSTO_APOSTILAMENTO = getTaxa('apostilamento') || 0;
         const CUSTO_AR = getTaxa('aviso_recebimento') || 0;
         const ACRESCIMO_CONDOMINIO = getTaxa('acrescimo_condominio') || 0;
+        // ===================================
+        // === AQUI ESTÁ A CORREÇÃO DIRETA ===
+        // ===================================
+        const CUSTO_SEDEX = 68.00;
         
         const CUSTO_RECONHECIMENTO_FIRMA = 25.00;
         const CUSTO_TEOR_TRANSCRICAO = 30.00; 
         const CUSTO_TEOR_REPROGRAFICA = 40.00;
 
-        if (formato === 'Certidão em papel') newPrice += CUSTO_PAPEL;
-        if (formato === 'Certidão Reprográfica') newPrice += 20.00;
+        const isPapel = formato === 'Certidão em papel' || formato === 'Certidão Transcrita' || formato === 'Certidão Reprográfica';
+
+        if (isPapel) newPrice += CUSTO_PAPEL;
 
         if (formData.apostilamento_digital || formData.apostilamento_fisico || formData.apostilamento) newPrice += CUSTO_APOSTILAMENTO;
         if (formData.reconhecimento_firma) newPrice += CUSTO_RECONHECIMENTO_FIRMA;
         if (formData.aviso_recebimento) newPrice += CUSTO_AR;
+        if (formData.sedex) newPrice += CUSTO_SEDEX;
         
         if (formData.inteiro_teor) {
             newPrice += formData.tipo_inteiro_teor === 'Reprográfica' ? CUSTO_TEOR_REPROGRAFICA : CUSTO_TEOR_TRANSCRICAO;
@@ -357,7 +359,6 @@ export default function MultiStepForm({ productData }) {
       const currentStepId = formFlow[currentStep]?.id;
       setValidationError('');
 
-      // Validações genéricas de documento
       const doc = formData.cpf_cnpj || formData.cpf_cnpj_pesquisa || formData.cpf || formData.requerente_cpf;
       if (doc) {
         const cleanedDoc = doc.replace(/\D/g, '');
@@ -367,12 +368,10 @@ export default function MultiStepForm({ productData }) {
         if (cleanedDoc.length === 14 && !isValidCNPJ(doc)) { setValidationError('CNPJ inválido. Por favor, verifique.'); return; }
       }
 
-      // Validações específicas por etapa
       if (currentStepId === 'dadosVeiculo' && !formData.placa) { setValidationError('O campo Placa é obrigatório.'); return; }
       if (currentStepId === 'dadosRouboFurto' && !formData.placa && !formData.renavam) { setValidationError('Preencha pelo menos um campo (Placa ou Renavam).'); return; }
       if (currentStepId === 'dadosSintegra' && !formData.cnpj && !formData.inscricao_estadual && !formData.nire) { setValidationError('Preencha pelo menos um campo (CNPJ, Inscrição Estadual ou NIRE).'); return; }
       
-      // --- VALIDAÇÃO DE DOCUMENTO VS TIPO DE PESSOA ---
       const tipoPessoa = formData.tipo_pessoa;
       const documento = formData.cpf_cnpj || formData.cpf_cnpj_escritura;
       const cleanedDocumento = documento?.replace(/\D/g, '');
@@ -397,7 +396,6 @@ export default function MultiStepForm({ productData }) {
       }
       if (currentStepId === 'requerente' && !isValidCPF(formData.requerente_cpf)) { setValidationError('CPF do solicitante é inválido. Por favor, verifique.'); return; }
       
-
       const nextStepIndex = Math.min(currentStep + 1, formFlow.length);
       if (nextStepIndex < formFlow.length) { navigateToStep(nextStepIndex); window.scrollTo(0, 0); }
     };

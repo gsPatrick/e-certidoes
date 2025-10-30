@@ -2,12 +2,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link'; // 1. Importar o Link
 import styles from './StepPesquisaAvancada.module.css';
 import SearchableDropdown from './SearchableDropdown';
 import api from '@/services/api';
-import axios from 'axios'; // Importa o axios para a consulta de CNPJ
+import axios from 'axios';
+import { getPrice } from '@/utils/pricingData'; // 2. Importar a função de preço
 
-// Funções de máscara
 const maskCPF = (value) => value.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 const maskCNPJ = (value) => value.replace(/\D/g, '').slice(0, 14).replace(/(\d{2})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})(\d)/, '$1-$2');
 
@@ -19,24 +20,32 @@ export default function StepPesquisaAvancada({ formData, handleChange, productDa
   const [cartorios, setCartorios] = useState([]);
   const [loading, setLoading] = useState({ estados: false, cidades: false, cartorios: false });
   const [nameLoading, setNameLoading] = useState(false);
+  const [isServiceAvailable, setIsServiceAvailable] = useState(true); // 3. Novo estado de controle
 
-  // Detecção se o valor digitado é um CNPJ
+  // 4. Efeito para verificar disponibilidade do serviço
+  useEffect(() => {
+    if (formData.estado_pesquisa) {
+      const priceKey = productData.pesquisaType === 'previa' ? 'pesquisa_previa' : 'pesquisa_qualificada';
+      const price = getPrice('registro_imoveis_pesquisas', 'estado', formData.estado_pesquisa, priceKey);
+      setIsServiceAvailable(price !== null);
+    } else {
+      setIsServiceAvailable(true);
+    }
+  }, [formData.estado_pesquisa, productData.pesquisaType]);
+
   const isCNPJInput = (formData.cpf_cnpj_pesquisa || '').replace(/\D/g, '').length > 11;
 
-  // Busca estados na montagem
   useEffect(() => {
     setLoading(p => ({ ...p, estados: true }));
     api.get('/cartorios/estados').then(res => setEstados(res.data)).finally(() => setLoading(p => ({ ...p, estados: false })));
   }, []);
 
-  // Busca cidades (apenas se for Pesquisa Qualificada)
   useEffect(() => {
     if (!formData.estado_pesquisa || !isQualificada) { setCidades([]); return; }
     setLoading(p => ({ ...p, cidades: true }));
     api.get(`/cartorios/estados/${formData.estado_pesquisa}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(p => ({ ...p, cidades: false })));
   }, [formData.estado_pesquisa, isQualificada]);
 
-  // Busca cartórios (apenas se for Pesquisa Qualificada)
   useEffect(() => {
     if (!formData.cidade_pesquisa || !isQualificada) { setCartorios([]); return; }
     setLoading(p => ({ ...p, cartorios: true }));
@@ -90,76 +99,92 @@ export default function StepPesquisaAvancada({ formData, handleChange, productDa
       <p style={{marginTop: '-1.5rem', marginBottom: '2rem', color: '#6c757d'}}>Preencha os campos para realizar a pesquisa.</p>
       
       <div className={styles.formGroup}>
-        <label>Indique o número do CPF/CNPJ a ser pesquisado *</label>
-        <div className={styles.cpfGroup}>
-          <div className={styles.formGroup}>
-            <input 
-              type="text" 
-              name="cpf_cnpj_pesquisa" 
-              value={formData.cpf_cnpj_pesquisa || ''} 
-              onChange={handleCpfCnpjChange}
-              placeholder="Digite o CPF ou CNPJ" 
-              required 
-            />
-            {error && <small className={styles.errorMessage}>{error}</small>}
-          </div>
-          {isCNPJInput && (
-            <button type="button" className={styles.loadButton} onClick={handleLoadName} disabled={nameLoading}>
-              {nameLoading ? '...' : 'Carregar Nome'}
-            </button>
-          )}
-        </div>
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="nome_razao_social">{isCNPJInput ? 'Razão Social a ser pesquisada (Opcional)' : 'Nome completo a ser pesquisado (Opcional)'}</label>
-        <input
-          type="text"
-          id="nome_razao_social"
-          name="nome_razao_social"
-          value={formData.nome_razao_social || ''}
-          onChange={handleChange}
-          placeholder={isCNPJInput ? 'O nome da empresa será preenchido aqui' : 'Escreva o nome completo'}
-        />
-      </div>
-
-      <div className={styles.formGroup}>
         <label>Estado *</label>
         <SearchableDropdown options={estados} value={formData.estado_pesquisa || ''} onChange={(v) => handleDropdownChange('estado_pesquisa', v)} placeholder="Selecione o estado" loading={loading.estados} />
       </div>
 
-      {isQualificada && (
+      {/* 5. Renderização condicional dos campos ou da mensagem de fallback */}
+      {isServiceAvailable ? (
         <>
           <div className={styles.formGroup}>
-            <label>Cidade(s) *</label>
-            <SearchableDropdown options={cidades} value={formData.cidade_pesquisa || ''} onChange={(v) => handleDropdownChange('cidade_pesquisa', v)} placeholder="Selecione a cidade" disabled={!formData.estado_pesquisa} loading={loading.cidades} />
+            <label>Indique o número do CPF/CNPJ a ser pesquisado *</label>
+            <div className={styles.cpfGroup}>
+              <div className={styles.formGroup}>
+                <input 
+                  type="text" 
+                  name="cpf_cnpj_pesquisa" 
+                  value={formData.cpf_cnpj_pesquisa || ''} 
+                  onChange={handleCpfCnpjChange}
+                  placeholder="Digite o CPF ou CNPJ" 
+                  required 
+                />
+                {error && <small className={styles.errorMessage}>{error}</small>}
+              </div>
+              {isCNPJInput && (
+                <button type="button" className={styles.loadButton} onClick={handleLoadName} disabled={nameLoading}>
+                  {nameLoading ? '...' : 'Carregar Nome'}
+                </button>
+              )}
+            </div>
           </div>
+          
           <div className={styles.formGroup}>
-            <label>Cartório(s) *</label>
-            <select name="cartorio_pesquisa" value={formData.cartorio_pesquisa || ''} onChange={handleChange} disabled={!formData.cidade_pesquisa || loading.cartorios} required>
-              <option value="">{loading.cartorios ? 'Carregando...' : 'Selecione o cartório'}</option>
-              {cartorios.map(c => <option key={c.value} value={c.label}>{c.label}</option>)}
+            <label htmlFor="nome_razao_social">{isCNPJInput ? 'Razão Social a ser pesquisada (Opcional)' : 'Nome completo a ser pesquisado (Opcional)'}</label>
+            <input
+              type="text"
+              id="nome_razao_social"
+              name="nome_razao_social"
+              value={formData.nome_razao_social || ''}
+              onChange={handleChange}
+              placeholder={isCNPJInput ? 'O nome da empresa será preenchido aqui' : 'Escreva o nome completo'}
+            />
+          </div>
+
+          {isQualificada && (
+            <>
+              <div className={styles.formGroup}>
+                <label>Cidade(s) *</label>
+                <SearchableDropdown options={cidades} value={formData.cidade_pesquisa || ''} onChange={(v) => handleDropdownChange('cidade_pesquisa', v)} placeholder="Selecione a cidade" disabled={!formData.estado_pesquisa} loading={loading.cidades} />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Cartório(s) *</label>
+                <select name="cartorio_pesquisa" value={formData.cartorio_pesquisa || ''} onChange={handleChange} disabled={!formData.cidade_pesquisa || loading.cartorios} required>
+                  <option value="">{loading.cartorios ? 'Carregando...' : 'Selecione o cartório'}</option>
+                  {cartorios.map(c => <option key={c.value} value={c.label}>{c.label}</option>)}
+                </select>
+              </div>
+            </>
+          )}
+
+          <div className={styles.formGroup}>
+            <label>Informe a finalidade da pesquisa *</label>
+            <select name="finalidade_pesquisa" value={formData.finalidade_pesquisa || ''} onChange={handleChange} required>
+              <option value="">Selecione o tipo de finalidade da pesquisa</option>
+              {finalidades.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
+
+          <p className={styles.advertencia}>
+            <strong>ADVERTÊNCIA:</strong> O titular dos dados pesquisados poderá solicitar a <strong>A e-Certidões</strong> informações relativas à identificação do solicitante e indicação da finalidade (Provimento CNJ n. 134/2022, art. 50, Parágrafo único).
+          </p>
+
+          <div className={styles.finalConfirm}>
+            <input type="checkbox" id="ciente" name="ciente" checked={!!formData.ciente} onChange={handleChange} required />
+            <label htmlFor="ciente">Li, e estou ciente.</label>
+          </div>
         </>
+      ) : (
+        <div className={styles.unavailableBox}>
+          <h4>Serviço Indisponível para este Estado</h4>
+          <p>
+            A {productData.name} automatizada não está disponível para o estado de <strong>{formData.estado_pesquisa}</strong> no momento.
+          </p>
+          <p>
+            Para solicitar uma cotação manual, por favor, entre em contato com nosso atendimento.
+          </p>
+          <Link href="/contato" className={styles.contactButton}>Falar com Atendimento</Link>
+        </div>
       )}
-
-      <div className={styles.formGroup}>
-        <label>Informe a finalidade da pesquisa *</label>
-        <select name="finalidade_pesquisa" value={formData.finalidade_pesquisa || ''} onChange={handleChange} required>
-          <option value="">Selecione o tipo de finalidade da pesquisa</option>
-          {finalidades.map(f => <option key={f} value={f}>{f}</option>)}
-        </select>
-      </div>
-
-      <p className={styles.advertencia}>
-        <strong>ADVERTÊNCIA:</strong> O titular dos dados pesquisados poderá solicitar a <strong>A e-Certidões</strong> informações relativas à identificação do solicitante e indicação da finalidade (Provimento CNJ n. 134/2022, art. 50, Parágrafo único).
-      </p>
-
-      <div className={styles.finalConfirm}>
-        <input type="checkbox" id="ciente" name="ciente" checked={!!formData.ciente} onChange={handleChange} required />
-        <label htmlFor="ciente">Li, e estou ciente.</label>
-      </div>
     </div>
   );
 }

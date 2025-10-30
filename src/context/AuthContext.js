@@ -2,7 +2,7 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation'; // Importa useSearchParams
 import api from '@/services/api';
 
 const AuthContext = createContext();
@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams(); // Hook para ler os parâmetros da URL
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -21,21 +22,21 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // --- FUNÇÃO LOGIN CORRIGIDA ---
   const login = async (email, password) => {
     try {
       const { data } = await api.post('/auth/login', { email, password });
       
-      // Salva os dados no estado e no localStorage
       setUser(data.user);
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
 
-      // CORREÇÃO: Redireciona com base na permissão (role) do usuário
-      if (data.user.role === 'admin') {
-        router.push('/admin/dashboard'); // Admin vai para o dashboard
-      } else {
-        router.push('/minha-conta/painel'); // Cliente vai para o painel
+      // Lógica de redirecionamento aprimorada
+      const redirectUrl = searchParams.get('redirect');
+      if (redirectUrl) {
+        router.push(redirectUrl); // Redireciona para a página de onde veio (ex: /finalizar-compra)
+      } else if (data.user.role === 'admin') {
+        router.push('/admin/dashboard');
+      
       }
       
       return data;
@@ -45,10 +46,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
+  // A função de registro agora não precisa redirecionar, pois o login fará isso
   const register = async (userData) => {
     try {
       const { data } = await api.post('/auth/register', userData);
-      // A função de registro chama a de login, então herdará a lógica de redirecionamento
+      // Após o registro, chama o login para autenticar e lidar com o redirecionamento
       await login(userData.email, userData.password);
       return data;
     } catch (error) {

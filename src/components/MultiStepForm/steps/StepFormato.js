@@ -16,6 +16,8 @@ export default function StepFormato({ formData, handleChange, productData }) {
   let formatOptions = [];
   const isEscritura = productData?.category === 'Tabelionato de Notas (Escrituras)';
   const isProtesto = productData?.slug === toSlug('Certidão de Protesto');
+  // 1. ADICIONADA VERIFICAÇÃO PARA REGISTRO CIVIL
+  const isRegistroCivil = productData?.category === 'Cartório de Registro Civil';
 
   if (isProtesto) {
     formatOptions = [
@@ -41,7 +43,25 @@ export default function StepFormato({ formData, handleChange, productData }) {
         price_add: 20.00,
       },
     ];
+  // 2. ADICIONADO BLOCO CONDICIONAL PARA REGISTRO CIVIL COM OS NOVOS TEXTOS
+  } else if (isRegistroCivil) {
+    formatOptions = [
+      { 
+        value: 'Certidão eletrônica', 
+        label: 'Certidão eletrônica', 
+        description: 'Emitida em breve relato. É a mais pedida e usual. será disponibilizada no painel do usuário e enviada ao e-mail.',
+        price_add: null,
+        isMostPopular: true
+      },
+      { 
+        value: 'Certidão em papel', 
+        label: 'Certidão em papel', 
+        description: 'Emitida em inteiro teor contendo todos os dados do livro de assento. Necessária em casos de cidadania. Será enviada através dos Correios', 
+        price_add: 40.00,
+      },
+    ];
   } else {
+    // 3. LÓGICA ORIGINAL MANTIDA PARA OS DEMAIS CASOS (EX: REGISTRO DE IMÓVEIS)
     formatOptions = [
       { 
         value: 'Certidão eletrônica', 
@@ -54,7 +74,7 @@ export default function StepFormato({ formData, handleChange, productData }) {
         value: 'Certidão em papel', 
         label: 'Certidão em papel', 
         description: 'Será enviada no endereço informado através dos Correios. Contém todos os dados registrados no livro do assento.', 
-        price_add: 40.00, // Preço corrigido para 40,00
+        price_add: 40.00,
       },
     ];
   }
@@ -62,13 +82,12 @@ export default function StepFormato({ formData, handleChange, productData }) {
   const selectedValue = formData.formato || formatOptions[0].value;
 
   useEffect(() => {
-    // Garante que uma opção padrão seja selecionada ao carregar
     if (!formData.formato || !formatOptions.some(opt => opt.value === formData.formato)) {
       handleChange({ target: { name: 'formato', value: formatOptions[0].value } });
     }
   }, [formData.formato, handleChange, formatOptions]);
 
-  const stepNumber = isProtesto ? '3' : '3'; // Pode ajustar se o número da etapa mudar
+  const stepNumber = isProtesto ? '3' : '3';
 
   return (
     <div>

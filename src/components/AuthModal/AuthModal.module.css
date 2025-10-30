@@ -1,0 +1,140 @@
+/* Salve em: src/components/AuthModal/AuthModal.module.css */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 6000;
+  padding: 1rem;
+}
+
+.modal {
+  width: 100%;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.tabNav {
+  display: flex;
+}
+
+.tabNav button {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.tabNav .activeTab {
+  background-color: #3c4f41;
+  color: #fff;
+}
+
+.tabNav:not(.activeTab) {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+.formContent {
+  padding: 2.5rem 2rem;
+}
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.inputGroup svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #294B29;
+  box-shadow: 0 0 0 3px rgba(41, 75, 41, 0.1);
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+}
+.formRow .inputGroup {
+  flex: 1;
+}
+.formRow .inputGroup:last-child input {
+  padding-left: 1rem;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #294B29;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.submitButton:hover {
+  background-color: #3a6b3a;
+}
+
+.errorMessage {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.feedbackState {
+  padding: 4rem 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #294B29;
+}

@@ -25,7 +25,7 @@ export const categories = [
   'Certidões Federais e Estaduais',
   'Certidões Municipais',
   'Assessoria Jurídica',
-  'Pesquisa' // Movido para o final
+  'Pesquisa'
 ];
 
 const toSlug = (str) => {
@@ -53,7 +53,6 @@ const formTemplateRequerente = {
   ]
 };
 
-// Template ajustado para ter apenas Matrícula
 const formTemplateCertidaoImovel = [
   {
     groupTitle: 'Dados do Imóvel',
@@ -107,7 +106,6 @@ const formTemplateVisualizacaoMatricula = [
   formTemplateRequerente,
 ];
 
-// Template base para Registro Civil com adicionais
 const createFormTemplateRegistroCivil = (fieldsGroup) => [
   fieldsGroup,
   {
@@ -216,7 +214,6 @@ const formTemplateProtesto = [
         required: true 
       }
   ] },
-  // A entrega é apenas eletrônica para protesto
   formTemplateRequerente,
 ];
 
@@ -282,7 +279,6 @@ const formTemplatePesquisaEscrituras = [
     formTemplateRequerente,
 ];
 
-// NOVO TEMPLATE DE FORMULÁRIO PARA CONSULTORIA JURÍDICA
 const formTemplateConsultaJuridica = [
   {
     groupTitle: 'Dados para Contato',
@@ -291,7 +287,7 @@ const formTemplateConsultaJuridica = [
       { id: 'nome_completo_contato', label: 'Nome completo', type: 'text', required: true, placeholder: 'Seu nome completo' },
       { id: 'email_contato', label: 'E-mail', type: 'email', required: true, placeholder: 'Seu melhor e-mail' },
       { id: 'telefone_contato', label: 'Telefone', type: 'tel', required: true, placeholder: '(00) 00000-0000' },
-      { id: 'assunto_contato', label: 'Assunto da Consulta', type: 'select', required: true, options: [ // Adicionado options
+      { id: 'assunto_contato', label: 'Assunto da Consulta', type: 'select', required: true, options: [
         { value: '', label: 'Selecione um assunto' },
         { value: 'imobiliario', label: 'Direito Imobiliário' },
         { value: 'familia', label: 'Direito de Família' },
@@ -304,64 +300,64 @@ const formTemplateConsultaJuridica = [
 ];
 
 
-// --- LISTA COMPLETA DE CERTIDÕES ---
+// --- LISTA COMPLETA DE CERTIDÕES (SEM DUPLICATAS) ---
 export const allCertificates = [
   // --- Cartório de Registro de Imóveis ---
   { id: 46, name: 'Certidão de Imóvel', slug: toSlug('Certidão de Imóvel'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Imóvel')],
     description: 'Solicite a certidão de matrícula do seu imóvel, essencial para transações de compra e venda.',
-    longDescription: 'A Certidão de Imóvel é o documento oficial que comprova a situação jurídica de uma propriedade. Ela contém informações cruciais como a descrição do imóvel, o nome do proprietário atual, o histórico de transações (compra, venda, doação) e a existência de quaisquer ônus, como hipotecas, penhoras ou alienações fiduciárias. É indispensável para garantir a segurança em negócios imobiliários.',
+    longDescription: 'A Certidão de Imóvel é o documento oficial que comprova a situação jurídica de uma propriedade...',
     faq: '[{"q": "Para que serve esta certidão?", "a": "É essencial para processos de compra e venda, financiamentos, inventários, partilhas e para comprovar a propriedade e a inexistência de dívidas atreladas ao imóvel."},{"q": "Qual a validade da certidão de imóvel?", "a": "Geralmente, para atos oficiais como escrituras, a validade é de 30 dias. Para simples conferência, não há prazo de validade."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
   { id: 52, name: 'Visualização de Matrícula', slug: toSlug('Visualização de Matrícula'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Visualização de Matrícula')],
     description: 'Visualize a matrícula de um imóvel antes de requerer a sua certidão. Obs.: Não possui valor jurídico.',
-    longDescription: 'A visualização de matrícula é uma cópia digital não certificada do documento oficial do imóvel, ideal para consultas rápidas e verificações de informações pontuais. Por não ser um documento oficial com fé pública, não substitui a certidão para fins legais, como em transações de compra e venda ou financiamentos.',
+    longDescription: 'A visualização de matrícula é uma cópia digital não certificada do documento oficial do imóvel...',
     faq: '[{"q": "Este documento tem valor legal?", "a": "Não, a visualização de matrícula é um documento meramente informativo e não possui validade jurídica para atos oficiais."},{"q": "Quando devo usar a visualização em vez da certidão?", "a": "Use a visualização para conferir dados rapidamente, como o nome do proprietário ou o número da matrícula, sem a necessidade de um documento oficial."}]',
     formFields: formTemplateVisualizacaoMatricula 
   },
   { id: 56, name: 'Certidão de Matrícula com Ônus e Ações', slug: toSlug('Certidão de Matrícula com Ônus e Ações'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Matrícula com Ônus e Ações')],
     description: 'Certidão completa que informa a situação do imóvel, incluindo dívidas, hipotecas e processos judiciais.',
-    longDescription: 'A Certidão de Matrícula com Negativa de Ônus e Ações Reipersecutórias é o documento mais completo para verificar a segurança jurídica de um imóvel. Ela detalha não apenas a titularidade e as características do bem, mas também informa se existem quaisquer ônus (como hipotecas, penhoras, usufruto) ou ações judiciais que possam afetar a propriedade. É a certidão mais solicitada por bancos para financiamentos.',
+    longDescription: 'A Certidão de Matrícula com Negativa de Ônus e Ações Reipersecutórias é o documento mais completo para verificar a segurança jurídica de um imóvel...',
     faq: '[{"q": "O que são ônus e ações reipersecutórias?", "a": "Ônus são dívidas ou obrigações que recaem sobre o imóvel (ex: hipoteca). Ações reipersecutórias são processos judiciais que podem resultar na perda da propriedade pelo atual dono."},{"q": "Por que esta certidão é mais segura?", "a": "Porque ela garante que o imóvel está livre de pendências financeiras e judiciais, protegendo o comprador de futuras complicações."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
   { id: 54, name: 'Certidão de Penhor e Safra', slug: toSlug('Certidão de Penhor e Safra'), price: null, atribuicaoId: 4, category: 'Cartório de Registro de Imóveis', icon: icons.BUILDING, imageSrc: productImagePaths[toSlug('Certidão de Penhor e Safra')],
     description: 'Documento essencial para o agronegócio, utilizado para registrar garantias em financiamentos agrícolas.',
-    longDescription: 'A Certidão de Penhor e Safra comprova o registro de garantias sobre colheitas futuras ou equipamentos agrícolas. É um documento fundamental para produtores rurais que buscam crédito, pois oferece segurança aos credores de que a produção está vinculada ao pagamento do financiamento.',
+    longDescription: 'A Certidão de Penhor e Safra comprova o registro de garantias sobre colheitas futuras ou equipamentos agrícolas...',
     faq: '[{"q": "Quem precisa desta certidão?", "a": "Produtores rurais, cooperativas, tradings e instituições financeiras que atuam com crédito agrícola."},{"q": "O que pode ser dado em penhor?", "a": "Colheitas futuras, máquinas, veículos agrícolas e outros bens móveis relacionados à atividade rural."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
   { id: 64, name: 'Pesquisa Prévia de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Previa de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
     description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
-    pesquisaType: 'previa' // Removido skipValidationAndTerms: true
+    pesquisaType: 'previa'
   },
   { id: 65, name: 'Pesquisa Qualificada de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
     description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
-    pesquisaType: 'qualificada' // Removido skipValidationAndTerms: true
+    pesquisaType: 'qualificada'
   },
 
   // --- Cartório de Registro Civil ---
   { id: 49, name: 'Certidão de Nascimento', slug: toSlug('Certidão de Nascimento'), price: null, atribuicaoId: 3, category: 'Cartório de Registro Civil', icon: icons.DOCUMENT, imageSrc: productImagePaths[toSlug('Certidão de Nascimento')],
     description: 'Solicite a 2ª via atualizada da Certidão de Nascimento, o primeiro e mais importante documento civil de um cidadão.',
-    longDescription: 'A Certidão de Nascimento é o documento que comprova oficialmente o nascimento de uma pessoa, contendo informações essenciais como nome completo, data, horário e local de nascimento, além da filiação. É a base para a obtenção de todos os outros documentos civis.',
+    longDescription: 'A Certidão de Nascimento é o documento que comprova oficialmente o nascimento de uma pessoa...',
     faq: '[{"q": "Por que preciso de uma 2ª via atualizada?", "a": "Muitos órgãos públicos e processos legais, como casamento, solicitação de cidadania ou inventário, exigem uma certidão emitida nos últimos 6 meses para garantir que não houve alterações (averbações) no registro."},{"q": "O que é uma certidão em inteiro teor?", "a": "É uma cópia fiel de tudo que está escrito no livro de registro, incluindo todas as averbações. A certidão em breve relato (comum) resume as informações principais."}]',
     formFields: formTemplateNascimento 
   },
   { id: 48, name: 'Certidão de Casamento', slug: toSlug('Certidão de Casamento'), price: null, atribuicaoId: 3, category: 'Cartório de Registro Civil', icon: icons.DOCUMENT, imageSrc: productImagePaths[toSlug('Certidão de Casamento')],
     description: 'Obtenha a 2ª via da sua Certidão de Casamento, com todas as averbações (divórcio, óbito, etc.).',
-    longDescription: 'Este documento oficializa a união entre duas pessoas, estabelecendo a comunhão de vida e deveres. A certidão contém os nomes dos cônjuges, data e local da cerimônia, regime de bens escolhido e, se houver, averbações importantes como separação, divórcio ou óbito.',
+    longDescription: 'Este documento oficializa a união entre duas pessoas, estabelecendo a comunhão de vida e deveres...',
     faq: '[{"q": "Para que serve a 2ª via da Certidão de Casamento?", "a": "É necessária para processos de divórcio, compra e venda de imóveis, inclusão do cônjuge em planos de saúde, processos de cidadania e inventários."},{"q": "Minha certidão virá com a averbação de divórcio?", "a": "Sim, se o divórcio já foi devidamente registrado no cartório de registro civil, a averbação constará na 2ª via atualizada."}]',
     formFields: formTemplateCasamento 
   },
   { id: 47, name: 'Certidão de Óbito', slug: toSlug('Certidão de Óbito'), price: null, atribuicaoId: 3, category: 'Cartório de Registro Civil', icon: icons.DOCUMENT, imageSrc: productImagePaths[toSlug('Certidão de Óbito')],
     description: 'Documento oficial que atesta o falecimento de um cidadão, indispensável para processos de inventário.',
-    longDescription: 'A Certidão de Óbito é o documento legal que comprova o falecimento de uma pessoa. Ela é fundamental para dar entrada no processo de inventário, solicitar pensão por morte, encerrar contas bancárias, e realizar outros procedimentos legais e administrativos após o falecimento.',
+    longDescription: 'A Certidão de Óbito é o documento legal que comprova o falecimento de uma pessoa...',
     faq: '[{"q": "Quem pode solicitar a Certidão de Óbito?", "a": "Qualquer pessoa pode solicitar, desde que tenha em mãos os dados do falecido (nome completo, data do óbito, etc.)."},{"q": "Preciso desta certidão para dar entrada na pensão por morte?", "a": "Sim, a Certidão de Óbito é um dos principais documentos exigidos pelo INSS para a concessão de pensão por morte."}]',
     formFields: formTemplateObito 
   },
   { id: 43, name: 'Certidão de Interdição', price: null, slug: toSlug('Certidão de Interdição'), atribuicaoId: 3, category: 'Cartório de Registro Civil', icon: icons.DOCUMENT, imageSrc: productImagePaths[toSlug('Certidão de Interdição')],
     description: 'Comprova que uma pessoa foi declarada civilmente incapaz de exercer atos da vida civil.',
-    longDescription: 'A Certidão de Interdição, Tutela e Curatela informa se uma pessoa foi legalmente declarada incapaz de administrar seus próprios bens e praticar atos da vida civil. A certidão nomeia um curador ou tutor responsável por essa pessoa. É frequentemente solicitada para garantir a segurança em transações comerciais e imobiliárias.',
+    longDescription: 'A Certidão de Interdição, Tutela e Curatela informa se uma pessoa foi legalmente declarada incapaz de administrar seus próprios bens...',
     faq: '[{"q": "Onde essa certidão é registrada?", "a": "Ela é registrada no 1º Ofício de Registro Civil da cidade onde tramitou o processo judicial de interdição."},{"q": "Por que solicitam esta certidão na compra de um imóvel?", "a": "Para garantir que o vendedor tem capacidade civil para assinar o contrato e a escritura, evitando que a venda seja anulada no futuro."}]',
     formFields: formTemplateInterdicao 
   },
@@ -378,21 +374,21 @@ export const allCertificates = [
       icon: icons.DOCUMENT, 
       imageSrc: productImagePaths[toSlug(cert.name)], 
       description: `Solicite a cópia fiel (certidão) de uma ${cert.name.toLowerCase()} registrada em um Tabelionato de Notas.`,
-      longDescription: `A ${cert.name} é um ato público lavrado em Tabelionato de Notas que formaliza um negócio ou declaração de vontade. A certidão (2ª via) deste documento tem o mesmo valor legal que o original e é necessária para comprovar a validade do ato perante terceiros e órgãos públicos.`,
+      longDescription: `A ${cert.name} é um ato público lavrado em Tabelionato de Notas que formaliza um negócio ou declaração de vontade...`,
       faq: `[{"q": "O que é uma escritura pública?", "a": "É um documento elaborado por um tabelião que formaliza juridicamente a vontade das partes, como uma compra e venda, doação ou testamento, dando segurança e fé pública ao ato."},{"q": "Perdi minha escritura, o que fazer?", "a": "Você pode solicitar uma 2ª via (certidão da escritura) a qualquer momento no Tabelionato de Notas onde ela foi originalmente lavrada. Esta certidão tem o mesmo valor do documento original."}]`,
       formFields: formTemplateEscritura
   })),
-  { id: 66, name: 'Pesquisa Escrituras e Procurações por CPF/CNPJ', slug: toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ'), price: 68.30, category: 'Tabelionato de Notas (Escrituras)', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ')],
+  { id: 67, name: 'Pesquisa Escrituras e Procurações por CPF/CNPJ', slug: toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ'), price: 68.30, category: 'Tabelionato de Notas (Escrituras)', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ')],
     description: 'Busca por registros de procurações e/ou escrituras públicas nos Tabelionatos de Notas.',
-    longDescription: 'Este serviço realiza uma busca nos índices de Tabelionatos de Notas para localizar escrituras (como compra e venda, doação, inventário) ou procurações públicas que tenham sido registradas em nome de uma determinada pessoa física (CPF) ou jurídica (CNPJ).',
+    longDescription: 'Este serviço realiza uma busca nos índices de Tabelionatos de Notas para localizar escrituras (como compra e venda, doação, inventário) ou procurações públicas...',
     faq: `[{"q": "Qual a diferença entre esta pesquisa e pedir a certidão de uma escritura?", "a": "A pesquisa serve para localizar se existem e onde estão registradas as escrituras. A certidão é a cópia de uma escritura que você já sabe onde foi feita."}]`,
-    formFields: formTemplatePesquisaEscrituras // Removido skipValidationAndTerms: true
+    formFields: formTemplatePesquisaEscrituras
   },
 
   // --- Cartório de Protesto ---
   { id: 57, name: 'Certidão de Protesto', slug: toSlug('Certidão de Protesto'), price: null, atribuicaoId: 2, category: 'Cartório de Protesto', icon: icons.PROTEST, imageSrc: productImagePaths[toSlug('Certidão de Protesto')],
     description: 'Verifique a existência de dívidas protestadas em cartório para um CPF ou CNPJ.',
-    longDescription: 'A Certidão de Protesto informa se uma pessoa física ou jurídica possui títulos não pagos que foram levados a protesto, como cheques sem fundo, duplicatas ou notas promissórias. Uma certidão negativa (sem protestos) é sinal de boa reputação no mercado e é frequentemente exigida em licitações, empréstimos e transações imobiliárias.',
+    longDescription: 'A Certidão de Protesto informa se uma pessoa física ou jurídica possui títulos não pagos que foram levados a protesto...',
     faq: '[{"q": "O que significa ter um nome protestado?", "a": "Significa que uma dívida não paga foi registrada oficialmente em um Cartório de Protesto, tornando a inadimplência pública e podendo levar a restrições de crédito."},{"q": "Esta certidão abrange todo o Brasil?", "a": "Não, a pesquisa é realizada por cidade. Para uma pesquisa nacional, é necessário consultar os cartórios de cada localidade de interesse ou utilizar serviços de abrangência nacional."}]',
     formFields: formTemplateProtesto 
   },
@@ -408,7 +404,7 @@ export const allCertificates = [
     icon: icons.JUSTICE,
     imageSrc: productImagePaths[toSlug(cert.name)], 
     description: `Emita a ${cert.name} para comprovar a regularidade de uma pessoa física ou jurídica.`,
-    longDescription: `A ${cert.name} é um documento emitido por órgãos públicos para atestar a existência ou inexistência de pendências (processos, dívidas, etc.) em nome de um CPF ou CNPJ. É fundamental para participação em licitações, transações imobiliárias, processos de financiamento e para comprovar idoneidade.`,
+    longDescription: `A ${cert.name} é um documento emitido por órgãos públicos para atestar a existência ou inexistência de pendências...`,
     faq: `[{"q": "Qual a diferença entre a certidão da Justiça Federal e da Estadual?", "a": "A Justiça Federal trata de causas de interesse da União (ex: crimes federais, INSS), enquanto a Justiça Estadual cuida das demais causas cíveis e criminais."},{"q": "O que significa uma certidão 'negativa'?", "a": "Significa que, na data da emissão, não foi encontrada nenhuma pendência em nome da pessoa ou empresa consultada naquele órgão específico."}]`,
     formFields: formTemplateFederal 
   })),
@@ -424,7 +420,7 @@ export const allCertificates = [
     icon: icons.JUSTICE,
     imageSrc: productImagePaths[toSlug('certidao-de-distribuicao-estadual-tj')] || '/certidoes/default-municipal.png',
     description: `Emita a ${cert.name} para verificar a situação fiscal e cadastral perante o município.`,
-    longDescription: `A ${cert.name} é um documento emitido pela prefeitura para atestar informações sobre pessoas, empresas ou imóveis no âmbito municipal. É essencial para processos de compra e venda de imóveis, participação em licitações e regularização de pendências com o município.`,
+    longDescription: `A ${cert.name} é um documento emitido pela prefeitura para atestar informações sobre pessoas, empresas ou imóveis no âmbito municipal...`,
     faq: `[{"q": "Para que serve esta certidão?", "a": "Geralmente é usada para comprovar que não há débitos de impostos como IPTU (no caso de imóveis) ou ISS (no caso de empresas), ou para obter informações cadastrais para processos legais."},{"q": "Onde obtenho a Inscrição do Imóvel?", "a": "A Inscrição do Imóvel, também conhecida como Inscrição Cadastral ou Inscrição Imobiliária, geralmente consta no carnê do IPTU."}]`,
     formFields: formTemplateMunicipal
   })),
@@ -432,32 +428,18 @@ export const allCertificates = [
   // --- Assessoria Jurídica ---
   { id: 58, name: 'Consulta Jurídica', slug: toSlug('Consulta Jurídica'), price: 150.00, category: 'Assessoria Jurídica', icon: icons.LAWYER, imageSrc: productImagePaths[toSlug('Consulta Jurídica')],
     description: 'Converse com um advogado especialista para tirar dúvidas sobre documentos, contratos e processos.',
-    longDescription: 'Nossa consulta jurídica online conecta você a advogados experientes para obter orientação sobre questões imobiliárias, contratuais, familiares, entre outras. Entenda seus direitos e os próximos passos a serem tomados com segurança e conveniência.',
-    faq: '[{"q": "Como funciona a consulta?", "a": "Após a contratação, você agenda um horário para uma chamada de vídeo ou telefone com um de nossos advogados parceiros para discutir seu caso."},{"q": "A consulta resolve meu problema legal?", "a": "A consulta serve para orientar e esclarecer dúvidas. Caso seja necessário ingressar com uma ação ou elaborar um documento complexo, o advogado poderá apresentar uma proposta para estes serviços."}]',
-    formFields: formTemplateConsultaJuridica, // Adicionado o formFields
-    skipValidationAndTerms: true // Para um fluxo mais simples
+    longDescription: 'Nossa consulta jurídica online conecta você a advogados experientes para obter orientação sobre questões imobiliárias, contratuais, familiares, entre outras...',
+    faq: '[{"q": "Como funciona a consulta?", "a": "Após a contratação, você agenda um horário para uma chamada de vídeo ou telefone com um de nossos advogados parceiros para discutir seu caso."},{"q": "A consulta resolve meu problema legal?", "a": "A consulta serve para orientar e esclarecer dúvidas. Caso seja necessário ingressar com uma ação ou elaborar um documento complexo, o advogado poderá apresentar uma proposta para estes serviços."}]', 
+    formFields: formTemplateConsultaJuridica,
+    skipValidationAndTerms: true
   },
 
-  // --- Pesquisa (agora no final e com ordem específica) ---
+  // --- Pesquisa (agora com itens únicos) ---
   { id: 59, name: 'Pesquisa Completa de Veículo', slug: toSlug('Pesquisa Completa de Veículo'), price: 77.60, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Completa de Veículo')], description: 'Informações detalhadas sobre o veículo e seu proprietário.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaVeiculo },
   { id: 60, name: 'Pesquisa Leilão de Veículo', slug: toSlug('Pesquisa Leilão de Veículo'), price: 65.40, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Leilão de Veículo')], description: 'Verifique o histórico de leilões para um veículo específico.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaLeilao },
   { id: 61, name: 'Pesquisa Gravame de Veículo', slug: toSlug('Pesquisa Gravame de Veículo'), price: 52.40, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Gravame de Veículo')], description: 'Consulte se o veículo possui restrições financeiras (alienação fiduciária).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaGravame },
   { id: 62, name: 'Histórico de Roubo ou Furto de Veículo', slug: toSlug('Histórico de Roubo ou Furto de Veículo'), price: 34.60, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Histórico de Roubo ou Furto de Veículo')], description: 'Verifique se um veículo possui registro de roubo ou furto.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaRouboFurto },
   { id: 63, name: 'Pesquisa Processos Judiciais e Administrativos', slug: toSlug('Pesquisa Processos Judiciais e Administrativos'), price: 77.30, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Processos Judiciais e Administrativos')], description: 'Dados atuais e históricos de ações judiciais e processos administrativos.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
-  { id: 64, name: 'Pesquisa Prévia de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Previa de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
-    description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
-    pesquisaType: 'previa' // Removido skipValidationAndTerms: true
-  },
-  { id: 65, name: 'Pesquisa Qualificada de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
-    description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
-    pesquisaType: 'qualificada' // Removido skipValidationAndTerms: true
-  },
-  { id: 67, name: 'Pesquisa Escrituras e Procurações por CPF/CNPJ', slug: toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ'), price: 68.30, category: 'Tabelionato de Notas (Escrituras)', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ')],
-    description: 'Busca por registros de procurações e/ou escrituras públicas nos Tabelionatos de Notas.',
-    longDescription: 'Este serviço realiza uma busca nos índices de Tabelionatos de Notas para localizar escrituras (como compra e venda, doação, inventário) ou procurações públicas que tenham sido registradas em nome de uma determinada pessoa física (CPF) ou jurídica (CNPJ).',
-    faq: `[{"q": "Qual a diferença entre esta pesquisa e pedir a certidão de uma escritura?", "a": "A pesquisa serve para localizar se existem e onde estão registradas as escrituras. A certidão é a cópia de uma escritura que você já sabe onde foi feita."}]`,
-    formFields: formTemplatePesquisaEscrituras // Removido skipValidationAndTerms: true
-  },
   { id: 68, name: 'Pesquisa Telefone e Endereço pelo CPF/CNPJ', slug: toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Telefone e Endereço pelo CPF CNPJ')], description: 'Localize telefones e endereços através do CPF ou CNPJ.', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaProcessos },
-  { id: 69, name: 'Pesquisa Sintegra Estadual', slug: toSlug('Pesquisa Sintegra Estadual'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Sintegra Estadual')], description: 'Consulta ao Cadastro de Contribuintes de ICMS (SINTEGRA).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaSintegra }, // Removido skipValidationAndTerms: true
+  { id: 69, name: 'Pesquisa Sintegra Estadual', slug: toSlug('Pesquisa Sintegra Estadual'), price: 28.35, category: 'Pesquisa', icon: icons.SEARCH, imageSrc: productImagePaths[toSlug('Pesquisa Sintegra Estadual')], description: 'Consulta ao Cadastro de Contribuintes de ICMS (SINTEGRA).', faq: 'FAQ do serviço.', formFields: formTemplatePesquisaSintegra },
 ];
