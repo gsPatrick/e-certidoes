@@ -2,7 +2,7 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation'; // Importa useSearchParams
+import { useRouter } from 'next/navigation';
 import api from '@/services/api';
 
 const AuthContext = createContext();
@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const searchParams = useSearchParams(); // Hook para ler os parâmetros da URL
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -25,28 +24,32 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post('/auth/login', { email, password });
-      
+
       setUser(data.user);
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
 
-      // Lógica de redirecionamento aprimorada
-      const redirectUrl = searchParams.get('redirect');
-      if (redirectUrl) {
-        router.push(redirectUrl); // Redireciona para a página de onde veio (ex: /finalizar-compra)
-      } else if (data.user.role === 'admin') {
-        router.push('/admin/dashboard');
-      
+      // ✅ Lê o parâmetro apenas no cliente no momento do login
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const redirectUrl = params.get('redirect');
+
+        if (redirectUrl) {
+          router.push(redirectUrl);
+        } else if (data.user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/');
+        }
       }
-      
+
       return data;
     } catch (error) {
-      console.error("Erro no login:", error.response?.data?.message);
+      console.error('Erro no login:', error.response?.data?.message);
       throw new Error(error.response?.data?.message || 'Falha no login');
     }
   };
-  
-  // A função de registro agora não precisa redirecionar, pois o login fará isso
+
   const register = async (userData) => {
     try {
       const { data } = await api.post('/auth/register', userData);
@@ -54,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       await login(userData.email, userData.password);
       return data;
     } catch (error) {
-      console.error("Erro no registro:", error.response?.data?.message);
+      console.error('Erro no registro:', error.response?.data?.message);
       throw new Error(error.response?.data?.message || 'Falha no registro');
     }
   };
