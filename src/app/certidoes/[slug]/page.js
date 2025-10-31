@@ -1,7 +1,7 @@
 // Salve em: src/app/certidoes/[slug]/page.js
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react'; // 1. IMPORTAR O SUSPENSE
 import { notFound, useParams } from 'next/navigation';
 import { allCertificates } from '@/components/CertificatesList/certificatesData';
 import Header from '@/components/Header/Header';
@@ -11,6 +11,7 @@ import MultiStepForm from '@/components/MultiStepForm/MultiStepForm';
 import ProductTabs from '@/components/ProductPage/ProductTabs';
 import InfoModal from '@/components/ProductPage/InfoModal';
 import Image from 'next/image';
+import PageLoader from '@/components/PageLoader/PageLoader'; // 2. IMPORTAR O LOADER
 import styles from '@/components/ProductPage/ProductPage.module.css';
 import modalStyles from '@/components/ProductPage/ProductInfoSection.module.css';
 
@@ -26,8 +27,7 @@ export default function CertidaoPage() {
     return notFound();
   }
 
-  // CORREÇÃO: Adiciona uma verificação para a imagem, usando um placeholder se não existir
-  const imageSrc = certificate.imageSrc || '/certidoes/default-placeholder.png'; // Crie uma imagem placeholder
+  const imageSrc = certificate.imageSrc || '/certidoes/default-placeholder.png';
 
   return (
     <>
@@ -37,15 +37,17 @@ export default function CertidaoPage() {
           <ProductHeader 
             title={certificate.name}
             description={certificate.description}
-            imageSrc={imageSrc} // Usa a imagem verificada
+            imageSrc={imageSrc}
             onOpenPaymentModal={() => setPaymentModalOpen(true)}
             onOpenDeliveryModal={() => setDeliveryModalOpen(true)}
           />
           
           <div id="form-inicio">
-            {/* O placeholder é uma propriedade que pode ser usada para desativar o formulário */}
             {!certificate.isPlaceholder ? (
-              <MultiStepForm productData={certificate} />
+              // 3. ENVOLVER O MULTISTEPFORM COM O SUSPENSE
+              <Suspense fallback={<PageLoader />}>
+                <MultiStepForm productData={certificate} />
+              </Suspense>
             ) : (
               <div style={{ textAlign: 'center', padding: '2rem', background: '#fff', borderRadius: '8px', border: '1px solid #e9ecef' }}>
                 <h3>Serviço em Breve</h3>
@@ -62,7 +64,6 @@ export default function CertidaoPage() {
       </main>
       <Footer />
 
-      {/* MODAL DE PAGAMENTO CORRIGIDO */}
       <InfoModal 
         isOpen={isPaymentModalOpen} 
         onClose={() => setPaymentModalOpen(false)}
@@ -73,7 +74,6 @@ export default function CertidaoPage() {
             <strong>Cartão de crédito</strong>
             <p>Parcele suas compras em até 3X no cartão de crédito.</p>
             <div className={modalStyles.paymentMethods}>
-              {/* SUBSTITUIÇÃO: Apenas uma imagem para todas as bandeiras */}
               <Image src="/payment-logos/bandeiras.png" alt="Bandeiras de Cartão" width={200} height={30} />
             </div>
           </li>
@@ -88,7 +88,6 @@ export default function CertidaoPage() {
         </ul>
       </InfoModal>
 
-      {/* MODAL DE ENTREGA (Mantido) */}
       <InfoModal 
         isOpen={isDeliveryModalOpen} 
         onClose={() => setDeliveryModalOpen(false)}
