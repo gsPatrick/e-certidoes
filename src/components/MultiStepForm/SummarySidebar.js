@@ -26,7 +26,6 @@ const formatLabel = (key) => {
     if (key === 'assunto_contato') return 'Assunto';
     if (key === 'mensagem_contato') return 'Mensagem';
 
-
     return key
         .replace(/_/g, ' ')
         .replace(/\b\w/g, char => char.toUpperCase());
@@ -69,35 +68,32 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
     const CUSTO_PAPEL = getTaxa('custo_papel') || 0;
     const CUSTO_APOSTILAMENTO = getTaxa('apostilamento') || 0;
     const CUSTO_AR = getTaxa('aviso_recebimento') || 0;
-    // ===================================
-    // === AQUI ESTÁ A CORREÇÃO DIRETA ===
-    // ===================================
-    const CUSTO_SEDEX = 68.00;
+    const CUSTO_SEDEX = getTaxa('sedex') || 0;
     const CUSTO_TEOR_TRANSCRICAO = 30.00;
     const CUSTO_TEOR_REPROGRAFICA = 40.00;
     
-    const excludeKeys = new Set(['tipo_pessoa', 'tipo_pesquisa', 'aceite_lgpd', 'ciente']);
-    
+    // =======================================================
+    // === AQUI ESTÁ A CORREÇÃO LÓGICA ===
+    // =======================================================
     const getRelevantKeysForStep = (title) => {
+        const baseExclusions = new Set([
+            'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa',
+            // Chaves de outras etapas que não devem vazar
+            'formato', 'apostilamento_digital', 'apostilamento_fisico', 'apostilamento', 'inteiro_teor', 'tipo_inteiro_teor', 'aviso_recebimento', 'localizar_pra_mim', 'sedex',
+            'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade_entrega', 'estado_entrega', 'entrega_internacional_correios', 'entrega_internacional_dhl', 'pais_nome', 'cep_inter', 'estado_inter', 'cidade_inter', 'endereco_inter',
+            'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
+            'nome_completo_contato', 'email_contato', 'telefone_contato', 'assunto_contato', 'mensagem_contato'
+        ]);
+
         switch(title.toLowerCase()) {
+            case 'dados da certidão':
+                const stepExclusions = new Set([...baseExclusions]);
+                const dynamicKeys = Object.keys(formData).filter(k => !stepExclusions.has(k) && k !== 'tipo_certidao');
+                // Garante que 'tipo_certidao' seja o primeiro e único
+                return ['tipo_certidao', ...dynamicKeys];
+            
             case 'localização': 
-                if (productData.slug === 'visualizacao-de-matricula') {
-                    return ['estado_matricula', 'cidade_matricula', 'cartorio', 'numero_matricula'];
-                }
-                return ['estado_cartorio', 'cidade_cartorio', 'cartorio', 'cartorio_manual', 'nao_sei_cartorio', 'anexo_busca_nome'];
-            case 'dados da certidão': 
-                const keys = Object.keys(formData).filter(k => 
-                    !['estado_cartorio', 'cidade_cartorio', 'cartorio', 'formato', 'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg', 'requerente_cep', 'requerente_endereco', 'requerente_numero', 'requerente_complemento', 'requerente_bairro', 'requerente_cidade', 'requerente_estado',
-                    'estado_entrega', 'cidade_entrega', 'cep', 'endereco', 'numero', 'complemento', 'bairro',
-                    'estado_matricula', 'cidade_matricula', 'numero_matricula',
-                    'pais_nome', 'cep_inter', 'estado_inter', 'cidade_inter', 'endereco_inter', 'entrega_internacional_correios', 'entrega_internacional_dhl',
-                    ].includes(k) && 
-                    !k.startsWith('apostilamento') && !k.startsWith('aviso') && !k.startsWith('inteiro_teor') && !k.startsWith('localizar_pra_mim') && !k.startsWith('sedex')
-                );
-                if (productData.category !== 'Cartório de Registro Civil') {
-                    keys.unshift('tipo_certidao');
-                }
-                return keys;
+                return ['estado_cartorio', 'cidade_cartorio', 'cartorio', 'cartorio_manual', 'nao_sei_cartorio', 'anexo_busca_nome', 'estado_matricula', 'cidade_matricula', 'numero_matricula'];
             case 'formato': return ['formato'];
             case 'serviços adicionais': return ['apostilamento_digital', 'apostilamento_fisico', 'apostilamento', 'inteiro_teor', 'tipo_inteiro_teor', 'aviso_recebimento', 'localizar_pra_mim', 'sedex'];
             case 'endereço': return ['cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade_entrega', 'estado_entrega', 'entrega_internacional_correios', 'entrega_internacional_dhl', 'pais_nome', 'cep_inter', 'estado_inter', 'cidade_inter', 'endereco_inter'];
@@ -106,13 +102,13 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
             default: return [];
         }
     };
-    
+
     const relevantKeys = getRelevantKeysForStep(stepTitle);
     const details = relevantKeys.map(key => {
-        if (excludeKeys.has(key) || !formData[key]) return null;
+        if (!formData[key] && typeof formData[key] !== 'boolean') return null;
 
         if (key === 'tipo_certidao') {
-            const label = productData.category.includes('Pesquisa') ? 'Tipo de Pesquisa' : 'Tipo de Certidão';
+            const label = "Tipo de Certidão";
             const value = productData.name;
             return <DetailItem key={key} label={label} value={value} />;
         }
@@ -151,11 +147,6 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
     if (details.length === 0) return null;
 
     return <ul className={styles.summaryContentList}>{details}</ul>;
-  };
-
-  const toSlug = (str) => {
-    if (!str) return '';
-    return str.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
   };
 
   return (

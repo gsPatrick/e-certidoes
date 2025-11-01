@@ -1,9 +1,11 @@
 /* Salve em: src/app/minha-conta/pedidos/[id]/DetalhesPedido.module.css */
+
 .pageWrapper {
-    padding: 2rem 1rem;
+    padding: 3rem 1rem;
     background-color: #f8f9fa;
     min-height: 80vh;
 }
+
 .container {
     max-width: 900px;
     margin: 0 auto;
@@ -14,10 +16,12 @@
     margin-bottom: 1rem;
     color: #6c757d;
 }
+
 .breadcrumb a {
     color: #294B29;
     text-decoration: none;
 }
+
 .breadcrumb a:hover {
     text-decoration: underline;
 }
@@ -37,19 +41,21 @@
     border-bottom: 1px solid #e9ecef;
     gap: 1rem;
 }
+
 .protocolo {
     font-size: 1.8rem;
     font-weight: 700;
     color: #294B29;
     margin: 0;
 }
+
 .data {
     font-size: 0.9rem;
     color: #6c757d;
 }
 
 .cardBody {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
 }
 
 .section {
@@ -57,7 +63,8 @@
     margin-bottom: 1.5rem;
     border-bottom: 1px dashed #ced4da;
 }
-.section.noBorder {
+
+.section:last-of-type {
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -68,117 +75,84 @@
     font-weight: 600;
     color: #3c4f41;
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-/* --- Blocos de Conteúdo Específicos --- */
-
-.adminMessage {
-    background-color: #eaf0ec;
-    border-left: 4px solid #294B29;
-    padding: 1rem;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    line-height: 1.6;
-}
-.adminMessage strong { color: #294B29; display: block; margin-bottom: 0.25rem;}
-.adminMessage p { margin: 0; }
-
-.rastreio {
-    margin-top: 1rem;
+/* --- ESTRUTURA DA LISTA DE DETALHES (CHAVE DA CORREÇÃO VISUAL) --- */
+.formDataList {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
+    flex-direction: column;
+    gap: 1rem; /* Espaçamento entre cada linha de detalhe */
+    font-size: 0.95rem;
 }
+
+.formDataItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinha no topo para valores longos */
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.formDataItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.formDataItem dt {
+    font-weight: 500;
+    color: #6c757d;
+    padding-right: 1.5rem; /* Espaço entre o label e o valor */
+    flex-shrink: 0; /* Impede que o label encolha */
+}
+
+.formDataItem dd {
+    margin: 0;
+    font-weight: 500;
+    color: #343a40;
+    text-align: right;
+    word-break: break-word; /* Garante que valores longos quebrem a linha */
+}
+/* --- FIM DA ESTRUTURA DA LISTA --- */
+
+
+.itemName {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #294B29;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+
+/* --- Outros Blocos --- */
+.adminMessage { background-color: #eaf0ec; border-left: 4px solid #294B29; padding: 1rem; border-radius: 4px; font-size: 0.95rem; line-height: 1.6; }
+.adminMessage strong { color: #294B29; display: block; margin-bottom: 0.25rem; }
+.adminMessage p { margin: 0; }
+.rastreio { margin-top: 1rem; display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid #e9ecef; border-radius: 6px; }
 .rastreio svg { color: #294B29; flex-shrink: 0; }
 .rastreio strong { display: block; font-size: 0.9rem; }
 .rastreio span { font-weight: bold; font-family: monospace; font-size: 1.1rem; color: #343a40; }
-
 .downloadList { display: flex; flex-direction: column; gap: 0.75rem; }
-.downloadButton {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #294B29;
-    color: #fff;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
+.downloadButton { display: inline-flex; align-items: center; gap: 0.5rem; background-color: #294B29; color: #fff; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background-color 0.2s; }
 .downloadButton:hover { background-color: #3a6b3a; }
-
-.itemName {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #343a40;
-    margin-bottom: 1rem;
-}
-.formDataList { margin: 0; padding: 0; }
-.formDataItem {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f8f9fa;
-    font-size: 0.95rem;
-}
-.formDataItem:last-child { border-bottom: none; }
-.formDataItem dt { font-weight: 500; color: #6c757d; }
-.formDataItem dd { margin: 0; color: #343a40; }
-
-.totalRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 6px;
-}
+.anexosList { list-style: none; padding-left: 0; margin: 0; font-size: 0.95rem; }
+.anexosList li { padding: 0.5rem 1rem; background-color: #f8f9fa; border-radius: 4px; margin-bottom: 0.5rem; color: #495057; border-left: 3px solid #ced4da; }
+.totalRow { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 6px; }
 .totalRow strong { color: #3c4f41; }
 .totalRow span { font-weight: bold; font-size: 1.4rem; color: #294B29; }
-
-
-/* --- Badges de Status --- */
-.statusBadge {
-    padding: 0.3rem 0.8rem; border-radius: 1rem; font-size: 0.8rem;
-    font-weight: bold; color: #fff; text-transform: uppercase;
-    white-space: nowrap;
-}
+.statusBadge { padding: 0.3rem 0.8rem; border-radius: 1rem; font-size: 0.8rem; font-weight: bold; color: #fff; text-transform: uppercase; white-space: nowrap; }
 .statusPendente { background-color: #ffc107; color: #212529; }
 .statusProcessando { background-color: #17a2b8; }
 .statusConcluido { background-color: #28a745; }
 .statusCancelado { background-color: #dc3545; }
 .statusDefault { background-color: #6c757d; }
 
-/* ... (estilos existentes) ... */
-
-/* --- NOVOS ESTILOS PARA A LISTA DE ANEXOS --- */
-.anexosList {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-    font-size: 0.95rem;
-}
-
-.anexosList li {
-    padding: 0.5rem 1rem;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    color: #495057;
-    border-left: 3px solid #ced4da;
-}
-
-/* --- Responsividade --- */
 @media (max-width: 576px) {
     .pageWrapper { padding: 1rem; }
     .cardHeader { flex-direction: column; align-items: flex-start; }
     .protocolo { font-size: 1.5rem; }
-    .formDataItem { grid-template-columns: 1fr; gap: 0.25rem; }
-}   
+    .formDataItem { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .formDataItem dd { text-align: left; }
+}

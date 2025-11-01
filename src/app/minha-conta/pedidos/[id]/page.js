@@ -26,6 +26,81 @@ const StatusBadge = ({ status }) => {
     return <span className={`${styles.statusBadge} ${statusClass}`}>{status}</span>;
 };
 
+// Função para formatar as chaves dos campos para exibição
+const formatLabel = (key) => key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+// Componente para renderizar os detalhes do formulário de forma estruturada e inteligente
+const DetalhesDoFormulario = ({ item }) => {
+    const { dadosFormulario: formData, nomeProduto, slugProduto } = item;
+    if (!formData) return null;
+
+    // Definição das chaves para cada seção
+    const sectionKeys = {
+        localizacao: ['estado_cartorio', 'cidade_cartorio', 'cartorio', 'cartorio_manual', 'estado_matricula', 'cidade_matricula'],
+        servicos: ['sedex', 'apostilamento', 'apostilamento_digital', 'apostilamento_fisico', 'aviso_recebimento', 'inteiro_teor', 'tipo_inteiro_teor', 'localizar_pra_mim'],
+        entrega: ['formato', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade_entrega', 'estado_entrega'],
+    };
+
+    const allKnownKeys = new Set([].concat(...Object.values(sectionKeys)));
+    
+    // Filtra as chaves que são os "detalhes da certidão"
+    const detalhesCertidao = Object.entries(formData).filter(([key, value]) => {
+        const internalKeys = new Set(['tipo_pesquisa', 'tipo_pessoa', 'aceite_lgpd', 'ciente', 'tipo_certidao']);
+        if (!value || allKnownKeys.has(key) || internalKeys.has(key)) return false;
+        if (key === 'tempo_pesquisa' && !slugProduto.includes('protesto')) return false;
+        return true;
+    });
+
+    // Função interna para renderizar uma seção se ela tiver conteúdo
+    const renderSection = (title, keys) => {
+        const content = keys
+            .map(key => {
+                const value = formData[key];
+                if (!value && typeof value !== 'boolean') return null;
+                return (
+                    <div key={key} className={styles.formDataItem}>
+                        <dt>{formatLabel(key)}</dt>
+                        <dd>{typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : String(value)}</dd>
+                    </div>
+                );
+            })
+            .filter(Boolean);
+
+        if (content.length === 0) return null;
+        
+        return ( 
+            <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>{title}</h3>
+                <dl className={styles.formDataList}>{content}</dl>
+            </section>
+        );
+    };
+
+    return (
+        <>
+            <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>Detalhes da Certidão</h3>
+                <dl className={styles.formDataList}>
+                    {/* Exibe o nome do produto como o "Tipo de Certidão" */}
+                    <div className={styles.formDataItem}><dt>Tipo de Certidão</dt><dd>{nomeProduto}</dd></div>
+                    {/* Renderiza os detalhes específicos da certidão */}
+                    {detalhesCertidao.map(([key, value]) => (
+                        <div key={key} className={styles.formDataItem}>
+                            <dt>{formatLabel(key)}</dt>
+                            <dd>{String(value)}</dd>
+                        </div>
+                    ))}
+                </dl>
+            </section>
+            
+            {renderSection('Localização do Cartório', sectionKeys.localizacao)}
+            {renderSection('Opções e Entrega', sectionKeys.entrega)}
+            {renderSection('Serviços Adicionais', sectionKeys.servicos)}
+        </>
+    );
+};
+
+
 export default function DetalhesPedidoPage() {
     const [pedido, setPedido] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -69,9 +144,6 @@ export default function DetalhesPedidoPage() {
         );
     }
     
-    const formatLabel = (key) => key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-    // Filtra os arquivos enviados pelo admin e pelo cliente
     const arquivosAdmin = pedido.arquivos?.filter(a => a.tipo === 'certidao') || [];
     const arquivosCliente = pedido.arquivos?.filter(a => a.tipo === 'comprovante') || [];
 
@@ -113,7 +185,6 @@ export default function DetalhesPedidoPage() {
                                 </section>
                             )}
                             
-                            {/* --- NOVA SEÇÃO PARA ANEXOS DO CLIENTE --- */}
                             {arquivosCliente.length > 0 && (
                                 <section className={styles.section}>
                                     <h2 className={styles.sectionTitle}>Seus Anexos Enviados</h2>
@@ -124,23 +195,19 @@ export default function DetalhesPedidoPage() {
                                     </ul>
                                 </section>
                             )}
-                            {/* --- FIM DA NOVA SEÇÃO --- */}
 
+                            {pedido.itens.map((item, index) => (
+                                <DetalhesDoFormulario key={index} item={item} />
+                            ))}
+                            
                             <section className={styles.section}>
-                                <h2 className={styles.sectionTitle}>Detalhes do Serviço Contratado</h2>
-                                {pedido.itens.map((item, index) => (
-                                    <div key={index}>
-                                        <h3 className={styles.itemName}>{item.nomeProduto}</h3>
-                                        <dl className={styles.formDataList}>
-                                            {Object.entries(item.dadosFormulario).map(([key, value]) => value && (
-                                                <div key={key} className={styles.formDataItem}>
-                                                    <dt>{formatLabel(key)}</dt>
-                                                    <dd>{String(value)}</dd>
-                                                </div>
-                                            ))}
-                                        </dl>
-                                    </div>
-                                ))}
+                                <h2 className={styles.sectionTitle}>Dados do Solicitante</h2>
+                                <dl className={styles.formDataList}>
+                                    <div className={styles.formDataItem}><dt>Nome</dt><dd>{pedido.dadosCliente?.nome}</dd></div>
+                                    <div className={styles.formDataItem}><dt>CPF</dt><dd>{pedido.dadosCliente?.cpf}</dd></div>
+                                    <div className={styles.formDataItem}><dt>E-mail</dt><dd>{pedido.dadosCliente?.email}</dd></div>
+                                    <div className={styles.formDataItem}><dt>Telefone</dt><dd>{pedido.dadosCliente?.telefone}</dd></div>
+                                </dl>
                             </section>
 
                             <section className={`${styles.section} ${styles.noBorder}`}>

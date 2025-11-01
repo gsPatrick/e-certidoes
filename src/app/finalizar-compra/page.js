@@ -5,29 +5,25 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import api from '@/services/api';
+
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import PageLoader from '@/components/PageLoader/PageLoader';
-import AuthModal from '@/components/AuthModal/AuthModal'; // 1. Importar o novo modal
+import AuthModal from '@/components/AuthModal/AuthModal';
 import styles from './Checkout.module.css';
 import { CreditCardIcon, PixIcon, BoletoIcon } from './SecurityIcons';
-import Link from 'next/link';
 
 // Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
-    if (['cpf', 'cnpj', 'rg'].includes(key.toLowerCase())) {
-        return key.toUpperCase();
-    }
-    return key
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, char => char.toUpperCase());
+    if (['cpf', 'cnpj', 'rg'].includes(key.toLowerCase())) return key.toUpperCase();
+    return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 };
 
 // Componente auxiliar para renderizar detalhes no resumo
 const DetailItem = ({ label, value }) => {
-    if (value === null || value === undefined || value === '' || value === false) {
-        return null;
-    }
+    if (value === null || value === undefined || value === '' || value === false) return null;
     const displayValue = typeof value === 'boolean' ? 'Sim' : String(value);
     return (
         <div className={styles.summaryDetailItem}>
@@ -76,58 +72,108 @@ const OrderSummaryCard = ({ item, onRemove }) => {
 };
 
 export default function CheckoutPage() {
-    const { cartItems, itemCount, removeFromCart } = useCart();
+    const { cartItems, itemCount, removeFromCart, clearCart } = useCart();
     const { user, isAuthenticated, loading: authLoading } = useAuth();
     const router = useRouter();
+    
     const [loading, setLoading] = useState(false);
     const [activePayment, setActivePayment] = useState('card');
     const [isClient, setIsClient] = useState(false);
-    
-    // 2. Novo estado para controlar a visibilidade do modal
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [clientData, setClientData] = useState({ 
+        nome: '', sobrenome: '', cpf: '', email: '', telefone: '', 
+        cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '' 
+    });
 
     useEffect(() => {
         setIsClient(true);
-        // 3. Lógica modificada: em vez de redirecionar, mostra o modal
         if (!authLoading && !isAuthenticated) {
             setShowAuthModal(true);
+        } else if (user) {
+            setClientData(prev => ({ ...prev, nome: user.nome || '', email: user.email || '' }));
         }
-    }, [isAuthenticated, authLoading]);
+    }, [isAuthenticated, authLoading, user]);
 
-    const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-    const frete = 0;
-    const total = subtotal + frete;
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setClientData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleFinalizarCompra = async (e) => {
         e.preventDefault();
-        // 4. Nova verificação: se não estiver logado, não faz nada (o modal já está visível)
         if (!isAuthenticated) {
             setShowAuthModal(true);
             return;
         }
         setLoading(true);
-        const orderData = { user, items: cartItems, paymentMethod: activePayment, total };
-        console.log("Enviando para API de pagamento:", orderData);
-        alert(`Iniciando pagamento de R$ ${total.toFixed(2)} via ${activePayment}...`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setLoading(false);
-        // router.push('/pedido-confirmado/12345');
+
+        try {
+            // 1. Construir o FormData para criar o pedido
+            const orderFormData = new FormData();
+            
+            const itensParaApi = cartItems.map(item => ({
+                name: item.name,
+                slug: item.slug,
+                price: item.price,
+                formData: item.formData,
+            }));
+            
+            orderFormData.append('itens', JSON.stringify(itensParaApi));
+            orderFormData.append('dadosCliente', JSON.stringify(clientData));
+
+            // Adiciona os arquivos anexados, se houver
+            cartItems.forEach((item) => {
+                if (item.attachedFile) {
+                    orderFormData.append('anexosCliente', item.attachedFile, item.attachedFile.name);
+                }
+            });
+
+            // 2. Chamar a API para criar o pedido no banco
+            const pedidoResponse = await api.post('/pedidos', orderFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            
+            const novoPedido = pedidoResponse.data.pedido;
+
+            // 3. Limpar o carrinho no frontend
+            clearCart();
+
+            // 4. Chamar a API para criar a preferência de pagamento no Mercado Pago
+            const checkoutResponse = await api.post('/pagamentos/criar-checkout', {
+                pedidoId: novoPedido.id
+            });
+            
+            const { checkoutUrl } = checkoutResponse.data;
+
+            // 5. Redirecionar o usuário para a URL de pagamento externa
+            window.location.href = checkoutUrl;
+
+        } catch (err) {
+            console.error("Erro ao finalizar a compra:", err.response?.data || err.message);
+            alert(err.response?.data?.message || 'Ocorreu um erro ao processar seu pedido. Por favor, tente novamente.');
+            setLoading(false); // Libera o botão para nova tentativa
+        }
     };
     
-    // 5. Função para fechar o modal quando a autenticação for bem-sucedida
     const handleAuthSuccess = () => {
         setShowAuthModal(false);
+        // Atualiza os dados do cliente com as informações do usuário logado
+        if (user) {
+             setClientData(prev => ({ ...prev, nome: user.nome || '', email: user.email || '' }));
+        }
     };
     
-    if (!isClient) {
+    if (!isClient || authLoading) {
         return <PageLoader />; 
     }
     
+    const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
+    const frete = 0; // Será calculado no backend se necessário
+    const total = subtotal + frete;
+
     return (
         <>
-            {/* 6. Renderização condicional do modal */}
             {showAuthModal && <AuthModal onAuthSuccess={handleAuthSuccess} />}
-
             <Header />
             <main className={styles.pageWrapper}>
                 <div className={styles.container}>
@@ -137,6 +183,17 @@ export default function CheckoutPage() {
                     ) : (
                         <form onSubmit={handleFinalizarCompra} className={styles.checkoutGrid}>
                             <div className={styles.mainContent}>
+                                <div className={styles.detailsBox}>
+                                    <h2>Dados de Cobrança</h2>
+                                    <div className={styles.formRow}>
+                                        <div className={styles.formGroup}><label>Nome*</label><input type="text" name="nome" value={clientData.nome} onChange={handleChange} required /></div>
+                                        <div className={styles.formGroup}><label>Sobrenome*</label><input type="text" name="sobrenome" value={clientData.sobrenome} onChange={handleChange} required /></div>
+                                    </div>
+                                    <div className={styles.formGroup}><label>CPF*</label><input type="text" name="cpf" value={clientData.cpf} onChange={handleChange} required placeholder="000.000.000-00"/></div>
+                                    <div className={styles.formGroup}><label>E-mail*</label><input type="email" name="email" value={clientData.email} onChange={handleChange} required placeholder="seuemail@dominio.com"/></div>
+                                    <div className={styles.formGroup}><label>Telefone*</label><input type="tel" name="telefone" value={clientData.telefone} onChange={handleChange} required placeholder="(00) 00000-0000"/></div>
+                                </div>
+                                
                                 <div className={`${styles.detailsBox} ${styles.paymentBox}`}>
                                     <h2>Pagamento</h2>
                                     <div className={styles.paymentTabs}>
@@ -145,24 +202,7 @@ export default function CheckoutPage() {
                                         <button type="button" onClick={() => setActivePayment('pix')} className={`${styles.paymentTab} ${activePayment === 'pix' ? styles.activeTab : ''}`}><PixIcon /> PIX</button>
                                     </div>
                                     <div className={styles.paymentContent}>
-                                         {activePayment === 'card' && (
-                                            <div className={styles.creditCardForm}>
-                                                <div className={styles.formGroup}><label>Número do cartão</label><input type="text" placeholder="0000 0000 0000 0000" required/></div>
-                                                <div className={styles.creditCardGrid}>
-                                                    <div className={styles.formGroup}><label>Validade (MM/AA)</label><input type="text" placeholder="MM/AA" required/></div>
-                                                    <div className={styles.formGroup}><label>Código (CVV)</label><input type="text" placeholder="123" required/></div>
-                                                </div>
-                                                <div className={styles.formGroup}><label>Parcelas</label>
-                                                    <select>
-                                                        <option>1x de R$ {total.toFixed(2).replace('.',',')}</option>
-                                                        <option>2x de R$ {(total / 2).toFixed(2).replace('.',',')}</option>
-                                                        <option>3x de R$ {(total / 3).toFixed(2).replace('.',',')}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {activePayment === 'boleto' && <p>Ao finalizar a compra, seu boleto será gerado com vencimento para o próximo dia útil.</p>}
-                                        {activePayment === 'pix' && <p>Ao finalizar a compra, um QR Code será gerado para pagamento. A confirmação é instantânea.</p>}
+                                         <p>Você será redirecionado para um ambiente seguro para concluir o pagamento com a opção selecionada.</p>
                                     </div>
                                 </div>
                             </div>
@@ -173,9 +213,9 @@ export default function CheckoutPage() {
                                 ))}
                                 <div className={styles.summaryTotalBox}>
                                     <div className={styles.summaryRow}><span>Subtotal</span><span>R$ {subtotal.toFixed(2).replace('.', ',')}</span></div>
-                                    <div className={styles.summaryRow}><span>Frete</span><span>R$ {frete.toFixed(2).replace('.', ',')}</span></div>
+                                    <div className={styles.summaryRow}><span>Frete</span><span>A calcular</span></div>
                                     <div className={`${styles.summaryRow} ${styles.summaryTotal}`}><span>Total</span><span>R$ {total.toFixed(2).replace('.', ',')}</span></div>
-                                    <button type="submit" disabled={loading} className={styles.checkoutButton}>{loading ? 'Processando...' : 'Finalizar Pedido'}</button>
+                                    <button type="submit" disabled={loading || !isAuthenticated} className={styles.checkoutButton}>{loading ? 'Processando...' : 'Ir para Pagamento'}</button>
                                 </div>
                             </aside>
                         </form>

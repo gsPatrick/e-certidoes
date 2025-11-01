@@ -37,7 +37,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 2rem;
-    overflow: hidden; /* Garante que o footer se ajuste aos cantos */
+    overflow: hidden;
 }
 
 .cardTitle {
@@ -62,7 +62,6 @@
     margin-bottom: 0;
 }
 
-
 .itemNameWrapper {
     padding-bottom: 1.5rem;
     margin-bottom: 1.5rem;
@@ -74,189 +73,98 @@
     padding-bottom: 0;
 }
 
-.itemName {
+/* --- ESTRUTURA ATUALIZADA PARA A LISTA DE DADOS --- */
+.section {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px dashed #ced4da;
+}
+.section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.sectionTitle {
     font-size: 1.1rem;
-    font-weight: bold;
-    color: #2c3e50;
+    font-weight: 600;
+    color: #3c4f41;
+    margin-top: 0;
     margin-bottom: 1rem;
 }
 
+.itemName {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
 
 .formDataList {
-    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 0.95rem;
 }
+
 .formDataItem {
-    padding: 0.25rem 0;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f3f5;
 }
-.formDataList dt {
-    font-weight: bold;
+
+.formDataItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.formDataItem dt {
+    font-weight: 500;
     color: #7f8c8d;
-    margin-top: 0.75rem;
+    padding-right: 1rem;
 }
-.formDataList dd {
+
+.formDataItem dd {
     margin-left: 0;
-    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #34495e;
+    text-align: right;
     word-break: break-word;
 }
+/* --- FIM DA ATUALIZAÇÃO --- */
 
 /* Coluna de Ações */
-.formGroup {
-    margin-bottom: 1.5rem;
-}
-.formGroup label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #34495e;
-}
-.input, .select, .textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #bdc3c7;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-family: inherit;
-    background-color: #fff;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-.input:focus, .select:focus, .textarea:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
-
-.fileList {
-    margin-top: 0.75rem;
-    font-size: 0.9rem;
-    background-color: #f8f9fa;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-}
+.formGroup { margin-bottom: 1.5rem; }
+.formGroup label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #34495e; }
+.input, .select, .textarea { width: 100%; padding: 0.75rem; border: 1px solid #bdc3c7; border-radius: 6px; font-size: 1rem; font-family: inherit; background-color: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); }
+.fileList { margin-top: 0.75rem; font-size: 0.9rem; background-color: #f8f9fa; padding: 0.5rem 1rem; border-radius: 4px; }
 .fileList p { font-weight: bold; margin-bottom: 0.25rem; }
 .fileList ul { padding-left: 1.25rem; margin: 0; }
-
-.cardFooter {
-    padding: 1rem 1.5rem;
-    background-color: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-    text-align: right;
-}
-
-.saveButton {
-    background-color: #27ae60;
-    color: #fff;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.saveButton:hover {
-    background-color: #2ecc71;
-}
-.saveButton:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
-}
-
-.fileDownloadList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.fileDownloadList li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #ecf0f1;
-}
-
-.fileDownloadList li:last-child {
-    border-bottom: none;
-}
-
-.downloadLink {
-    background-color: #ecf0f1;
-    color: #34495e;
-    text-decoration: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.downloadLink:hover {
-    background-color: #bdc3c7;
-}
-
-.dangerZone {
-    background-color: #fdf2f2;
-    border-top: 1px solid #e74c3c;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.refundButton {
-    background-color: #e74c3c;
-    color: #fff;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.refundButton:hover {
-    background-color: #c0392b;
-}
-
-.refundButton:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
-}
-
-/* --- ESTILOS PARA O CARD DE STATUS DO PAGAMENTO --- */
-.paymentStatusCard {
-    margin-bottom: 2rem;
-    background-color: #f8f9fa;
-}
-
-.paymentStatusContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.95rem;
-    color: #34495e;
-}
-
-.paymentBadge {
-    padding: 0.4rem 1rem;
-    border-radius: 1rem;
-    font-weight: bold;
-    color: #fff;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-}
-
+.cardFooter { padding: 1rem 1.5rem; background-color: #f8f9fa; border-top: 1px solid #e9ecef; text-align: right; }
+.saveButton { background-color: #27ae60; color: #fff; border: none; padding: 0.75rem 2rem; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+.saveButton:hover { background-color: #2ecc71; }
+.saveButton:disabled { background-color: #95a5a6; cursor: not-allowed; }
+.fileDownloadList { list-style: none; padding: 0; margin: 0; }
+.fileDownloadList li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #ecf0f1; }
+.fileDownloadList li:last-child { border-bottom: none; }
+.downloadLink { background-color: #ecf0f1; color: #34495e; text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500; transition: background-color 0.2s; }
+.downloadLink:hover { background-color: #bdc3c7; }
+.dangerZone { background-color: #fdf2f2; border-top: 1px solid #e74c3c; display: flex; justify-content: flex-end; }
+.refundButton { background-color: #e74c3c; color: #fff; border: none; padding: 0.75rem 2rem; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+.refundButton:hover { background-color: #c0392b; }
+.refundButton:disabled { background-color: #95a5a6; cursor: not-allowed; }
+.paymentStatusCard { margin-bottom: 2rem; background-color: #f8f9fa; }
+.paymentStatusContent { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; color: #34495e; }
+.paymentBadge { padding: 0.4rem 1rem; border-radius: 1rem; font-weight: bold; color: #fff; text-transform: uppercase; font-size: 0.85rem; }
 .statusAprovado { background-color: #2ecc71; }
 .statusPendentePg { background-color: #f1c40f; color: #2c3e50; }
 .statusRecusado { background-color: #e74c3c; }
 .statusEstornado { background-color: #95a5a6; }
 
-
-/* --- Responsividade --- */
 @media (max-width: 992px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-    .adminActions {
-        grid-row: 1; /* Ações primeiro em telas menores */
-    }
+    .grid { grid-template-columns: 1fr; }
+    .adminActions { grid-row: 1; }
 }

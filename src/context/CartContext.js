@@ -20,7 +20,6 @@ export const CartProvider = ({ children }) => {
     }
   });
 
-  // O estado do modal ainda existe, mas não será mais ativado pelo fluxo principal.
   const [modalItem, setModalItem] = useState(null);
 
   useEffect(() => {
@@ -32,17 +31,22 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   const addToCart = (product) => {
-    const newItem = { ...product, cartId: Date.now() }; // O preço agora vem do product
+    // Adiciona um ID único para cada item no carrinho, útil para remoção
+    const newItem = { ...product, cartId: Date.now() }; 
     setCartItems(prevItems => [...prevItems, newItem]);
     
-    // =======================================================
-    // === AQUI ESTÁ A CORREÇÃO: REMOVA OU COMENTE ESTA LINHA ===
-    // =======================================================
-    // setModalItem(newItem); // Esta linha causava a exibição do modal.
+    // A lógica do modal foi removida para redirecionar direto para o carrinho/checkout
+    // setModalItem(newItem); 
   };
 
   const removeFromCart = (cartId) => {
     setCartItems(prevItems => prevItems.filter(item => item.cartId !== cartId));
+  };
+
+  // --- FUNÇÃO ADICIONADA ---
+  // Limpa todos os itens do carrinho. Essencial após a criação do pedido.
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   const closeModal = () => {
@@ -53,13 +57,14 @@ export const CartProvider = ({ children }) => {
     cartItems,
     addToCart,
     removeFromCart,
+    clearCart, // <-- Exportando a nova função
     itemCount: cartItems.length,
   };
 
   return (
     <CartContext.Provider value={value}>
       {children}
-      {/* O componente do modal continua aqui, caso você queira usá-lo em outro lugar no futuro */}
+      {/* O componente do modal continua aqui, caso queira usá-lo em outro lugar no futuro */}
       {modalItem && <AddToCartModal item={modalItem} onClose={closeModal} />}
     </CartContext.Provider>
   );

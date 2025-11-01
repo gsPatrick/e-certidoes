@@ -26,15 +26,9 @@ const formatLabel = (key) => {
     if (key === 'assunto_contato') return 'Assunto';
     if (key === 'mensagem_contato') return 'Mensagem';
 
-
     return key
         .replace(/_/g, ' ')
         .replace(/\b\w/g, char => char.toUpperCase());
-};
-
-const toSlug = (str) => {
-    if (!str) return '';
-    return str.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 };
 
 // Componente para renderizar uma linha de detalhe, ocultando valores vazios
@@ -54,29 +48,24 @@ const DetailRow = ({ label, value }) => {
 
 // Componente para renderizar APENAS os detalhes específicos da certidão
 const DynamicProductDetails = ({ formData, item }) => {
-    const slug = item?.slug;
-
     // Lista de chaves que são exibidas em outras seções e devem ser ignoradas aqui
     const excludeKeys = new Set([
         'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
-        'requerente_cep', 'requerente_endereco', 'requerente_numero', 'requerente_complemento', 'requerente_bairro', 'requerente_cidade', 'requerente_estado',
         'formato', 'cep', 'bairro', 'endereco', 'numero', 'complemento',
         'entrega_internacional_correios', 'entrega_internacional_dhl', 'pais', 'pais_nome', 'estado_inter', 'cidade_inter', 'cep_inter', 'endereco_inter',
         'apostilamento_digital', 'apostilamento_fisico', 'apostilamento', 'inteiro_teor', 'aviso_recebimento',
         'tipo_inteiro_teor', 'inteiro_teor_nacionalidade', 'inteiro_teor_estado_civil', 'inteiro_teor_profissao', 'inteiro_teor_parentesco',
         'tipo_pesquisa', 'tipo_pessoa', 'aceite_lgpd', 'ciente', 'localizar_pra_mim', 'todos_cartorios_protesto',
-        'tipo_certidao', // Removido para não ser exibido duas vezes
+        'tipo_certidao', 
         'estado_cartorio', 'cidade_cartorio', 'estado_entrega', 'cidade_entrega', 'estado_matricula', 'cidade_matricula',
+        'sedex' // Adicionado para ser tratado na seção de adicionais
     ]);
     
-    // ===================================
-    // === AQUI ESTÁ A CORREÇÃO LÓGICA ===
-    // ===================================
     const specificDetails = Object.entries(formData)
         .filter(([key, value]) => {
             if (value === '' || value === null || value === false || value === undefined) return false;
             // Regra específica: só mostrar 'tempo_pesquisa' se for Certidão de Protesto
-            if (key === 'tempo_pesquisa' && slug !== 'certidao-de-protesto') return false;
+            if (key === 'tempo_pesquisa' && item.slug !== 'certidao-de-protesto') return false;
             if (excludeKeys.has(key)) return false;
             return true;
         });
@@ -87,7 +76,6 @@ const DynamicProductDetails = ({ formData, item }) => {
 
     return (
         <>
-            {/* O "Tipo de Certidão" agora é dinâmico e não mais um campo do formulário */}
             <DetailRow 
                 label={'Tipo de Certidão'}
                 value={item.name}
@@ -119,10 +107,10 @@ export default function ConfirmationModal({ orderDetails, onClose, onConfirm }) 
   const CUSTO_APOSTILAMENTO = getTaxa('apostilamento') || 0;
   const CUSTO_AR = getTaxa('aviso_recebimento') || 0;
   const ACRESCIMO_CONDOMINIO = getTaxa('acrescimo_condominio') || 0;
+  const CUSTO_SEDEX = getTaxa('sedex') || 0;
   
   const CUSTO_TEOR_TRANSCRICAO = 30.00;
   const CUSTO_TEOR_REPROGRAFICA = 40.00;
-  const CUSTO_SEDEX = 68.00;
 
   let custoInteiroTeor = 0;
   if (formData.inteiro_teor) {

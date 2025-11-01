@@ -9,7 +9,7 @@ import AdminLayout from '../../AdminLayout';
 import PageLoader from '@/components/PageLoader/PageLoader';
 import styles from './GerenciarPedido.module.css';
 
-// Mapeamento para os status do PEDIDO, dando controle total ao admin
+// Mapeamento para os status do PEDIDO
 const statusOptions = {
     'Aguardando Pagamento': 'Aguardando Pagamento',
     'Processando': 'Processando',
@@ -18,7 +18,7 @@ const statusOptions = {
     'Cancelado': 'Cancelado'
 };
 
-// Mapeamento para os status do PAGAMENTO (para exibição)
+// Mapeamento para os status do PAGAMENTO
 const paymentStatusMap = {
     'aprovado': { text: 'Aprovado', className: styles.statusAprovado },
     'pendente': { text: 'Pendente', className: styles.statusPendentePg },
@@ -26,18 +26,83 @@ const paymentStatusMap = {
     'estornado': { text: 'Estornado', className: styles.statusEstornado }
 };
 
+const formatLabel = (key) => key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+// Componente para renderizar os detalhes do formulário de forma estruturada e inteligente
+const DetalhesDoFormulario = ({ item }) => {
+    const { dadosFormulario: formData, nomeProduto, slugProduto } = item;
+    if (!formData) return null;
+
+    const sectionKeys = {
+        localizacao: ['estado_cartorio', 'cidade_cartorio', 'cartorio', 'cartorio_manual', 'estado_matricula', 'cidade_matricula'],
+        servicos: ['sedex', 'apostilamento', 'apostilamento_digital', 'apostilamento_fisico', 'aviso_recebimento', 'inteiro_teor', 'tipo_inteiro_teor', 'localizar_pra_mim'],
+        entrega: ['formato', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade_entrega', 'estado_entrega'],
+    };
+
+    const allKnownKeys = new Set([].concat(...Object.values(sectionKeys)));
+    
+    const detalhesCertidao = Object.entries(formData).filter(([key, value]) => {
+        const internalKeys = new Set(['tipo_pesquisa', 'tipo_pessoa', 'aceite_lgpd', 'ciente', 'tipo_certidao']);
+        if (!value || allKnownKeys.has(key) || internalKeys.has(key)) return false;
+        if (key === 'tempo_pesquisa' && !slugProduto.includes('protesto')) return false;
+        return true;
+    });
+
+    const renderSection = (title, keys) => {
+        const content = keys.map(key => {
+            const value = formData[key];
+            if (!value && typeof value !== 'boolean') return null;
+            return (
+                <div key={key} className={styles.formDataItem}>
+                    <dt>{formatLabel(key)}</dt>
+                    <dd>{typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : String(value)}</dd>
+                </div>
+            );
+        }).filter(Boolean);
+
+        if (content.length === 0) return null;
+        
+        return ( 
+            <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>{title}</h3>
+                <dl className={styles.formDataList}>{content}</dl>
+            </section>
+        );
+    };
+
+    return (
+        <>
+            <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>Detalhes da Certidão</h3>
+                <dl className={styles.formDataList}>
+                    <div className={styles.formDataItem}><dt>Tipo de Certidão</dt><dd>{nomeProduto}</dd></div>
+                    {detalhesCertidao.map(([key, value]) => (
+                        <div key={key} className={styles.formDataItem}>
+                            <dt>{formatLabel(key)}</dt>
+                            <dd>{String(value)}</dd>
+                        </div>
+                    ))}
+                </dl>
+            </section>
+            
+            {renderSection('Localização do Cartório', sectionKeys.localizacao)}
+            {renderSection('Opções e Entrega', sectionKeys.entrega)}
+            {renderSection('Serviços Adicionais', sectionKeys.servicos)}
+        </>
+    );
+};
+
+
 export default function GerenciarPedidoPage() {
     const [pedido, setPedido] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     
-    // Estados para os campos do formulário
     const [status, setStatus] = useState('');
     const [codigoRastreio, setCodigoRastreio] = useState('');
     const [observacoes, setObservacoes] = useState('');
     const [arquivo, setArquivo] = useState(null);
 
-    // Estados para controle de ações e feedback
     const [isSaving, setIsSaving] = useState(false);
     const [isRefunding, setIsRefunding] = useState(false);
 
@@ -113,8 +178,6 @@ export default function GerenciarPedidoPage() {
         }
     };
     
-    const formatLabel = (key) => key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
     if (loading) return <AdminLayout><PageLoader /></AdminLayout>;
     if (error) return <AdminLayout><div>{error}</div></AdminLayout>;
     if (!pedido) return null;
@@ -159,15 +222,7 @@ export default function GerenciarPedidoPage() {
                         <div className={styles.cardContent}>
                             {pedido.itens.map((item, index) => (
                                 <div key={index} className={styles.itemNameWrapper}>
-                                    <h3 className={styles.itemName}>{item.nomeProduto}</h3>
-                                    <dl className={styles.formDataList}>
-                                        {Object.entries(item.dadosFormulario).map(([key, value]) => (value && (
-                                            <div key={key} className={styles.formDataItem}>
-                                                <dt>{formatLabel(key)}</dt>
-                                                <dd>{String(value)}</dd>
-                                            </div>
-                                        )))}
-                                    </dl>
+                                    <DetalhesDoFormulario item={item} />
                                 </div>
                             ))}
                         </div>

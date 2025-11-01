@@ -14,7 +14,7 @@ const CloseIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 );
 
-export default function StepCartorio({ formData, handleChange, productData }) {
+export default function StepCartorio({ formData, handleChange, productData, onFileSelect, onFileRemove }) {
   const [estados, setEstados] = useState([]);
   const [cidades, setCidades] = useState([]);
   const [cartorios, setCartorios] = useState([]);
@@ -30,25 +30,25 @@ export default function StepCartorio({ formData, handleChange, productData }) {
   }, []);
 
   useEffect(() => {
-    if (!formData.estado_cartorio) { // Usar novo nome
+    if (!formData.estado_cartorio) {
       setCidades([]);
       setCartorios([]);
-      handleChange({ target: { name: 'cidade_cartorio', value: '' } }); // Usar novo nome
+      handleChange({ target: { name: 'cidade_cartorio', value: '' } });
       return;
     }
     setLoading(prev => ({ ...prev, cidades: true }));
-    api.get(`/cartorios/estados/${formData.estado_cartorio}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false }))); // Usar novo nome
-  }, [formData.estado_cartorio, handleChange]); // Usar novo nome
+    api.get(`/cartorios/estados/${formData.estado_cartorio}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false })));
+  }, [formData.estado_cartorio, handleChange]);
 
   useEffect(() => {
-    if (!formData.estado_cartorio || !formData.cidade_cartorio) { // Usar novos nomes
+    if (!formData.estado_cartorio || !formData.cidade_cartorio) {
       setCartorios([]);
       handleChange({ target: { name: 'cartorio', value: '' } });
       return;
     }
     const atribuicaoId = productData?.atribuicaoId;
     setLoading(prev => ({ ...prev, cartorios: true }));
-    const params = new URLSearchParams({ estado: formData.estado_cartorio, cidade: formData.cidade_cartorio }); // Usar novos nomes
+    const params = new URLSearchParams({ estado: formData.estado_cartorio, cidade: formData.cidade_cartorio });
     if (atribuicaoId) params.append('atribuicaoId', String(atribuicaoId));
     
     api.get(`/cartorios?${params.toString()}`)
@@ -65,16 +65,16 @@ export default function StepCartorio({ formData, handleChange, productData }) {
       })
       .finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
 
-  }, [formData.cidade_cartorio, formData.estado_cartorio, productData?.atribuicaoId, handleChange]); // Usar novos nomes
+  }, [formData.cidade_cartorio, formData.estado_cartorio, productData?.atribuicaoId, handleChange]);
 
   const handleDropdownChange = (name, value) => {
     if (formData[name] === value) return;
     handleChange({ target: { name, value } });
-    if (name === 'estado_cartorio') { // Usar novo nome
-      handleChange({ target: { name: 'cidade_cartorio', value: '' } }); // Usar novo nome
+    if (name === 'estado_cartorio') {
+      handleChange({ target: { name: 'cidade_cartorio', value: '' } });
       handleChange({ target: { name: 'cartorio', value: '' } });
     }
-    if (name === 'cidade_cartorio') { // Usar novo nome
+    if (name === 'cidade_cartorio') {
       handleChange({ target: { name: 'cartorio', value: '' } });
     }
   };
@@ -93,7 +93,7 @@ export default function StepCartorio({ formData, handleChange, productData }) {
     const { checked } = e.target;
     handleChange(e);
     if (checked) {
-      handleChange({ target: { name: 'cartorio', value: '' } }); // Limpa o cartório selecionado se "Não sei" for marcado
+      handleChange({ target: { name: 'cartorio', value: '' } });
     }
   };
 
@@ -106,14 +106,13 @@ export default function StepCartorio({ formData, handleChange, productData }) {
         return;
       }
       setSelectedFile(file);
-      handleChange({ target: { name: 'anexo_busca_nome', value: file.name } });
-      // Aqui você adicionaria a lógica para fazer o upload do arquivo para o seu backend
+      if (onFileSelect) onFileSelect(file);
     }
   };
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    handleChange({ target: { name: 'anexo_busca_nome', value: '' } });
+    if (onFileRemove) onFileRemove();
     document.getElementById('file-upload').value = '';
   };
   
@@ -131,13 +130,13 @@ export default function StepCartorio({ formData, handleChange, productData }) {
       )}
 
       <div className={styles.formGroup}>
-        <label htmlFor="estado_cartorio">Estado do Cartório *</label> {/* NOVO NOME */}
-        <SearchableDropdown options={estados} value={formData.estado_cartorio || ''} onChange={(value) => handleDropdownChange('estado_cartorio', value)} placeholder="Digite ou selecione o estado" loading={loading.estados} /> {/* NOVO NOME */}
+        <label htmlFor="estado_cartorio">Estado do Cartório *</label>
+        <SearchableDropdown options={estados} value={formData.estado_cartorio || ''} onChange={(value) => handleDropdownChange('estado_cartorio', value)} placeholder="Digite ou selecione o estado" loading={loading.estados} />
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="cidade_cartorio">Cidade do Cartório *</label> {/* NOVO NOME */}
-        <SearchableDropdown options={cidades} value={formData.cidade_cartorio || ''} onChange={(value) => handleDropdownChange('cidade_cartorio', value)} placeholder="Digite ou selecione a cidade" disabled={!formData.estado_cartorio} loading={loading.cidades} /> {/* NOVO NOME */}
+        <label htmlFor="cidade_cartorio">Cidade do Cartório *</label>
+        <SearchableDropdown options={cidades} value={formData.cidade_cartorio || ''} onChange={(value) => handleDropdownChange('cidade_cartorio', value)} placeholder="Digite ou selecione a cidade" disabled={!formData.estado_cartorio} loading={loading.cidades} />
       </div>
 
       <div className={styles.formGroup}>
@@ -147,7 +146,7 @@ export default function StepCartorio({ formData, handleChange, productData }) {
           value={formData.cartorio || ''}
           onChange={(value) => handleDropdownChange('cartorio', value)}
           placeholder={loading.cartorios ? 'Buscando...' : 'Selecione o Cartório'}
-          disabled={!formData.cidade_cartorio || loading.cartorios || showManualCartorio || !!formData.nao_sei_cartorio} // NOVO NOME
+          disabled={!formData.cidade_cartorio || loading.cartorios || showManualCartorio || !!formData.nao_sei_cartorio}
         />
       </div>
       
