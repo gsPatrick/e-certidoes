@@ -11,8 +11,11 @@ const maskCPF = (value) => value.replace(/\D/g, '').slice(0, 11).replace(/(\d{3}
 const maskCNPJ = (value) => value.replace(/\D/g, '').slice(0, 14).replace(/(\d{2})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})(\d)/, '$1-$2');
 
 export default function StepDadosCertidaoGov({ formData, handleChange, error, productData }) {
-    const { category, govFormFields = {} } = productData;
+    const { category, govFormFields = {}, name } = productData;
     
+    // Identifica se é a certidão específica do TRF
+    const isTRF = name && name.includes('(TRF)');
+
     const [activeTab, setActiveTab] = useState(() => {
         if (govFormFields.pessoa && govFormFields.pessoa.length > 0) return formData.tipo_pessoa || 'Pessoa';
         return 'Empresa';
@@ -22,14 +25,16 @@ export default function StepDadosCertidaoGov({ formData, handleChange, error, pr
     const [municipios, setMunicipios] = useState([]);
     const [loading, setLoading] = useState({ estados: false, municipios: false });
 
-    // Lógica para carregar estados e municípios se necessário
+    // Lógica para carregar estados se necessário
     useEffect(() => {
-        if (govFormFields.needsState || govFormFields.needsCity) {
+        // Carrega estados para Estaduais e Municipais, mas não para o TRF
+        if ((govFormFields.needsState || govFormFields.needsCity) && !isTRF) {
             setLoading(prev => ({ ...prev, estados: true }));
             api.get('/cartorios/estados').then(res => setEstados(res.data)).finally(() => setLoading(prev => ({ ...prev, estados: false })));
         }
-    }, [govFormFields]);
+    }, [govFormFields, isTRF]);
 
+    // Lógica para carregar municípios se necessário
     useEffect(() => {
         if (govFormFields.needsCity && formData.estado) {
             setLoading(prev => ({ ...prev, municipios: true }));
@@ -97,13 +102,31 @@ export default function StepDadosCertidaoGov({ formData, handleChange, error, pr
                 Preencha os dados abaixo para a emissão da {productData.name}.
             </p>
 
-            {/* Campos de Localização (Condicional) */}
-            {govFormFields.needsState && !govFormFields.needsCity && (
+            {/* Renderiza o SELECT de Região APENAS para o TRF */}
+            {isTRF && (
+                <div className={styles.formGroup}>
+                    <label htmlFor="regiao_tribunal">Região do Tribunal Federal *</label>
+                    <select id="regiao_tribunal" name="regiao_tribunal" value={formData.regiao_tribunal || ''} onChange={handleChange} required>
+                        <option value="">Selecione a Região</option>
+                        <option value="1ª Região">1ª Região</option>
+                        <option value="2ª Região">2ª Região</option>
+                        <option value="3ª Região">3ª Região</option>
+                        <option value="4ª Região">4ª Região</option>
+                        <option value="5ª Região">5ª Região</option>
+                        <option value="6ª Região">6ª Região</option>
+                    </select>
+                </div>
+            )}
+
+            {/* Renderiza o campo de Estado para Estaduais (que NÃO são TRF) */}
+            {govFormFields.needsState && !isTRF && (
                 <div className={styles.formGroup}>
                     <label htmlFor="estado">Estado *</label>
                     <SearchableDropdown options={estados} value={formData.estado || ''} onChange={(value) => handleDropdownChange('estado', value)} placeholder="Selecione o Estado" loading={loading.estados} />
                 </div>
             )}
+            
+            {/* Renderiza os campos de Estado e Município para Municipais */}
             {govFormFields.needsState && govFormFields.needsCity && (
                 <>
                     <div className={styles.formGroup}>
@@ -118,12 +141,16 @@ export default function StepDadosCertidaoGov({ formData, handleChange, error, pr
             )}
 
             {/* Abas Pessoa/Empresa */}
-            {fieldsPessoa.length > 0 && fieldsEmpresa.length > 0 ? (
+            {(fieldsPessoa.length > 0 || fieldsEmpresa.length > 0) && (
                 <div className={styles.tabContainer}>
-                    <button type="button" onClick={() => handleTabChange('Pessoa')} className={activeTab === 'Pessoa' ? styles.activeTab : styles.tabButton}>Pessoa</button>
-                    <button type="button" onClick={() => handleTabChange('Empresa')} className={activeTab === 'Empresa' ? styles.activeTab : styles.tabButton}>Empresa</button>
+                    {fieldsPessoa.length > 0 && (
+                        <button type="button" onClick={() => handleTabChange('Pessoa')} className={activeTab === 'Pessoa' ? styles.activeTab : styles.tabButton}>Pessoa</button>
+                    )}
+                    {fieldsEmpresa.length > 0 && (
+                        <button type="button" onClick={() => handleTabChange('Empresa')} className={activeTab === 'Empresa' ? styles.activeTab : styles.tabButton}>Empresa</button>
+                    )}
                 </div>
-            ) : null}
+            )}
 
             <div className={styles.formContent}>
                 {activeTab === 'Pessoa' && fieldsPessoa.map(renderField)}

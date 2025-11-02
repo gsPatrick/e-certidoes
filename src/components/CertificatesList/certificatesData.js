@@ -345,15 +345,14 @@ export const allCertificates = [
     // Federais
     { id: 1, name: 'Certidão de Distribuição da Justiça Federal (TRF)', esfera: 'Federal', 
       govFormFields: { 
-        needsState: true, 
+        // ATENÇÃO: A propriedade needsState foi removida e o campo regiao_tribunal também,
+        // pois agora são controlados diretamente pelo componente StepDadosCertidaoGov.
         pessoa: [
-            { name: 'regiao_tribunal', label: 'Região do Tribunal Federal', type: 'select', options: ['1ª Região', '2ª Região', '3ª Região', '4ª Região', '5ª Região', '6ª Região'] },
             { name: 'nome_completo', label: 'Nome Completo' }, 
             { name: 'cpf', label: 'CPF' },
             { name: 'tipo_certidao', label: 'Tipo de Certidão', type: 'select', options: ['Cível', 'Criminal', 'Eleitoral'] }
         ], 
         empresa: [
-            { name: 'regiao_tribunal', label: 'Região do Tribunal Federal', type: 'select', options: ['1ª Região', '2ª Região', '3ª Região', '4ª Região', '5ª Região', '6ª Região'] },
             { name: 'razao_social', label: 'Razão Social' }, 
             { name: 'cnpj', label: 'CNPJ' },
             { name: 'tipo_certidao', label: 'Tipo de Certidão', type: 'select', options: ['Cível', 'Criminal', 'Eleitoral'] }
