@@ -29,20 +29,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
 
-      // ✅ Lê o parâmetro apenas no cliente no momento do login
-      if (typeof window !== 'undefined') {
-        const params = new URLSearchParams(window.location.search);
-        const redirectUrl = params.get('redirect');
-
-        if (redirectUrl) {
-          router.push(redirectUrl);
-        } else if (data.user.role === 'admin') {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/');
-        }
-      }
-
+      // ✅ Redirecionamento removido
       return data;
     } catch (error) {
       console.error('Erro no login:', error.response?.data?.message);
@@ -53,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const { data } = await api.post('/auth/register', userData);
-      // Após o registro, chama o login para autenticar e lidar com o redirecionamento
+      // Após o registro, chama o login para autenticar
       await login(userData.email, userData.password);
       return data;
     } catch (error) {
@@ -66,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
-    router.push('/minha-conta');
+    // ✅ Redirecionamento removido
   };
 
   const value = {
