@@ -41,7 +41,6 @@ export default function StepMunicipalDados({ formData, handleChange, error, prod
     const fetchMunicipios = async () => {
       setLoading(prev => ({ ...prev, municipios: true }));
       try {
-        // Usando a API de cartórios para cidades
         const { data } = await api.get(`/cartorios/estados/${formData.estado}/cidades`);
         setMunicipios(data);
       } catch (error) {
@@ -66,7 +65,6 @@ export default function StepMunicipalDados({ formData, handleChange, error, prod
     }
   };
 
-  // Handler para máscara de CPF/CNPJ
   const handleCpfCnpjChange = (e) => {
     const value = e.target.value;
     const name = activeTab === 'Pessoa' ? 'cpf' : 'cnpj';
@@ -82,13 +80,14 @@ export default function StepMunicipalDados({ formData, handleChange, error, prod
         A {productData.name} é um documento que permite que você solicite a sua Certidão Negativa de Débitos Municipal, e que ela seja entregue no conforto da sua casa ou escritório.
       </p>
 
+      {/* --- CAMPO ESTADO CORRIGIDO (APENAS UM) --- */}
       <div className={styles.formGroup}>
-        <label htmlFor="estado">Estado</label>
+        <label htmlFor="estado">Estado *</label>
         <SearchableDropdown options={estados} value={formData.estado || ''} onChange={(value) => handleDropdownChange('estado', value)} placeholder="Selecione o Estado" loading={loading.estados} />
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="municipio">Município</label>
+        <label htmlFor="municipio">Município *</label>
         <SearchableDropdown options={municipios} value={formData.municipio || ''} onChange={(value) => handleDropdownChange('municipio', value)} placeholder="Selecione o Município" loading={loading.municipios} disabled={!formData.estado || loading.municipios} />
       </div>
 
