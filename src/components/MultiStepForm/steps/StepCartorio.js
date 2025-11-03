@@ -184,7 +184,7 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
         <div className={styles.fallbackContainer}>
             <p className={styles.fallbackTitle}>Não localizou o cartório na lista ou não sabe informar?</p>
             <div className={styles.fallbackActions}>
-            <Link href="/certidoes/pesquisa-escrituras-e-procuracoes-por-cpf-cnpj" className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
+            <Link href="/certidoes/pesquisa-previa-de-imoveis-por-cpf-cnpj" className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
             <button type="button" onClick={toggleManualCartorio} className={styles.fallbackButton}>{showManualCartorio ? 'Voltar para a lista' : 'Informe manualmente clicando aqui'}</button>
             </div>
 
