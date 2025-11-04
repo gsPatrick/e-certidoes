@@ -31,23 +31,23 @@ const DetailItem = ({ label, value }) => {
     );
 };
 
-// *** COMPONENTE ATUALIZADO ***
+// *** COMPONENTE ATUALIZADO para exibir os arquivos anexados ***
 const OrderSummaryCard = ({ item, onRemove }) => {
     if (!item || !item.formData) return null;
-    const { formData } = item;
+    // *** CORREÇÃO: Lê 'attachedFiles' (plural) do item do carrinho ***
+    const { formData, attachedFiles } = item;
     
     const excludeKeys = new Set([
         'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa', 'tipo_certidao',
         'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
-        'estado_cartorio', 'cidade_cartorio', 'cartorio_protesto', 'todos_cartorios_protesto' // Exclui para tratar separadamente
+        'estado_cartorio', 'cidade_cartorio', 'cartorio_protesto', 'todos_cartorios_protesto'
     ]);
 
     const allDetails = Object.entries(formData)
         .filter(([key, value]) => {
             if (!value || value === '' || value === false) return false;
             if (key === 'tempo_pesquisa' && item.slug !== 'certidao-de-protesto') return false;
-            if (excludeKeys.has(key)) return false;
-            return true;
+            return !excludeKeys.has(key);
         });
 
     return (
@@ -59,14 +59,23 @@ const OrderSummaryCard = ({ item, onRemove }) => {
                 </button>
             </div>
             <div className={styles.summaryCardBody}>
-                {/* Lógica para exibir os dados de Protesto */}
                 <DetailItem label="Estado" value={formData.estado_cartorio} />
                 <DetailItem label="Cidade" value={formData.cidade_cartorio} />
-                <DetailItem label="Cartório" value={formData.todos_cartorios_protesto ? `Todos os cartórios de ${formData.cidade_cartorio}` : formData.cartorio_protesto} />
+                <DetailItem label="Cartório" value={formData.todos_cartorios_protesto ? `Todos os cartórios de ${formData.cidade_cartorio}` : (formData.cartorio_protesto || formData.cartorio)} />
 
                 {allDetails.map(([key, value]) => (
                     <DetailItem key={key} label={formatLabel(key)} value={value} />
                 ))}
+
+                {/* ADICIONADO: Seção para exibir os arquivos anexados */}
+                {attachedFiles && attachedFiles.length > 0 && (
+                    <div className={styles.summaryAttachments}>
+                        <strong>Anexos:</strong>
+                        <ul>
+                            {attachedFiles.map(file => <li key={file.name}>{file.name}</li>)}
+                        </ul>
+                    </div>
+                )}
             </div>
             <div className={styles.summaryActions}>
                 <span className={styles.summaryPrice}>R$ {item.price.toFixed(2).replace('.', ',')}</span>
@@ -77,7 +86,7 @@ const OrderSummaryCard = ({ item, onRemove }) => {
 
 export default function CheckoutPage() {
     const { cartItems, itemCount, removeFromCart, clearCart } = useCart();
-    const { user, isAuthenticated, loading: authLoading } = useAuth();
+    const { user, isAuthenticated, authLoading } = useAuth();
     const router = useRouter();
     
     const [loading, setLoading] = useState(false);
@@ -103,6 +112,7 @@ export default function CheckoutPage() {
         setClientData(prev => ({ ...prev, [name]: value }));
     };
 
+    // *** CORREÇÃO CRÍTICA AQUI ***
     const handleFinalizarCompra = async (e) => {
         e.preventDefault();
         if (!isAuthenticated) {
@@ -114,25 +124,29 @@ export default function CheckoutPage() {
         try {
             const orderFormData = new FormData();
             
-            const itensParaApi = cartItems.map(item => ({
-                name: item.name,
-                slug: item.slug,
-                price: item.price,
-                formData: item.formData,
-            }));
+            // Prepara os dados dos itens, removendo os objetos de arquivo do JSON
+            const itensParaApi = cartItems.map(item => {
+                const { attachedFiles, ...itemData } = item;
+                return itemData;
+            });
             
             orderFormData.append('itens', JSON.stringify(itensParaApi));
             orderFormData.append('dadosCliente', JSON.stringify(clientData));
 
+            // Itera sobre CADA item do carrinho e, se houver arquivos, itera sobre eles
             cartItems.forEach((item) => {
-                if (item.attachedFile) {
-                    orderFormData.append('anexosCliente', item.attachedFile, item.attachedFile.name);
+                // CORREÇÃO: Verifica o array 'attachedFiles'
+                if (item.attachedFiles && Array.isArray(item.attachedFiles) && item.attachedFiles.length > 0) {
+                    // Itera sobre cada arquivo dentro do array
+                    item.attachedFiles.forEach(file => {
+                        // Anexa CADA arquivo ao FormData. O backend (multer) receberá um array de arquivos.
+                        orderFormData.append('anexosCliente', file, file.name);
+                    });
                 }
             });
 
-            const pedidoResponse = await api.post('/pedidos', orderFormData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            // Envia o pedido usando FormData
+            const pedidoResponse = await api.post('/pedidos', orderFormData);
             
             const novoPedido = pedidoResponse.data.pedido;
 
@@ -165,8 +179,7 @@ export default function CheckoutPage() {
     }
     
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-    const frete = 0;
-    const total = subtotal + frete;
+    const total = subtotal;
 
     return (
         <>
@@ -191,7 +204,7 @@ export default function CheckoutPage() {
                                     <div className={styles.formGroup}><label>Telefone*</label><input type="tel" name="telefone" value={clientData.telefone} onChange={handleChange} required placeholder="(00) 00000-0000"/></div>
                                 </div>
                                 
-                                <div className={`${styles.detailsBox} ${styles.paymentBox}`}>
+                                <div className={styles.detailsBox}>
                                     <h2>Pagamento</h2>
                                     <div className={styles.paymentTabs}>
                                         <button type="button" onClick={() => setActivePayment('card')} className={`${styles.paymentTab} ${activePayment === 'card' ? styles.activeTab : ''}`}><CreditCardIcon /> Cartão de crédito</button>

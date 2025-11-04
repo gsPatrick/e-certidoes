@@ -117,10 +117,26 @@
     color: #343a40;
     font-weight: 500;
     text-align: right;
-    word-break: break-word; /* --- LINHA ADICIONADA PARA CORREÇÃO --- */
+    word-break: break-word;
 }
 
 .priceValue {
     font-weight: 600;
     color: #294B29;
+}
+
+/* --- ADICIONADO PARA RESPONSIVIDADE --- */
+@media (max-width: 576px) {
+    .summaryHeader {
+        padding: 1.25rem; /* Reduz o padding do cabeçalho */
+    }
+    .productTitle {
+        font-size: 1.3rem; /* Reduz a fonte do título */
+    }
+    .priceDisplay {
+        font-size: 1.8rem; /* Reduz a fonte do preço */
+    }
+    .summaryBody {
+        padding: 1rem 1.25rem;
+    }
 }

@@ -2,8 +2,6 @@
 
 .formLayout {
     display: grid;
-    /* ANTES: grid-template-columns: 2fr 1fr; */
-    /* DEPOIS: */
     grid-template-columns: 1fr 380px; /* Define um tamanho fixo e generoso para a sidebar */
     gap: 2.5rem;
     align-items: flex-start;
@@ -220,13 +218,37 @@
     background-color: #3a6b3a;
 }
 
-/* Responsividade */
+/* --- INICIO DAS ALTERAÇÕES PARA RESPONSIVIDADE --- */
 @media (max-width: 992px) {
     .formLayout {
+        /* Transforma o grid em uma única coluna */
         grid-template-columns: 1fr;
     }
+    .mainContent {
+        /* Garante que o formulário venha primeiro */
+        order: 1;
+    }
+    .sidebarContent {
+        /* Garante que a sidebar venha depois */
+        order: 2;
+    }
     .summarySidebar {
+        /* Remove a posição 'sticky' no mobile */
         position: static;
-        margin-top: 2rem;
+        margin-top: 2.5rem;
     }
 }
+
+@media (max-width: 576px) {
+    .formContainer {
+        /* Reduz o padding em telas muito pequenas */
+        padding: 1.5rem;
+    }
+
+    /* Reduz o tamanho dos botões de navegação para caberem melhor */
+    .prevButton, .nextButton, .submitButton {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+/* --- FIM DAS ALTERAÇÕES PARA RESPONSIVIDADE --- */

@@ -14,15 +14,14 @@ const CloseIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 );
 
-// *** PROPS onFileSelect E onFileRemove ADICIONADAS ***
-export default function StepCartorio({ formData, handleChange, productData, onFileSelect, onFileRemove }) {
+// ALTERADO: Props para múltiplos arquivos (attachedFiles, onFileAdd, onFileRemove)
+export default function StepCartorio({ formData, handleChange, productData, attachedFiles, onFileAdd, onFileRemove }) {
   const [estados, setEstados] = useState([]);
   const [cidades, setCidades] = useState([]);
   const [cartorios, setCartorios] = useState([]);
   const [loading, setLoading] = useState({ estados: false, cidades: false, cartorios: false });
   const [showManualCartorio, setShowManualCartorio] = useState(false);
   
-  const [selectedFile, setSelectedFile] = useState(null);
   const isRegistroCivil = productData?.category === 'Cartório de Registro Civil';
   
   const isTabelionato = productData?.category === 'Tabelionato de Notas (Escrituras)';
@@ -109,23 +108,28 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
     }
   };
 
+  // ALTERADO: Lógica para adicionar arquivo ao array
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("O arquivo excede o tamanho máximo de 2MB.");
+      if (attachedFiles.some(f => f.name === file.name)) {
+        alert("Este arquivo já foi adicionado.");
         e.target.value = '';
         return;
       }
-      setSelectedFile(file);
-      if (onFileSelect) onFileSelect(file); // *** CHAMA A FUNÇÃO DO PAI ***
+      if (file.size > 5 * 1024 * 1024) { // Limite de 5MB
+        alert("O arquivo excede o tamanho máximo de 5MB.");
+        e.target.value = '';
+        return;
+      }
+      onFileAdd(file); // Chama a função do pai para adicionar ao array
     }
+    e.target.value = ''; // Limpa o input para permitir selecionar o mesmo arquivo novamente se for removido
   };
 
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-    if (onFileRemove) onFileRemove(); // *** CHAMA A FUNÇÃO DO PAI ***
-    document.getElementById('file-upload').value = '';
+  // ALTERADO: A função de remover agora é passada pelo pai
+  const handleRemoveFile = (fileName) => {
+    if (onFileRemove) onFileRemove(fileName);
   };
   
   const certidaoTipo = productData.name.split(' de ')[1]?.toLowerCase() || 'documento';
@@ -181,14 +185,21 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
                         <li>✓ Carteira de trabalho</li>
                     </ul>
 
-                    {selectedFile ? (
-                      <div className={styles.fileDisplay}><span className={styles.fileName}>{selectedFile.name}</span><button type="button" onClick={handleRemoveFile} className={styles.fileRemoveButton}><CloseIcon /></button></div>
-                    ) : (
-                      <label htmlFor="file-upload" className={styles.uploadLabel}><UploadIcon />Selecione uma foto</label>
-                    )}
-                    
+                    {/* ALTERADO: Mapeia e exibe a lista de arquivos */}
+                    <div className={styles.fileList}>
+                      {attachedFiles.map((file, index) => (
+                        <div key={index} className={styles.fileDisplay}>
+                          <span className={styles.fileName}>{file.name}</span>
+                          <button type="button" onClick={() => handleRemoveFile(file.name)} className={styles.fileRemoveButton}>
+                            <CloseIcon />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <label htmlFor="file-upload" className={styles.uploadLabel}><UploadIcon />Selecione uma foto</label>
                     <input id="file-upload" name="anexo_busca" type="file" className={styles.fileInput} onChange={handleFileChange} accept="image/png, image/jpeg, .pdf" />
-                    <small className={styles.uploadHint}>Tamanho máximo: 2MB. <a href="#">Saiba como enviar uma foto</a>.</small>
+                    <small className={styles.uploadHint}>Tamanho máximo: 5MB por arquivo. <a href="#">Saiba como enviar uma foto</a>.</small>
                 </div>
             )}
         </div>

@@ -54,8 +54,8 @@ export default function MultiStepForm({ productData }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     
-    // *** ESTADO ADICIONADO PARA O ARQUIVO ***
-    const [attachedFile, setAttachedFile] = useState(null);
+    // ALTERADO: De um único arquivo para um array de arquivos
+    const [attachedFiles, setAttachedFiles] = useState([]);
 
     const getStorageKey = useCallback(() => {
         if (!productData || !productData.slug) return null;
@@ -223,7 +223,6 @@ export default function MultiStepForm({ productData }) {
         } = formData;
         let multiplicadorProtesto = 1;
         
-        // *** LÓGICA DE CONVERSÃO DE ESTADO ADICIONADA AQUI ***
         const estadoAbbr = stateNameToAbbreviation[estado_cartorio] || estado_cartorio;
 
         if (slug === toSlug('Visualização de Matrícula')) {
@@ -322,6 +321,14 @@ export default function MultiStepForm({ productData }) {
         if (validationError) setValidationError('');
     }, [validationError, setFormData, setValidationError]);
 
+    // ALTERADO: Novas funções para manipular o array de arquivos
+    const handleFileAdd = (file) => {
+        setAttachedFiles(prevFiles => [...prevFiles, file]);
+    };
+    const handleFileRemove = (fileName) => {
+        setAttachedFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
+    };
+
     const navigateToStep = (stepIndex) => {
         const newStep = stepIndex + 1;
         router.push(`?step=${newStep}`, { scroll: false });
@@ -388,8 +395,8 @@ export default function MultiStepForm({ productData }) {
 
     const handleFinalConfirmAndSubmit = () => {
         setIsConfirmModalOpen(false);
-        // *** LÓGICA DE ANEXO DE ARQUIVO ADICIONADA AQUI ***
-        addToCart({ ...productData, price: finalPrice, formData, attachedFile });
+        // ALTERADO: Passa o array de arquivos para o carrinho
+        addToCart({ ...productData, price: finalPrice, formData, attachedFiles });
         if (typeof window !== 'undefined') {
             const storageKey = getStorageKey();
             if (storageKey) {
@@ -402,14 +409,15 @@ export default function MultiStepForm({ productData }) {
     const renderCurrentStep = () => {
         if (formFlow.length === 0 || !formFlow[currentStep]) return <div>Carregando...</div>;
         const { Component } = formFlow[currentStep];
-        // *** Passando as props de controle do arquivo para o componente da etapa ***
+        // ALTERADO: Passando as novas props para o controle de múltiplos arquivos
         return <Component 
             formData={formData} 
             handleChange={handleChange} 
             productData={productData} 
             error={validationError}
-            onFileSelect={setAttachedFile}
-            onFileRemove={() => setAttachedFile(null)}
+            attachedFiles={attachedFiles}
+            onFileAdd={handleFileAdd}
+            onFileRemove={handleFileRemove}
         />;
     };
 
@@ -417,7 +425,7 @@ export default function MultiStepForm({ productData }) {
 
     return (
         <>
-            <div className={styles.formLayout}>
+            <div className={`${styles.formLayout} ${styles.responsiveLayout}`}>
                 <div className={styles.mainContent}>
                     <StepProgressBar steps={formFlow} currentStep={currentStep} />
                     <div className={styles.formContainer}>
