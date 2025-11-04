@@ -53,6 +53,9 @@ export default function MultiStepForm({ productData }) {
     const { addToCart } = useCart();
     const router = useRouter();
     const searchParams = useSearchParams();
+    
+    // *** ESTADO ADICIONADO PARA O ARQUIVO ***
+    const [attachedFile, setAttachedFile] = useState(null);
 
     const getStorageKey = useCallback(() => {
         if (!productData || !productData.slug) return null;
@@ -220,6 +223,9 @@ export default function MultiStepForm({ productData }) {
         } = formData;
         let multiplicadorProtesto = 1;
         
+        // *** LÓGICA DE CONVERSÃO DE ESTADO ADICIONADA AQUI ***
+        const estadoAbbr = stateNameToAbbreviation[estado_cartorio] || estado_cartorio;
+
         if (slug === toSlug('Visualização de Matrícula')) {
             const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_matricula, 'visualizacao_matricula');
             if (priceByState) basePrice = priceByState;
@@ -233,25 +239,24 @@ export default function MultiStepForm({ productData }) {
             if (priceByState) basePrice = priceByState;
         }
         else if (estado_cartorio && category === 'Cartório de Registro Civil') {
-            const priceByState = getPrice('tabelionato_registro_civil', 'estado', estado_cartorio, 'valor');
+            const priceByState = getPrice('tabelionato_registro_civil', 'estado', estadoAbbr, 'valor');
             if (priceByState) {
                 basePrice = priceByState;
             }
         } 
-        else if (estado_cartorio && category === 'Tabelionato de Notas (Escrituras)') { // *** LÓGICA CORRIGIDA AQUI ***
-            const priceByState = getPrice('tabelionato_registro_civil', 'estado', estado_cartorio, 'valor_notas');
+        else if (estado_cartorio && category === 'Tabelionato de Notas (Escrituras)') {
+            const priceByState = getPrice('tabelionato_registro_civil', 'estado', estadoAbbr, 'valor_notas');
             if (priceByState) {
                 basePrice = priceByState;
             }
-        }
+        } 
         else if (estado_cartorio && category === 'Cartório de Registro de Imóveis') {
-            if (slug === toSlug('Certidão de Imóvel') || slug === toSlug('Certidão de Matrícula com Ônus e Ações')) {
-                const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_cartorio, 'certidao_imovel');
-                if (priceByState) basePrice = priceByState;
-            } else if (slug === toSlug('Certidão de Penhor e Safra')) {
-                const priceByState = getPrice('custas_cartorios', 'estado', estado_cartorio, 'demais_certidoes');
-                if (priceByState) basePrice = priceByState;
-                else if (productData.price) basePrice = productData.price;
+            const isImovelPrincipal = slug === toSlug('Certidão de Imóvel') || slug === toSlug('Certidão de Matrícula com Ônus e Ações') || slug === toSlug('Certidão de Penhor e Safra');
+            if (isImovelPrincipal) {
+                const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estadoAbbr, 'certidao_imovel');
+                if (priceByState) {
+                    basePrice = priceByState;
+                }
             }
         }
         else if (slug === toSlug('Certidão de Protesto')) {
@@ -383,7 +388,8 @@ export default function MultiStepForm({ productData }) {
 
     const handleFinalConfirmAndSubmit = () => {
         setIsConfirmModalOpen(false);
-        addToCart({ ...productData, price: finalPrice, formData });
+        // *** LÓGICA DE ANEXO DE ARQUIVO ADICIONADA AQUI ***
+        addToCart({ ...productData, price: finalPrice, formData, attachedFile });
         if (typeof window !== 'undefined') {
             const storageKey = getStorageKey();
             if (storageKey) {
@@ -396,7 +402,15 @@ export default function MultiStepForm({ productData }) {
     const renderCurrentStep = () => {
         if (formFlow.length === 0 || !formFlow[currentStep]) return <div>Carregando...</div>;
         const { Component } = formFlow[currentStep];
-        return <Component formData={formData} handleChange={handleChange} productData={productData} error={validationError} />;
+        // *** Passando as props de controle do arquivo para o componente da etapa ***
+        return <Component 
+            formData={formData} 
+            handleChange={handleChange} 
+            productData={productData} 
+            error={validationError}
+            onFileSelect={setAttachedFile}
+            onFileRemove={() => setAttachedFile(null)}
+        />;
     };
 
     const isLastStep = currentStep === formFlow.length - 1;

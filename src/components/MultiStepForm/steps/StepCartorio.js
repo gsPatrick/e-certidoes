@@ -14,6 +14,7 @@ const CloseIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 );
 
+// *** PROPS onFileSelect E onFileRemove ADICIONADAS ***
 export default function StepCartorio({ formData, handleChange, productData, onFileSelect, onFileRemove }) {
   const [estados, setEstados] = useState([]);
   const [cidades, setCidades] = useState([]);
@@ -24,7 +25,6 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
   const [selectedFile, setSelectedFile] = useState(null);
   const isRegistroCivil = productData?.category === 'Cartório de Registro Civil';
   
-  // *** LÓGICA DO LINK DINÂMICO ADICIONADA AQUI ***
   const isTabelionato = productData?.category === 'Tabelionato de Notas (Escrituras)';
   const searchLink = isTabelionato 
     ? '/certidoes/pesquisa-escrituras-e-procuracoes-por-cpf-cnpj' 
@@ -118,13 +118,13 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
         return;
       }
       setSelectedFile(file);
-      if (onFileSelect) onFileSelect(file);
+      if (onFileSelect) onFileSelect(file); // *** CHAMA A FUNÇÃO DO PAI ***
     }
   };
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    if (onFileRemove) onFileRemove();
+    if (onFileRemove) onFileRemove(); // *** CHAMA A FUNÇÃO DO PAI ***
     document.getElementById('file-upload').value = '';
   };
   
@@ -196,7 +196,6 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
         <div className={styles.fallbackContainer}>
             <p className={styles.fallbackTitle}>Não localizou o cartório na lista ou não sabe informar?</p>
             <div className={styles.fallbackActions}>
-            {/* *** LINK CORRIGIDO AQUI *** */}
             <Link href={searchLink} className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
             <button type="button" onClick={toggleManualCartorio} className={styles.fallbackButton}>{showManualCartorio ? 'Voltar para a lista' : 'Informe manualmente clicando aqui'}</button>
             </div>
