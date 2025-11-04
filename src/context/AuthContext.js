@@ -29,7 +29,11 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
 
-      // ✅ Redirecionamento removido
+      // ✅ Se o usuário for admin, redireciona para o painel administrativo
+      if (data.user?.role === 'admin' || data.user?.isAdmin) {
+        router.push('/admin/dashboard');
+      }
+
       return data;
     } catch (error) {
       console.error('Erro no login:', error.response?.data?.message);
@@ -53,7 +57,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
-    // ✅ Redirecionamento removido
   };
 
   const value = {
