@@ -1,24 +1,60 @@
 // Salve em: src/components/MultiStepForm/steps/StepFederalDados.js
 'use client';
 
+import { useState } from 'react';
 import styles from './StepFederalDados.module.css';
 
-// Função para aplicar a máscara de CPF
-const maskCPF = (value) => {
-  return value
-    .replace(/\D/g, '') // Remove tudo que não é dígito
-    .slice(0, 11)       // Limita a 11 dígitos
-    .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto depois do terceiro dígito
-    .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto depois do sexto dígito
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca hífen depois do nono dígito
+// --- COMPONENTE GENÉRICO PARA CAMPO DE FORMULÁRIO ---
+const FormField = ({ field, value, onChange }) => {
+  const { name, label, type = 'text', options } = field;
+
+  // Função para aplicar máscaras
+  const handleChangeWithMask = (e) => {
+    let { value } = e.target;
+    if (name.toLowerCase().includes('cpf')) {
+      value = value.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else if (name.toLowerCase().includes('cnpj')) {
+      value = value.replace(/\D/g, '').slice(0, 14).replace(/(\d{2})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})(\d)/, '$1-$2');
+    }
+    onChange({ target: { name, value } });
+  };
+
+  const commonProps = {
+    id: name,
+    name: name,
+    value: value || '',
+    onChange: name.toLowerCase().includes('cpf') || name.toLowerCase().includes('cnpj') ? handleChangeWithMask : onChange,
+    required: field.required !== false // Padrão é true
+  };
+
+  return (
+    <div className={styles.formGroup}>
+      <label htmlFor={name}>{label}{commonProps.required && '*'}</label>
+      {type === 'select' ? (
+        <select {...commonProps}>
+          <option value="">Selecione</option>
+          {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+        </select>
+      ) : (
+        <input type={type} {...commonProps} />
+      )}
+    </div>
+  );
 };
 
 export default function StepFederalDados({ formData, handleChange, error, productData }) {
+  const [activeTab, setActiveTab] = useState(formData.tipo_pessoa || 'Pessoa');
   
-  const handleCpfChange = (e) => {
-    // Aplica a máscara e propaga a mudança para o formulário principal
-    handleChange({ target: { name: 'cpf', value: maskCPF(e.target.value) } });
+  const { govFormFields } = productData;
+  const hasPessoa = govFormFields?.pessoa?.length > 0;
+  const hasEmpresa = govFormFields?.empresa?.length > 0;
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    handleChange({ target: { name: 'tipo_pessoa', value: tab } });
   };
+
+  const fieldsToRender = activeTab === 'Pessoa' ? govFormFields?.pessoa : govFormFields?.empresa;
 
   return (
     <div>
@@ -27,56 +63,23 @@ export default function StepFederalDados({ formData, handleChange, error, produc
         Informe os dados no formulário abaixo para iniciarmos a solicitação da {productData.name}.
       </p>
 
-      <div className={styles.formGroup}>
-        <label htmlFor="nome_completo">Nome completo*</label>
-        <input
-          type="text"
-          id="nome_completo"
-          name="nome_completo"
-          value={formData.nome_completo || ''}
-          onChange={handleChange}
-          placeholder="Nome completo (registrado civilmente)"
-          required
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor="cpf">CPF*</label>
-        <input
-          type="text"
-          id="cpf"
-          name="cpf"
-          value={formData.cpf || ''}
-          onChange={handleCpfChange}
-          placeholder="000.000.000-00"
-          required
-        />
+      {hasPessoa && hasEmpresa && (
+        <div className={styles.tabContainer}>
+          <button type="button" onClick={() => handleTabChange('Pessoa')} className={`${styles.tabButton} ${activeTab === 'Pessoa' ? styles.activeTab : ''}`}>Pessoa</button>
+          <button type="button" onClick={() => handleTabChange('Empresa')} className={`${styles.tabButton} ${activeTab === 'Empresa' ? styles.activeTab : ''}`}>Empresa</button>
+        </div>
+      )}
+      
+      <div className={styles.formContent}>
+        {fieldsToRender?.map(field => (
+          <FormField
+            key={field.name}
+            field={field}
+            value={formData[field.name]}
+            onChange={handleChange}
+          />
+        ))}
         {error && <small className={styles.errorMessage}>{error}</small>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor="data_nascimento">Data de Nascimento*</label>
-        <input
-          type="date"
-          id="data_nascimento"
-          name="data_nascimento"
-          value={formData.data_nascimento || ''}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor="nome_mae">Nome da mãe*</label>
-        <input
-          type="text"
-          id="nome_mae"
-          name="nome_mae"
-          value={formData.nome_mae || ''}
-          onChange={handleChange}
-          placeholder="Nome completo da mãe"
-          required
-        />
       </div>
     </div>
   );

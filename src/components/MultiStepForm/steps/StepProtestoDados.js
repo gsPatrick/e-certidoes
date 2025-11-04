@@ -80,7 +80,7 @@ export default function StepProtestoDados({ formData, handleChange, error }) {
 
       <div className={styles.formGroup}>
         <label className={styles.mainLabel} htmlFor="cep_opcional">CEP (opcional)</label>
-        <p className={styles.cepDescription}>O CEP é usado para que o endereço apareça na Certidão de Protesto. Se não informado, o cartório utilizará o endereço fornecido pelo Documento no Brasil.</p>
+        <p className={styles.cepDescription}>O CEP é usado para que o endereço apareça na Certidão de Protesto. Se não informado, o cartório utilizará o endereço fornecido pelo E-certidões.</p>
         <input type="text" id="cep_opcional" name="cep_opcional" value={formData.cep_opcional || ''} onChange={handleCepChange} maxLength="9" />
       </div>
 

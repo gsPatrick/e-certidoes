@@ -9,6 +9,9 @@ export const productImagePaths = {
   'certidao-de-matricula-com-onus-e-acoes': '/certidoes/certidao-de-matricula-com-onus-e-acoes.png',
   'certidao-de-penhor-e-safra': '/certidoes/certidao-de-penhor-e-safra.png',
   'pacote-de-certidoes-compra-e-venda-de-imoveis': '/certidoes/pacote-de-certidoes-compra-e-venda-de-imoveis.png',
+  // *** ENTRADAS ADICIONADAS PARA PESQUISAS DE IMÓVEIS ***
+  'pesquisa-previa-de-imoveis-por-cpf-cnpj': '/certidoes/pesquisa.png',
+  'pesquisa-qualificada-de-imoveis-por-cpf-cnpj': '/certidoes/pesquisa.png',
 
   // Cartório de Registro Civil
   'certidao-de-nascimento': '/certidoes/certidao-de-nascimento.png',
@@ -29,7 +32,8 @@ export const productImagePaths = {
   'certidao-de-escritura-de-inventario': '/certidoes/certidao-de-escritura-de-inventario.png',
   'certidao-de-escritura-de-divorcio': '/certidoes/certidao-de-escritura-de-divorcio.png',
   'certidao-de-escritura-de-emancipacao': '/certidoes/certidao-de-escritura-de-emancipacao.png',
-  'pesquisa-escrituras-e-procuracoes-por-cpf-cnpj': '/certidoes/pesquisa-escrituras-e-procuracoes-por-cpf-cnpj.png',
+  // *** LINHA MODIFICADA ***
+  'pesquisa-escrituras-e-procuracoes-por-cpf-cnpj': '/certidoes/pesquisa.png',
   
   // Cartório de Protesto
   'certidao-de-protesto': '/certidoes/certidao-de-protesto.png',

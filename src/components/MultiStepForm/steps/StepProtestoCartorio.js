@@ -10,37 +10,46 @@ export default function StepProtestoCartorio({ formData, handleChange }) {
   const [cidades, setCidades] = useState([]);
   const [cartorios, setCartorios] = useState([]);
 
-  // Carrega a lista de estados do nosso arquivo de dados local
   useEffect(() => {
     setEstados(Object.keys(protestoCartorios));
   }, []);
 
-  // Atualiza a lista de cidades quando um estado é selecionado
   useEffect(() => {
-    if (formData.estado && protestoCartorios[formData.estado]) {
-      setCidades(Object.keys(protestoCartorios[formData.estado]));
+    if (formData.estado_cartorio && protestoCartorios[formData.estado_cartorio]) {
+      setCidades(Object.keys(protestoCartorios[formData.estado_cartorio]));
     } else {
       setCidades([]);
     }
-    handleChange({ target: { name: 'cidade', value: '' } });
-  }, [formData.estado, handleChange]);
-  
-  // Atualiza a lista de cartórios quando uma cidade é selecionada
-  useEffect(() => {
-     if (formData.cidade && formData.estado && protestoCartorios[formData.estado]?.[formData.cidade]) {
-        setCartorios(protestoCartorios[formData.estado][formData.cidade]);
-    } else if (formData.cidade) {
-        // Se a cidade foi selecionada mas não está na lista, oferece a opção de cartório único
-        setCartorios(['(Cartório Único - Serventia Extrajudicial)']);
-    } else {
-        setCartorios([]);
+    if (formData.cidade_cartorio) {
+        handleChange({ target: { name: 'cidade_cartorio', value: '' } });
     }
+  }, [formData.estado_cartorio, handleChange]);
+  
+  useEffect(() => {
+    const cartoriosDaCidade = protestoCartorios[formData.estado_cartorio]?.[formData.cidade_cartorio];
+    const cartorioUnicoOption = 'CARTÓRIO ÚNICO - SERVENTIA EXTRAJUDICIAL';
+
+    if (cartoriosDaCidade && cartoriosDaCidade.length > 1) {
+      setCartorios(cartoriosDaCidade);
+    } else if (cartoriosDaCidade && cartoriosDaCidade.length === 1) {
+      setCartorios([cartoriosDaCidade[0], cartorioUnicoOption]);
+    } else {
+      setCartorios([cartorioUnicoOption]);
+      if(formData.cidade_cartorio) {
+        handleChange({ target: { name: 'cartorio_protesto', value: cartorioUnicoOption } });
+      }
+    }
+    
     handleChange({ target: { name: 'todos_cartorios_protesto', checked: false, type: 'checkbox' } });
-    handleChange({ target: { name: 'cartorio_protesto', value: '' } });
-  },[formData.cidade, formData.estado, handleChange]);
+    if (!cartoriosDaCidade && formData.cidade_cartorio) {
+        handleChange({ target: { name: 'cartorio_protesto', value: cartorioUnicoOption } });
+    } else {
+        handleChange({ target: { name: 'cartorio_protesto', value: '' } });
+    }
+    
+  },[formData.cidade_cartorio, formData.estado_cartorio, handleChange]);
 
 
-  // Manipula a mudança no checkbox "Todos os cartórios"
   const handleTodosCartoriosChange = (e) => {
     handleChange(e);
     if (e.target.checked) {
@@ -48,7 +57,6 @@ export default function StepProtestoCartorio({ formData, handleChange }) {
     }
   };
   
-  // Manipula a mudança no select de cartório individual
   const handleCartorioChange = (e) => {
       handleChange(e);
       if(e.target.value) {
@@ -63,7 +71,7 @@ export default function StepProtestoCartorio({ formData, handleChange }) {
       
       <div className={styles.formGroup}>
         <label>Estado do Cartório</label>
-        <select name="estado" value={formData.estado || ''} onChange={handleChange} required>
+        <select name="estado_cartorio" value={formData.estado_cartorio || ''} onChange={handleChange} required>
           <option value="">Selecione o estado</option>
           {estados.map(est => <option key={est} value={est}>{est}</option>)}
         </select>
@@ -71,7 +79,7 @@ export default function StepProtestoCartorio({ formData, handleChange }) {
 
       <div className={styles.formGroup}>
         <label>Cidade do Cartório</label>
-        <select name="cidade" value={formData.cidade || ''} onChange={handleChange} required disabled={!formData.estado}>
+        <select name="cidade_cartorio" value={formData.cidade_cartorio || ''} onChange={handleChange} required disabled={!formData.estado_cartorio}>
           <option value="">Selecione a cidade</option>
           {cidades.map(cid => <option key={cid} value={cid}>{cid}</option>)}
         </select>
@@ -81,16 +89,16 @@ export default function StepProtestoCartorio({ formData, handleChange }) {
         <label className={styles.mainLabel}>Dados do cartório</label>
         <p className={styles.description}>Escolha um ou mais cartórios nos quais deseja fazer a solicitação.</p>
         
-        {cartorios.length > 1 && (
+        {cartorios.length > 1 && !cartorios.includes('CARTÓRIO ÚNICO - SERVENTIA EXTRAJUDICIAL') && (
           <label className={styles.checkboxLabel}>
             <input 
               type="checkbox" 
               name="todos_cartorios_protesto" 
               checked={!!formData.todos_cartorios_protesto}
               onChange={handleTodosCartoriosChange}
-              disabled={!formData.cidade}
+              disabled={!formData.cidade_cartorio}
             />
-            Todos os cartórios de {formData.cidade} ({cartorios.length} cartórios)
+            Todos os cartórios de {formData.cidade_cartorio} ({cartorios.length} cartórios)
           </label>
         )}
 
@@ -99,7 +107,7 @@ export default function StepProtestoCartorio({ formData, handleChange }) {
           value={formData.cartorio_protesto || ''} 
           onChange={handleCartorioChange}
           required={!formData.todos_cartorios_protesto}
-          disabled={!formData.cidade || !!formData.todos_cartorios_protesto}
+          disabled={!formData.cidade_cartorio || !!formData.todos_cartorios_protesto}
         >
           <option value="">Selecione o Cartório</option>
           {cartorios.map(cart => <option key={cart} value={cart}>{cart}</option>)}

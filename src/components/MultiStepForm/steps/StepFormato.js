@@ -17,7 +17,8 @@ export default function StepFormato({ formData, handleChange, productData }) {
 
     let formatOptions = [];
 
-    // Lógica para definir as opções de formato
+    // --- LÓGICA ATUALIZADA ---
+    // Agora, a opção de papel é removida para todas as certidões governamentais.
     if (isGovCertificate) {
         formatOptions = [
             { 

@@ -38,7 +38,7 @@ const ProductHeader = ({ title, description, imageSrc, onOpenPaymentModal, onOpe
             <span>Calcule o prazo de entrega</span>
             <span className={styles.chevron}>&gt;</span>
           </div>
-          {/* Adicione os outros dois links do "Documento no Brasil" se desejar no futuro */}
+          {/* Adicione os outros dois links do "E-certidões" se desejar no futuro */}
         </div>
       </div>
     </div>

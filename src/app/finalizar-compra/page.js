@@ -15,16 +15,14 @@ import AuthModal from '@/components/AuthModal/AuthModal';
 import styles from './Checkout.module.css';
 import { CreditCardIcon, PixIcon, BoletoIcon } from './SecurityIcons';
 
-// Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
     if (['cpf', 'cnpj', 'rg'].includes(key.toLowerCase())) return key.toUpperCase();
     return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 };
 
-// Componente auxiliar para renderizar detalhes no resumo
 const DetailItem = ({ label, value }) => {
     if (value === null || value === undefined || value === '' || value === false) return null;
-    const displayValue = typeof value === 'boolean' ? 'Sim' : String(value);
+    const displayValue = typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : String(value);
     return (
         <div className={styles.summaryDetailItem}>
             <span className={styles.detailLabel}>{label}:</span>
@@ -33,14 +31,15 @@ const DetailItem = ({ label, value }) => {
     );
 };
 
-// Componente para o card de resumo do pedido na sidebar
+// *** COMPONENTE ATUALIZADO ***
 const OrderSummaryCard = ({ item, onRemove }) => {
     if (!item || !item.formData) return null;
     const { formData } = item;
     
     const excludeKeys = new Set([
         'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa', 'tipo_certidao',
-        'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg'
+        'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
+        'estado_cartorio', 'cidade_cartorio', 'cartorio_protesto', 'todos_cartorios_protesto' // Exclui para tratar separadamente
     ]);
 
     const allDetails = Object.entries(formData)
@@ -60,6 +59,11 @@ const OrderSummaryCard = ({ item, onRemove }) => {
                 </button>
             </div>
             <div className={styles.summaryCardBody}>
+                {/* Lógica para exibir os dados de Protesto */}
+                <DetailItem label="Estado" value={formData.estado_cartorio} />
+                <DetailItem label="Cidade" value={formData.cidade_cartorio} />
+                <DetailItem label="Cartório" value={formData.todos_cartorios_protesto ? `Todos os cartórios de ${formData.cidade_cartorio}` : formData.cartorio_protesto} />
+
                 {allDetails.map(([key, value]) => (
                     <DetailItem key={key} label={formatLabel(key)} value={value} />
                 ))}
@@ -108,7 +112,6 @@ export default function CheckoutPage() {
         setLoading(true);
 
         try {
-            // 1. Construir o FormData para criar o pedido
             const orderFormData = new FormData();
             
             const itensParaApi = cartItems.map(item => ({
@@ -121,43 +124,37 @@ export default function CheckoutPage() {
             orderFormData.append('itens', JSON.stringify(itensParaApi));
             orderFormData.append('dadosCliente', JSON.stringify(clientData));
 
-            // Adiciona os arquivos anexados, se houver
             cartItems.forEach((item) => {
                 if (item.attachedFile) {
                     orderFormData.append('anexosCliente', item.attachedFile, item.attachedFile.name);
                 }
             });
 
-            // 2. Chamar a API para criar o pedido no banco
             const pedidoResponse = await api.post('/pedidos', orderFormData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             
             const novoPedido = pedidoResponse.data.pedido;
 
-            // 3. Limpar o carrinho no frontend
             clearCart();
 
-            // 4. Chamar a API para criar a preferência de pagamento no Mercado Pago
             const checkoutResponse = await api.post('/pagamentos/criar-checkout', {
                 pedidoId: novoPedido.id
             });
             
             const { checkoutUrl } = checkoutResponse.data;
 
-            // 5. Redirecionar o usuário para a URL de pagamento externa
             window.location.href = checkoutUrl;
 
         } catch (err) {
             console.error("Erro ao finalizar a compra:", err.response?.data || err.message);
             alert(err.response?.data?.message || 'Ocorreu um erro ao processar seu pedido. Por favor, tente novamente.');
-            setLoading(false); // Libera o botão para nova tentativa
+            setLoading(false);
         }
     };
     
     const handleAuthSuccess = () => {
         setShowAuthModal(false);
-        // Atualiza os dados do cliente com as informações do usuário logado
         if (user) {
              setClientData(prev => ({ ...prev, nome: user.nome || '', email: user.email || '' }));
         }
@@ -168,7 +165,7 @@ export default function CheckoutPage() {
     }
     
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
-    const frete = 0; // Será calculado no backend se necessário
+    const frete = 0;
     const total = subtotal + frete;
 
     return (

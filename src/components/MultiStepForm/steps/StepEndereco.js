@@ -5,18 +5,19 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styles from './StepEndereco.module.css';
 import { countries } from '@/utils/countries';
-import SearchableDropdown from './SearchableDropdown'; // Importa o componente de busca
+import SearchableDropdown from './SearchableDropdown';
+import { getTaxa } from '@/utils/pricingData';
 
 export default function StepEndereco({ formData, handleChange }) {
-  // Estados para busca de CEP nacional (BrasilAPI)
   const [cepLoading, setCepLoading] = useState(false);
   const [cepError, setCepError] = useState('');
   const [addressFound, setAddressFound] = useState(!!formData.endereco);
-
-  // Estados para busca de CEP internacional (Zippopotam.us)
   const [intlCepLoading, setIntlCepLoading] = useState(false);
   const [intlAddressFound, setIntlAddressFound] = useState(!!formData.cidade_inter);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+  const CUSTO_INTL_CORREIOS = getTaxa('entrega_internacional_correios');
+  const CUSTO_INTL_DHL = getTaxa('entrega_internacional_dhl');
 
   const isInternational = formData.entrega_internacional_correios || formData.entrega_internacional_dhl;
 
@@ -39,7 +40,6 @@ export default function StepEndereco({ formData, handleChange }) {
     }
   }, [handleChange]);
 
-  // Efeito para buscar endereço no Brasil
   useEffect(() => {
     if (isInternational) return;
     const cep = formData.cep?.replace(/\D/g, '');
@@ -48,8 +48,8 @@ export default function StepEndereco({ formData, handleChange }) {
       setCepLoading(true); setCepError('');
       try {
         const { data } = await axios.get(`https://brasilapi.com.br/api/cep/v1/${cep}`);
-        handleChange({ target: { name: 'estado_entrega', value: data.state } }); // NOVO NOME
-        handleChange({ target: { name: 'cidade_entrega', value: data.city } }); // NOVO NOME
+        handleChange({ target: { name: 'estado_entrega', value: data.state } });
+        handleChange({ target: { name: 'cidade_entrega', value: data.city } });
         handleChange({ target: { name: 'bairro', value: data.neighborhood } });
         handleChange({ target: { name: 'endereco', value: data.street } });
         setAddressFound(true);
@@ -62,7 +62,6 @@ export default function StepEndereco({ formData, handleChange }) {
     return () => clearTimeout(handler);
   }, [formData.cep, isInternational, handleChange]);
 
-  // Efeito para buscar endereço internacional com nova lógica de erro
   useEffect(() => {
     if (!isInternational || !formData.pais || !formData.cep_inter?.trim()) return;
     const { pais: countryCode, cep_inter: postalCode } = formData;
@@ -141,8 +140,8 @@ export default function StepEndereco({ formData, handleChange }) {
             </div>
             {(addressFound || cepError) && ( 
               <div className={styles.addressFields}>
-                <div className={styles.formGroup}><label>Estado *</label><input type="text" name="estado_entrega" value={formData.estado_entrega || ''} onChange={handleChange} required disabled={!cepError} /></div> {/* NOVO NOME */}
-                <div className={styles.formGroup}><label>Cidade *</label><input type="text" name="cidade_entrega" value={formData.cidade_entrega || ''} onChange={handleChange} required disabled={!cepError} /></div> {/* NOVO NOME */}
+                <div className={styles.formGroup}><label>Estado *</label><input type="text" name="estado_entrega" value={formData.estado_entrega || ''} onChange={handleChange} required disabled={!cepError} /></div>
+                <div className={styles.formGroup}><label>Cidade *</label><input type="text" name="cidade_entrega" value={formData.cidade_entrega || ''} onChange={handleChange} required disabled={!cepError} /></div>
                 <div className={styles.formGroup}><label>Bairro *</label><input type="text" name="bairro" value={formData.bairro || ''} onChange={handleChange} required /></div>
                 <div className={styles.formGroup}><label>Endereço *</label><input type="text" name="endereco" value={formData.endereco || ''} onChange={handleChange} required /></div>
                 <div className={styles.formGroup}><label>Número *</label><input type="text" name="numero" value={formData.numero || ''} onChange={handleChange} required /></div>
@@ -153,8 +152,14 @@ export default function StepEndereco({ formData, handleChange }) {
       )}
 
       <div className={styles.deliveryOptions}>
-        <label className={styles.checkboxLabel}><input type="checkbox" name="entrega_internacional_correios" checked={!!formData.entrega_internacional_correios} onChange={handleCheckboxChange} /> Entrega Internacional - Correios</label>
-        <label className={styles.checkboxLabel}><input type="checkbox" name="entrega_internacional_dhl" checked={!!formData.entrega_internacional_dhl} onChange={handleCheckboxChange} /> Entrega Urgente Internacional - DHL</label>
+        <label className={styles.checkboxLabel}>
+            <input type="checkbox" name="entrega_internacional_correios" checked={!!formData.entrega_internacional_correios} onChange={handleCheckboxChange} /> 
+            Entrega Internacional - Correios {CUSTO_INTL_CORREIOS && `(+ R$ ${CUSTO_INTL_CORREIOS.toFixed(2).replace('.', ',')})`}
+        </label>
+        <label className={styles.checkboxLabel}>
+            <input type="checkbox" name="entrega_internacional_dhl" checked={!!formData.entrega_internacional_dhl} onChange={handleCheckboxChange} /> 
+            Entrega Urgente Internacional - DHL {CUSTO_INTL_DHL && `(+ R$ ${CUSTO_INTL_DHL.toFixed(2).replace('.', ',')})`}
+        </label>
       </div>
 
       {isErrorModalOpen && (

@@ -36,20 +36,21 @@ export const pricingData = {
       { "estado": "ES", "certidao_imovel": 249.65, "visualizacao_matricula": 78.30, "pesquisa_previa": 68.30, "pesquisa_qualificada": 68.30 },
       { "estado": "MG", "certidao_imovel": 214.30, "visualizacao_matricula": 69.30, "pesquisa_previa": 98.30, "pesquisa_qualificada": 78.30 },
       { "estado": "MS", "certidao_imovel": 214.30, "visualizacao_matricula": 79.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 78.30 },
-      { "estado": "MT", "certidao_imovel": 214.30, "visualizacao_matricula": 79.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 88.30 },
-      { "estado": "BA", "certidao_imovel": 324.30, "visualizacao_matricula": 98.30, "pesquisa_previa": 118.30, "pesquisa_qualificada": 98.30 },
+      // *** VALORES REMOVIDOS CONFORME SOLICITADO ***
+      { "estado": "MT", "certidao_imovel": 214.30, "visualizacao_matricula": 79.30, "pesquisa_previa": null, "pesquisa_qualificada": 88.30 },
+      { "estado": "BA", "certidao_imovel": 324.30, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": 98.30 },
+      { "estado": "GO", "certidao_imovel": 278.30, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": 88.30 },
       { "estado": "DF", "certidao_imovel": 198.30, "visualizacao_matricula": 78.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 78.30 },
-      { "estado": "GO", "certidao_imovel": 278.30, "visualizacao_matricula": 98.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 88.30 },
       { "estado": "TO", "certidao_imovel": 208.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
-      { "estado": "RO", "certidao_imovel": 197.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
+      { "estado": "RO", "certidao_imovel": 197.30, "visualizacao_matricula": 78.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 78.30 },
       { "estado": "AC", "certidao_imovel": 228.65, "visualizacao_matricula": 68.30, "pesquisa_previa": null, "pesquisa_qualificada": 68.30 },
       { "estado": "SE", "certidao_imovel": 228.30, "visualizacao_matricula": 84.30, "pesquisa_previa": null, "pesquisa_qualificada": 88.30 },
       { "estado": "AL", "certidao_imovel": 198.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": null },
       { "estado": "PE", "certidao_imovel": 214.30, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 68.30 },
-      { "estado": "PB", "certidao_imovel": 328.30, "visualizacao_matricula": 118.30, "pesquisa_previa": null, "pesquisa_qualificada": 118.30 },
+      { "estado": "PB", "certidao_imovel": 328.30, "visualizacao_matricula": 118.30, "pesquisa_previa": 118.30, "pesquisa_qualificada": 118.30 },
       { "estado": "RN", "certidao_imovel": 314.30, "visualizacao_matricula": 112.30, "pesquisa_previa": null, "pesquisa_qualificada": 83.30 },
       { "estado": "CE", "certidao_imovel": null, "visualizacao_matricula": 78.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
-      { "estado": "PI", "certidao_imovel": 214.65, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": 98.30 },
+      { "estado": "PI", "certidao_imovel": 214.65, "visualizacao_matricula": 98.30, "pesquisa_previa": 78.30, "pesquisa_qualificada": 98.30 },
       { "estado": "MA", "certidao_imovel": null, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": null },
       { "estado": "PA", "certidao_imovel": 214.30, "visualizacao_matricula": 98.30, "pesquisa_previa": null, "pesquisa_qualificada": 78.30 },
       { "estado": "AP", "certidao_imovel": 228.30, "visualizacao_matricula": null, "pesquisa_previa": null, "pesquisa_qualificada": null },
@@ -66,15 +67,17 @@ export const pricingData = {
       { "estado": "RS", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "SC", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "PR", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
+      // *** VALORES CORRIGIDOS ***
       { "estado": "RJ", "valor_notas": 267.30, "valor_civil": 364.65, "valor": 364.65 },
+      { "estado": "BA", "valor_notas": 287.20, "valor_civil": 357.20, "valor": 357.20 },
+      { "estado": "TO", "valor_notas": 277.20, "valor_civil": 227.20, "valor": 227.20 },
+      { "estado": "PA", "valor_notas": 227.20, "valor_civil": 357.65, "valor": 357.65 },
       { "estado": "ES", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "MG", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "MS", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "MT", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
-      { "estado": "BA", "valor_notas": 287.20, "valor_civil": 357.20, "valor": 357.20 },
       { "estado": "DF", "valor_notas": 167.65, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "GO", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
-      { "estado": "TO", "valor_notas": 277.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "RO", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "AC", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "SE", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
@@ -85,7 +88,6 @@ export const pricingData = {
       { "estado": "CE", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "PI", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "MA", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
-      { "estado": "PA", "valor_notas": 227.20, "valor_civil": 357.65, "valor": 357.65 },
       { "estado": "AP", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 },
       { "estado": "AM", "valor_notas": 227.20, "valor_civil": 237.65, "valor": 237.65 },
       { "estado": "RR", "valor_notas": 227.20, "valor_civil": 227.20, "valor": 227.20 }
@@ -139,10 +141,13 @@ export const pricingData = {
   // --- SEÇÃO 6: TAXAS PADRONIZADAS DE SERVIÇOS E ACRÉSCIMOS (Estrutura original mantida) ---
   "taxas_servicos": {
     "descricao": "Valores fixos para serviços adicionais aplicáveis a todo o site.",
-    "custo_papel": 40.00,             // Acréscimo para qualquer certidão física/impressa
-    "apostilamento": 290.00,           // Valor único para apostilamento (digital ou físico)
-    "aviso_recebimento": 35.00,        // Custo do serviço de A.R. dos Correios
-    "acrescimo_condominio": 300.00     // Acréscimo específico para a Certidão de Condomínio
+    "custo_papel": 40.00,
+    "apostilamento": 290.00,
+    "aviso_recebimento": 35.00,
+    "acrescimo_condominio": 300.00,
+    "sedex": 68.00,
+    "entrega_internacional_correios": 180.00,
+    "entrega_internacional_dhl": 380.00
   }
 };
 

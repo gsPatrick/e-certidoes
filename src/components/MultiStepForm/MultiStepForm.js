@@ -9,8 +9,9 @@ import styles from './MultiStepForm.module.css';
 import { getPrice, getTaxa } from '@/utils/pricingData';
 import { protestoCartorios } from '@/utils/protestoCartorios';
 import { isValidCPF, isValidCNPJ } from '@/utils/validators';
+import { stateNameToAbbreviation } from '@/utils/stateMapping';
 
-// Componentes de Etapa Padrão
+// Componentes de Etapa
 import StepCartorio from './steps/StepCartorio';
 import StepTipoCertidao from './steps/StepTipoCertidao';
 import StepFormato from './steps/StepFormato';
@@ -20,8 +21,6 @@ import StepEndereco from './steps/StepEndereco';
 import StepDadosPenhorSafra from './steps/StepDadosPenhorSafra';
 import StepLocalizacaoMatricula from './steps/StepLocalizacaoMatricula';
 import StepEscritura from './steps/StepEscritura';
-
-// Componentes de Etapa para Pesquisas
 import StepPesquisaVeiculo from './steps/StepPesquisaVeiculo'; 
 import StepPesquisaRouboFurto from './steps/StepPesquisaRouboFurto';
 import StepPesquisaProcessos from './steps/StepPesquisaProcessos'; 
@@ -29,16 +28,9 @@ import StepPesquisaSintegra from './steps/StepPesquisaSintegra';
 import StepPesquisaEscrituras from './steps/StepPesquisaEscrituras';
 import StepPesquisaAvancada from './steps/StepPesquisaAvancada';
 import StepConfirmacaoLGPD from './steps/StepConfirmacaoLGPD';
-
-// Componentes de Etapa para Protesto
 import StepProtestoCartorio from './steps/StepProtestoCartorio';
 import StepProtestoDados from './steps/StepProtestoDados';
-
-// --- NOVOS COMPONENTES DE ETAPA ---
-import StepFederalDados from './steps/StepFederalDados';
-import StepEstadualLocalizacao from './steps/StepEstadualLocalizacao';
-import StepEstadualDados from './steps/StepEstadualDados';
-import StepMunicipalDados from './steps/StepMunicipalDados';
+import StepGovDados from './steps/StepGovDados';
 import StepConsultaJuridica from './steps/StepConsultaJuridica';
 
 // Componentes Auxiliares
@@ -56,10 +48,6 @@ const toSlug = (str) => {
     .replace(/[^\w-]+/g, '')
     .replace(/--+/g, '-');
 };
-
-// --- ARRAYS PARA IDENTIFICAR O TIPO DE CERTIDÃO ---
-const FEDERAL_KEYWORDS = ['TRF', 'STF', 'STJ', 'STM', 'MPF', 'TST', 'MT', 'FGTS', 'CAFIR', 'ITR', 'IBAMA', 'CNTNIDA', 'TSE', 'CNJ', 'TCU', 'Antecedentes Criminais'];
-const ESTADUAL_KEYWORDS = ['TJ', 'MPE', 'TRT', 'PGE', 'CEAT', 'Ambientais', 'Tributários Estaduais'];
 
 export default function MultiStepForm({ productData }) {
     const { addToCart } = useCart();
@@ -79,7 +67,7 @@ export default function MultiStepForm({ productData }) {
         return savedData ? JSON.parse(savedData) : {
             tipo_certidao: 'Matrícula',
             tipo_pesquisa: 'pessoa',
-            tipo_pessoa: 'Pessoa física',
+            tipo_pessoa: 'Pessoa',
             tempo_pesquisa: '5 anos',
             estado_cartorio: '',
             cidade_cartorio: '',
@@ -111,43 +99,16 @@ export default function MultiStepForm({ productData }) {
         const requerenteStep = { id: 'requerente', title: 'Identificação', Component: StepRequerente };
         const confirmacaoLgpdStep = { id: 'confirmacaoLgpd', title: 'Termos de Uso', Component: StepConfirmacaoLGPD };
 
-        const isFederal = category === 'Certidões Federais e Estaduais' && FEDERAL_KEYWORDS.some(kw => name.includes(kw));
-        const isEstadual = category === 'Certidões Federais e Estaduais' && ESTADUAL_KEYWORDS.some(kw => name.includes(kw));
-        const isMunicipal = category === 'Certidões Municipais';
+        const isGovCertificate = category === 'Certidões Federais e Estaduais' || category === 'Certidões Municipais';
         const isPapel = formato === 'Certidão em papel' || formato === 'Certidão Transcrita' || formato === 'Certidão Reprográfica';
-
-        // ===================================
-        // === AQUI ESTÁ A CORREÇÃO DO FLUXO ===
-        // ===================================
 
         if (slug === toSlug('Consulta Jurídica')) {
             newFlow = [
                 { id: 'dadosConsultaJuridica', title: 'Dados para Contato', Component: StepConsultaJuridica },
             ];
-        } else if (isFederal) {
+        } else if (isGovCertificate) {
             const baseFlow = [
-                { id: 'dadosCertidaoFederal', title: 'Dados da Certidão', Component: StepFederalDados },
-                formatoStep
-            ];
-            if (isPapel) {
-                newFlow = [...baseFlow, servicosAdicionaisStep, enderecoStep, requerenteStep];
-            } else {
-                newFlow = [...baseFlow, servicosAdicionaisStep, requerenteStep];
-            }
-        } else if (isEstadual) {
-            const baseFlow = [
-                { id: 'localizacaoEstadual', title: 'Localização', Component: StepEstadualLocalizacao },
-                { id: 'dadosCertidaoEstadual', title: 'Dados da Certidão', Component: StepEstadualDados },
-                formatoStep
-            ];
-            if (isPapel) {
-                newFlow = [...baseFlow, servicosAdicionaisStep, enderecoStep, requerenteStep];
-            } else {
-                newFlow = [...baseFlow, servicosAdicionaisStep, requerenteStep];
-            }
-        } else if (isMunicipal) {
-            const baseFlow = [
-                { id: 'dadosCertidaoMunicipal', title: 'Dados da Certidão', Component: StepMunicipalDados },
+                { id: 'dadosCertidaoGov', title: 'Dados da Certidão', Component: StepGovDados },
                 formatoStep
             ];
             if (isPapel) {
@@ -166,7 +127,7 @@ export default function MultiStepForm({ productData }) {
                 ...middleFlow,
                 requerenteStep,
             ];
-        } else if (category === 'Pesquisa' || (category === 'Cartório de Registro de Imóveis' && pesquisaType) || (category === 'Tabelionato de Notas (Escrituras)' && skipValidationAndTerms)) {
+        } else if (category === 'Pesquisa' || (category === 'Cartório de Registro de Imóveis' && pesquisaType) || slug === toSlug('Pesquisa Escrituras e Procurações por CPF CNPJ')) {
             let primeiraEtapa = {};
             if (pesquisaType === 'previa' || pesquisaType === 'qualificada') {
                 primeiraEtapa = { id: 'dadosPesquisaAvancada', title: 'Dados da Pesquisa', Component: StepPesquisaAvancada };
@@ -271,12 +232,18 @@ export default function MultiStepForm({ productData }) {
             const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_pesquisa, 'pesquisa_qualificada');
             if (priceByState) basePrice = priceByState;
         }
-        else if (estado_cartorio && (category === 'Cartório de Registro Civil' || category === 'Tabelionato de Notas (Escrituras)')) {
+        else if (estado_cartorio && category === 'Cartório de Registro Civil') {
             const priceByState = getPrice('tabelionato_registro_civil', 'estado', estado_cartorio, 'valor');
             if (priceByState) {
                 basePrice = priceByState;
             }
         } 
+        else if (estado_cartorio && category === 'Tabelionato de Notas (Escrituras)') { // *** LÓGICA CORRIGIDA AQUI ***
+            const priceByState = getPrice('tabelionato_registro_civil', 'estado', estado_cartorio, 'valor_notas');
+            if (priceByState) {
+                basePrice = priceByState;
+            }
+        }
         else if (estado_cartorio && category === 'Cartório de Registro de Imóveis') {
             if (slug === toSlug('Certidão de Imóvel') || slug === toSlug('Certidão de Matrícula com Ônus e Ações')) {
                 const priceByState = getPrice('registro_imoveis_pesquisas', 'estado', estado_cartorio, 'certidao_imovel');
@@ -288,11 +255,13 @@ export default function MultiStepForm({ productData }) {
             }
         }
         else if (slug === toSlug('Certidão de Protesto')) {
-            const precoBaseProtesto = getPrice('protesto_por_estado', 'estado', estado_cartorio, 'valor');
+            const estadoFullName = estado_cartorio;
+            const estadoAbbreviation = stateNameToAbbreviation[estadoFullName];
+            const precoBaseProtesto = getPrice('protesto_por_estado', 'estado', estadoAbbreviation, 'valor');
             basePrice = precoBaseProtesto || productData.price;
             
-            if (todos_cartorios_protesto && protestoCartorios[estado_cartorio] && protestoCartorios[estado_cartorio][cidade_cartorio]) {
-                const numCartorios = protestoCartorios[estado_cartorio][cidade_cartorio].length;
+            if (todos_cartorios_protesto && protestoCartorios[estadoFullName] && protestoCartorios[estadoFullName][cidade_cartorio]) {
+                const numCartorios = protestoCartorios[estadoFullName][cidade_cartorio].length;
                 if (numCartorios > 1) {
                     multiplicadorProtesto = numCartorios;
                 }
@@ -305,7 +274,9 @@ export default function MultiStepForm({ productData }) {
         const CUSTO_APOSTILAMENTO = getTaxa('apostilamento') || 0;
         const CUSTO_AR = getTaxa('aviso_recebimento') || 0;
         const ACRESCIMO_CONDOMINIO = getTaxa('acrescimo_condominio') || 0;
-        const CUSTO_SEDEX = 68.00;
+        const CUSTO_SEDEX = getTaxa('sedex') || 0;
+        const CUSTO_INTL_CORREIOS = getTaxa('entrega_internacional_correios') || 0;
+        const CUSTO_INTL_DHL = getTaxa('entrega_internacional_dhl') || 0;
         
         const CUSTO_RECONHECIMENTO_FIRMA = 25.00;
         const CUSTO_TEOR_TRANSCRICAO = 30.00; 
@@ -319,6 +290,8 @@ export default function MultiStepForm({ productData }) {
         if (formData.reconhecimento_firma) newPrice += CUSTO_RECONHECIMENTO_FIRMA;
         if (formData.aviso_recebimento) newPrice += CUSTO_AR;
         if (formData.sedex) newPrice += CUSTO_SEDEX;
+        if (formData.entrega_internacional_correios) newPrice += CUSTO_INTL_CORREIOS;
+        if (formData.entrega_internacional_dhl) newPrice += CUSTO_INTL_DHL;
         
         if (formData.inteiro_teor) {
             newPrice += formData.tipo_inteiro_teor === 'Reprográfica' ? CUSTO_TEOR_REPROGRAFICA : CUSTO_TEOR_TRANSCRICAO;
@@ -366,7 +339,7 @@ export default function MultiStepForm({ productData }) {
       }
 
       if (currentStepId === 'dadosVeiculo' && !formData.placa) { setValidationError('O campo Placa é obrigatório.'); return; }
-      if (currentStepId === 'dadosRouboFurto' && !formData.placa && !formData.renavam) { setValidationError('Preencha pelo menos um campo (Placa ou Renavam).'); return; }
+      if (currentStepId === 'dadosRouboFurto' && !formData.placa && !formData.chassi) { setValidationError('Preencha pelo menos um campo (Placa ou Chassi).'); return; }
       if (currentStepId === 'dadosSintegra' && !formData.cnpj && !formData.inscricao_estadual && !formData.nire) { setValidationError('Preencha pelo menos um campo (CNPJ, Inscrição Estadual ou NIRE).'); return; }
       
       const tipoPessoa = formData.tipo_pessoa;

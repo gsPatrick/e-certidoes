@@ -23,6 +23,12 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
   
   const [selectedFile, setSelectedFile] = useState(null);
   const isRegistroCivil = productData?.category === 'Cartório de Registro Civil';
+  
+  // *** LÓGICA DO LINK DINÂMICO ADICIONADA AQUI ***
+  const isTabelionato = productData?.category === 'Tabelionato de Notas (Escrituras)';
+  const searchLink = isTabelionato 
+    ? '/certidoes/pesquisa-escrituras-e-procuracoes-por-cpf-cnpj' 
+    : '/certidoes/pesquisa-previa-de-imoveis-por-cpf-cnpj';
 
   useEffect(() => {
     setLoading(prev => ({ ...prev, estados: true }));
@@ -53,15 +59,21 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
     
     api.get(`/cartorios?${params.toString()}`)
       .then(res => {
+        const cartorioUnicoOption = { value: 'cartorio-unico', label: 'CARTÓRIO ÚNICO - SERVENTIA EXTRAJUDICIAL' };
         if (res.data.length === 0) {
-          setCartorios([{ value: 'cartorio-unico', label: '(Cartório Único - Serventia Extrajudicial)' }]);
+          setCartorios([cartorioUnicoOption]);
+          handleChange({ target: { name: 'cartorio', value: cartorioUnicoOption.label } });
+        } else if (res.data.length === 1) {
+          setCartorios([res.data[0], cartorioUnicoOption]);
         } else {
           setCartorios(res.data);
         }
       })
       .catch(error => {
         console.error("Erro ao buscar cartórios:", error);
-        setCartorios([{ value: 'cartorio-unico', label: '(Cartório Único - Serventia Extrajudicial)' }]);
+        const cartorioUnicoOption = { value: 'cartorio-unico', label: 'CARTÓRIO ÚNICO - SERVENTIA EXTRAJUDICIAL' };
+        setCartorios([cartorioUnicoOption]);
+        handleChange({ target: { name: 'cartorio', value: cartorioUnicoOption.label } });
       })
       .finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
 
@@ -184,7 +196,8 @@ export default function StepCartorio({ formData, handleChange, productData, onFi
         <div className={styles.fallbackContainer}>
             <p className={styles.fallbackTitle}>Não localizou o cartório na lista ou não sabe informar?</p>
             <div className={styles.fallbackActions}>
-            <Link href="/certidoes/pesquisa-previa-de-imoveis-por-cpf-cnpj" className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
+            {/* *** LINK CORRIGIDO AQUI *** */}
+            <Link href={searchLink} className={styles.fallbackButton}>Pesquise pelo CPF/CNPJ antes</Link>
             <button type="button" onClick={toggleManualCartorio} className={styles.fallbackButton}>{showManualCartorio ? 'Voltar para a lista' : 'Informe manualmente clicando aqui'}</button>
             </div>
 

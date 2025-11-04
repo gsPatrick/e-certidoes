@@ -274,11 +274,15 @@ export const allCertificates = [
     faq: '[{"q": "Quem precisa desta certidão?", "a": "Produtores rurais, cooperativas, tradings e instituições financeiras que atuam com crédito agrícola."},{"q": "O que pode ser dado em penhor?", "a": "Colheitas futuras, máquinas, veículos agrícolas e outros bens móveis relacionados à atividade rural."}]',
     formFields: formTemplateCertidaoImovel, allowCpfSearch: true, allowManualCartorio: true 
   },
-  { id: 64, name: 'Pesquisa Prévia de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Previa de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-previa'] || productImagePaths['pesquisa'], 
+  { id: 64, name: 'Pesquisa Prévia de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Previa de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, 
+    // *** LINHA MODIFICADA ***
+    imageSrc: productImagePaths[toSlug('Pesquisa Previa de imoveis por CPF CNPJ')], 
     description: 'Busca por imóveis registrados em um CPF ou CNPJ em todos os cartórios de um estado.', 
     pesquisaType: 'previa'
   },
-  { id: 65, name: 'Pesquisa Qualificada de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, imageSrc: productImagePaths['pesquisa-qualificada'] || productImagePaths['pesquisa'],
+  { id: 65, name: 'Pesquisa Qualificada de Imóveis por CPF/CNPJ', slug: toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ'), price: null, category: 'Cartório de Registro de Imóveis', icon: icons.SEARCH, 
+    // *** LINHA MODIFICADA ***
+    imageSrc: productImagePaths[toSlug('Pesquisa Qualificada de imoveis por CPF CNPJ')],
     description: 'Investigação jurídica pelo CPF ou CNPJ em cartórios específicos de uma cidade.', 
     pesquisaType: 'qualificada'
   },
@@ -344,11 +348,10 @@ export const allCertificates = [
   ...[
     // Federais
     { id: 1, name: 'Certidão de Distribuição da Justiça Federal (TRF)', esfera: 'Federal', 
-      govFormFields: { 
-        // ATENÇÃO: A propriedade needsState foi removida e o campo regiao_tribunal também,
-        // pois agora são controlados diretamente pelo componente StepDadosCertidaoGov.
+      govFormFields: {
+        needsTribunal: true,
         pessoa: [
-            { name: 'nome_completo', label: 'Nome Completo' }, 
+            { name: 'nome_completo', label: 'Nome completo' }, 
             { name: 'cpf', label: 'CPF' },
             { name: 'tipo_certidao', label: 'Tipo de Certidão', type: 'select', options: ['Cível', 'Criminal', 'Eleitoral'] }
         ], 
@@ -378,7 +381,7 @@ export const allCertificates = [
     { id: 8, name: 'Certidão de Cumprimento da Cota de PCDs (MT)', esfera: 'Federal', govFormFields: { pessoa: [], empresa: [{ name: 'cnpj', label: 'CNPJ' }] } },
     { id: 9, name: 'Certidão de Débitos Trabalhistas (MT)', esfera: 'Federal', govFormFields: { pessoa: [{ name: 'cpf', label: 'CPF' }], empresa: [{ name: 'cnpj', label: 'CNPJ' }] } },
     { id: 11, name: 'Certidão Negativa do FGTS', esfera: 'Federal', govFormFields: { needsState: true, pessoa: [], empresa: [{ name: 'cnpj', label: 'CNPJ' }, { name: 'cei_opcional', label: 'CEI (Opcional)', required: false }] } },
-    { id: 12, name: 'Cadastro de Imóveis Rurais (CAFIR)', esfera: 'Federal', govFormFields: { pessoa: [{ name: 'nirf', label: 'NIRF' }, { name: 'cib_opcional', label: 'CIB (Opcional)', required: false }], empresa: [] } },
+    { id: 12, name: 'Cadastro de Imóveis Rurais (CAFIR)', esfera: 'Federal', govFormFields: { pessoa: [{ name: 'nirf_cib', label: 'NIRF / CIB' }], empresa: [] } },
     { id: 13, name: 'Certidão de Tributos Federais de Imóvel Rural (ITR)', esfera: 'Federal', govFormFields: { pessoa: [{ name: 'nirf', label: 'NIRF' }], empresa: [] } },
     { id: 14, name: 'Certidão de Embargos (IBAMA)', esfera: 'Federal', govFormFields: { pessoa: [{ name: 'cpf', label: 'CPF' }], empresa: [{ name: 'cnpj', label: 'CNPJ' }] } },
     { id: 15, name: 'Certidão Negativa de Débitos (CND) do Ibama', esfera: 'Federal', govFormFields: { needsState: true, needsCity: true, pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }, { name: 'cep', label: 'CEP' }, { name: 'bairro', label: 'Bairro' }, { name: 'endereco', label: 'Endereço' }], empresa: [] } },
@@ -393,9 +396,9 @@ export const allCertificates = [
     { id: 23, name: 'Certidão de Inquérito Civil (MPE)', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }], empresa: [{ name: 'razao_social', label: 'Razão Social' }, { name: 'cnpj', label: 'CNPJ' }] } },
     { id: 24, name: 'Certidão de Ações Trabalhistas (CEAT-TRT)', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }], empresa: [{ name: 'razao_social', label: 'Razão Social' }, { name: 'cnpj', label: 'CNPJ' }] } },
     { id: 25, name: 'Certidão Negativa de Débitos Ambientais', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }], empresa: [{ name: 'razao_social', label: 'Razão Social' }, { name: 'cnpj', label: 'CNPJ' }] } },
-    { id: 26, name: 'Certidão Negativa de Débitos Tributários Estaduais (CND)', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'cpf', label: 'CPF' }], empresa: [{ name: 'cnpj', label: 'CNPJ' }] } },
-    { id: 27, name: 'Certidão de Tributos da Procuradoria Geral (PGE)', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'cpf', label: 'CPF' }], empresa: [{ name: 'cnpj', label: 'CNPJ' }] } },
-  ].filter(cert => cert.id !== 10) // Remove a certidão de Infrações Trabalhistas (MT)
+    { id: 26, name: 'Certidão Negativa de Débitos Tributários Estaduais (CND)', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }], empresa: [{ name: 'razao_social', label: 'Razão Social' }, { name: 'cnpj', label: 'CNPJ' }] } },
+    { id: 27, name: 'Certidão de Tributos da Procuradoria Geral (PGE)', esfera: 'Estadual', govFormFields: { needsState: true, pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }], empresa: [{ name: 'razao_social', label: 'Razão Social' }, { name: 'cnpj', label: 'CNPJ' }] } },
+  ].filter(cert => cert.id !== 10)
   .map(cert => ({ 
     ...cert, 
     price: PRICE_FEDERAL_ESTADUAL, 
@@ -425,8 +428,8 @@ export const allCertificates = [
     govFormFields: { 
         needsState: true,
         needsCity: true,
-        pessoa: [{ name: 'cpf', label: 'CPF' }, { name: 'nome_completo', label: 'Nome Completo' }, { name: 'inscricao_imovel', label: 'Inscrição do Imóvel' }], 
-        empresa: [{ name: 'cnpj', label: 'CNPJ' }, { name: 'razao_social', label: 'Razão Social' }, { name: 'inscricao_imovel', label: 'Inscrição do Imóvel' }] 
+        pessoa: [{ name: 'nome_completo', label: 'Nome Completo' }, { name: 'cpf', label: 'CPF' }, { name: 'inscricao_imovel', label: 'Inscrição do Imóvel' }], 
+        empresa: [{ name: 'razao_social', label: 'Razão Social' }, { name: 'cnpj', label: 'CNPJ' }, { name: 'inscricao_imovel', label: 'Inscrição do Imóvel' }] 
     },
     formFields: []
   })),

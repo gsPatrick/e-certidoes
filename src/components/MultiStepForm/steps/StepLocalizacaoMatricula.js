@@ -5,32 +5,29 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '@/services/api';
 import styles from './StepLocalizacaoMatricula.module.css';
-import { getPrice } from '@/utils/pricingData'; // 1. Importar a função de busca de preço
+import { getPrice } from '@/utils/pricingData'; 
 
 export default function StepLocalizacaoMatricula({ formData, handleChange, productData }) {
   const [estados, setEstados] = useState([]);
   const [cidades, setCidades] = useState([]);
   const [cartorios, setCartorios] = useState([]);
   const [loading, setLoading] = useState({ estados: false, cidades: false, cartorios: false });
-  const [isServiceAvailable, setIsServiceAvailable] = useState(true); // 2. Novo estado para controlar a disponibilidade
+  const [isServiceAvailable, setIsServiceAvailable] = useState(true); 
 
-  // Efeito para verificar a disponibilidade do serviço ao mudar o estado
   useEffect(() => {
     if (formData.estado_matricula) {
       const price = getPrice('registro_imoveis_pesquisas', 'estado', formData.estado_matricula, 'visualizacao_matricula');
       setIsServiceAvailable(price !== null);
     } else {
-      setIsServiceAvailable(true); // Reseta quando o estado é limpo
+      setIsServiceAvailable(true);
     }
   }, [formData.estado_matricula]);
 
-  // Busca estados
   useEffect(() => {
     setLoading(prev => ({ ...prev, estados: true }));
     api.get('/cartorios/estados').then(res => setEstados(res.data)).finally(() => setLoading(prev => ({ ...prev, estados: false })));
   }, []);
 
-  // Busca cidades
   useEffect(() => {
     if (!formData.estado_matricula) {
       setCidades([]);
@@ -41,7 +38,6 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
     api.get(`/cartorios/estados/${formData.estado_matricula}/cidades`).then(res => setCidades(res.data)).finally(() => setLoading(prev => ({ ...prev, cidades: false })));
   }, [formData.estado_matricula]);
 
-  // Busca cartórios
   useEffect(() => {
     if (!formData.estado_matricula || !formData.cidade_matricula) {
       setCartorios([]);
@@ -51,8 +47,28 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
     setLoading(prev => ({ ...prev, cartorios: true }));
     const params = new URLSearchParams({ estado: formData.estado_matricula, cidade: formData.cidade_matricula });
     if (atribuicaoId) params.append('atribuicaoId', atribuicaoId);
-    api.get(`/cartorios?${params.toString()}`).then(res => setCartorios(res.data)).finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
-  }, [formData.cidade_matricula, formData.estado_matricula, productData?.atribuicaoId]);
+    api.get(`/cartorios?${params.toString()}`)
+      .then(res => {
+        const cartorioUnicoOption = { value: 'cartorio-unico', label: 'CARTÓRIO ÚNICO - SERVENTIA EXTRAJUDICIAL' };
+        if (res.data.length === 0) {
+          setCartorios([cartorioUnicoOption]);
+          // *** LINHA ADICIONADA: Auto-seleciona o cartório único ***
+          handleChange({ target: { name: 'cartorio', value: cartorioUnicoOption.label } });
+        } else if (res.data.length === 1) {
+          setCartorios([res.data[0], cartorioUnicoOption]);
+        } else {
+          setCartorios(res.data);
+        }
+      })
+      .catch(error => {
+        console.error("Erro ao buscar cartórios:", error);
+        const cartorioUnicoOption = { value: 'cartorio-unico', label: 'CARTÓRIO ÚNICO - SERVENTIA EXTRAJUDICIAL' };
+        setCartorios([cartorioUnicoOption]);
+        // *** LINHA ADICIONADA: Auto-seleciona em caso de erro também ***
+        handleChange({ target: { name: 'cartorio', value: cartorioUnicoOption.label } });
+      })
+      .finally(() => setLoading(prev => ({ ...prev, cartorios: false })));
+  }, [formData.cidade_matricula, formData.estado_matricula, productData?.atribuicaoId, handleChange]);
 
   const handleSelectChange = (e) => {
     handleChange(e);
@@ -80,7 +96,6 @@ export default function StepLocalizacaoMatricula({ formData, handleChange, produ
         </select>
       </div>
 
-      {/* 3. Renderização condicional dos campos ou da mensagem de fallback */}
       {isServiceAvailable ? (
         <>
           <div className={styles.formGroup}>

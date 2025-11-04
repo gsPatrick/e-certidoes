@@ -4,7 +4,6 @@
 import styles from './SummarySidebar.module.css';
 import { getTaxa } from '@/utils/pricingData';
 
-// Função para formatar as chaves do objeto em labels legíveis
 const formatLabel = (key) => {
     if (key === 'pais_nome') return 'País';
     if (key === 'cep_inter') return 'CEP Internacional';
@@ -31,14 +30,12 @@ const formatLabel = (key) => {
         .replace(/\b\w/g, char => char.toUpperCase());
 };
 
-// Ícone de check para etapas concluídas
 const CheckIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
 );
 
-// Componente para exibir um item de detalhe (label + valor)
 const DetailItem = ({ label, value }) => {
     if (!value && typeof value !== 'boolean') return null;
     const displayValue = typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : value;
@@ -50,7 +47,6 @@ const DetailItem = ({ label, value }) => {
     );
 };
 
-// Componente para exibir um item de detalhe com preço
 const PriceDetailItem = ({ label, value }) => {
     if (!value && value !== 0) return null;
     return (
@@ -72,13 +68,9 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
     const CUSTO_TEOR_TRANSCRICAO = 30.00;
     const CUSTO_TEOR_REPROGRAFICA = 40.00;
     
-    // =======================================================
-    // === AQUI ESTÁ A CORREÇÃO LÓGICA ===
-    // =======================================================
     const getRelevantKeysForStep = (title) => {
         const baseExclusions = new Set([
             'aceite_lgpd', 'ciente', 'tipo_pesquisa', 'tipo_pessoa',
-            // Chaves de outras etapas que não devem vazar
             'formato', 'apostilamento_digital', 'apostilamento_fisico', 'apostilamento', 'inteiro_teor', 'tipo_inteiro_teor', 'aviso_recebimento', 'localizar_pra_mim', 'sedex',
             'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade_entrega', 'estado_entrega', 'entrega_internacional_correios', 'entrega_internacional_dhl', 'pais_nome', 'cep_inter', 'estado_inter', 'cidade_inter', 'endereco_inter',
             'requerente_nome', 'requerente_cpf', 'requerente_email', 'requerente_telefone', 'requerente_rg',
@@ -89,7 +81,6 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
             case 'dados da certidão':
                 const stepExclusions = new Set([...baseExclusions]);
                 const dynamicKeys = Object.keys(formData).filter(k => !stepExclusions.has(k) && k !== 'tipo_certidao');
-                // Garante que 'tipo_certidao' seja o primeiro e único
                 return ['tipo_certidao', ...dynamicKeys];
             
             case 'localização': 
@@ -108,9 +99,7 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
         if (!formData[key] && typeof formData[key] !== 'boolean') return null;
 
         if (key === 'tipo_certidao') {
-            const label = "Tipo de Certidão";
-            const value = productData.name;
-            return <DetailItem key={key} label={label} value={value} />;
+            return <DetailItem key={key} label="Tipo de Certidão" value={productData.name} />;
         }
 
         if (key === 'tempo_pesquisa' && productData.slug !== 'certidao-de-protesto') {
@@ -118,22 +107,15 @@ export default function SummarySidebar({ productData, formData, finalPrice, curr
         }
 
         if (stepTitle.toLowerCase() === 'serviços adicionais') {
-            if (key === 'apostilamento' || key === 'apostilamento_digital' || key === 'apostilamento_fisico') {
-                return <PriceDetailItem key={key} label={formatLabel(key)} value={CUSTO_APOSTILAMENTO} />;
-            }
-            if (key === 'aviso_recebimento') {
-                return <PriceDetailItem key={key} label="Aviso de Recebimento" value={CUSTO_AR} />;
-            }
+            if (key === 'apostilamento' || key === 'apostilamento_digital' || key === 'apostilamento_fisico') return <PriceDetailItem key={key} label={formatLabel(key)} value={CUSTO_APOSTILAMENTO} />;
+            if (key === 'aviso_recebimento') return <PriceDetailItem key={key} label="Aviso de Recebimento" value={CUSTO_AR} />;
             if (key === 'inteiro_teor') {
                 const custo = formData.tipo_inteiro_teor === 'Reprográfica' ? CUSTO_TEOR_REPROGRAFICA : CUSTO_TEOR_TRANSCRICAO;
                 return <PriceDetailItem key={key} label="Inteiro Teor" value={custo} />;
             }
-            if (key === 'localizar_pra_mim') {
-                 return <PriceDetailItem key={key} label="Localizar pra mim" value={99.90} />;
-            }
-            if (key === 'sedex') {
-                 return <PriceDetailItem key={key} label="Sedex" value={CUSTO_SEDEX} />;
-            }
+            if (key === 'localizar_pra_mim') return <PriceDetailItem key={key} label="Localizar pra mim" value={99.90} />;
+            // *** LINHA ADICIONADA: Lógica para exibir o preço do SEDEX ***
+            if (key === 'sedex') return <PriceDetailItem key={key} label="Sedex" value={CUSTO_SEDEX} />;
         }
         
         const label = formatLabel(key);

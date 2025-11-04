@@ -24,14 +24,15 @@ export default function StepPesquisaRouboFurto({ formData, handleChange, error, 
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="renavam">Renavam</label>
+        {/* *** LABEL CORRIGIDA AQUI *** */}
+        <label htmlFor="chassi">Chassi</label>
         <input
           type="text"
-          id="renavam"
-          name="renavam"
-          value={formData.renavam || ''}
+          id="chassi"
+          name="chassi"
+          value={formData.chassi || ''}
           onChange={handleChange}
-          placeholder="Digite o Renavam"
+          placeholder="Digite o Chassi"
         />
       </div>
       
